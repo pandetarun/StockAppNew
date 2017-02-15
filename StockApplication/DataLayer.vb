@@ -18,7 +18,6 @@ Public Class DataLayer
     Public UserID As String = "SYSDBA"                                '!
 
     Public Function OpenSQLConnection() As Boolean
-
         Try
             If myConnection.State = ConnectionState.Closed Then
                 Dim cs As New FbConnectionStringBuilder()
