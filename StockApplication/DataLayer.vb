@@ -1,8 +1,10 @@
-﻿Imports FirebirdSql.Data.Firebird
+﻿'Imports FirebirdSql.Data.Firebird
 Imports FirebirdSql.Data.FirebirdClient
 Imports System.IO.StreamReader
 Imports System.Globalization
+Imports System.Data
 Imports System.IO
+Imports System.Windows
 
 Public Class DataLayer
     Public myCellCollection As New Collection
