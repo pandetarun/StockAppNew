@@ -4,7 +4,7 @@ Public Class Helper
 
     End Function
 
-    Public Function GetDataFromUrl(ByVal urlToGet As String) As String
+    Public Shared Function GetDataFromUrl(ByVal urlToGet As String) As String
         Dim serverUrl As String
         Dim request As HttpWebRequest
         Dim response As HttpWebResponse
@@ -22,7 +22,7 @@ Public Class Helper
         Return strResponse
     End Function
 
-    Private Function CreateRequest(ByRef request As HttpWebRequest) As HttpWebRequest
+    Private Shared Function CreateRequest(ByRef request As HttpWebRequest) As HttpWebRequest
         request.UseDefaultCredentials = True
         request.Method = WebRequestMethods.Http.Post
         request.ContentType = "application/json"
