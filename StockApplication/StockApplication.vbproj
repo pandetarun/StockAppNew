@@ -78,8 +78,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataLayer.vb" />
+    <Compile Include="Helper.vb" />
     <Compile Include="HourlyStockQuote.vb" />
-    <Compile Include="IndexList.vb" />
+    <Compile Include="NSEindices.vb" />
     <Compile Include="IndexStockMapping.vb" />
   </ItemGroup>
   <ItemGroup>
