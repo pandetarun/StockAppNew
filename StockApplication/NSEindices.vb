@@ -8,10 +8,9 @@ Public Class NSEindices
     Public Function getIndicesListAndStore() As Boolean
         Dim rawIndicesData As String
 
-
         rawIndicesData = Helper.GetDataFromUrl("https://www.nseindia.com/homepage/Indices1.json")
-        parseAndPopulateObjects(rawIndicesData)
-        Return True
+        Dim NSEindicesList As List(Of NSEindices) = parseAndPopulateObjects(rawIndicesData)
+        Return storeIndicesDatainDB(NSEindicesList)
     End Function
 
     Private Function parseAndPopulateObjects(ByVal rawIndicesData As String) As List(Of NSEindices)
@@ -41,11 +40,10 @@ Public Class NSEindices
             NSEIndicesData.percentageChange = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
             NSEindicesList.Add(NSEIndicesData)
         Next count
-
         Return NSEindicesList
     End Function
 
-    Private Function storeIndicesDatainDB() As Boolean
+    Private Function storeIndicesDatainDB(NSEindicesList As List(Of NSEindices)) As Boolean
 
         Return True
     End Function
