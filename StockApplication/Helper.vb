@@ -1,5 +1,9 @@
 ﻿Imports System.Net
 Public Class Helper
+    Public Function getStockList() As String()
+
+    End Function
+
     Public Function GetDataFromUrl(ByVal urlToGet As String) As String
         Dim serverUrl As String
         Dim request As HttpWebRequest
@@ -7,7 +11,8 @@ Public Class Helper
         Dim strResponse As String
 
         'stockCode = "INFY"
-        serverUrl = urlToGet ' "http://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxGetQuoteJSON.jsp?symbol=" & stockCode
+        serverUrl = urlToGet
+        ' "http://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxGetQuoteJSON.jsp?symbol=" & stockCode
         request = WebRequest.Create(serverUrl)
         request = CreateRequest(request)
         response = request.GetResponse()

@@ -69,6 +69,10 @@
 
     Public insertStatement As String
 
+    Public Function GetAndStoreHourlyData() As Boolean
+
+        Return True
+    End Function
     Public Function CreateObjectFromRawStockData(ByVal rawStockQuote As String) As HourlyStockQuote
 
         Dim myDelims As String() = New String() {","""}
