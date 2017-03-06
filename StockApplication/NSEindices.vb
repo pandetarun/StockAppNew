@@ -1,4 +1,10 @@
-﻿Public Class NSEindices
+﻿Imports System.Collections.Generic
+Public Class NSEindices
+    Dim indexName As String
+    Dim lastPrice As Double
+    Dim priceChange As Double
+    Dim percentageChange As Double
+
     Public Function getIndicesListAndStore() As Boolean
         Dim rawIndicesData As String
 
@@ -8,8 +14,7 @@
     End Function
 
     Private Function parseAndPopulateObjects(ByVal rawIndicesData As String) As List(Of NSEindices)
-        Dim NSEindicesList As NSEindices() = New NSEindices()
-
+        Dim NSEindicesList As List(Of NSEindices) = New List(Of NSEindices)
 
         Dim NSEIndicesData As NSEindices
 
