@@ -7,8 +7,9 @@
         Return True
     End Function
 
-    Private Function parseAndPopulateObjects(ByVal rawIndicesData As String) As NSEindices()
+    Private Function parseAndPopulateObjects(ByVal rawIndicesData As String) As List(Of NSEindices)
         Dim NSEindicesList As NSEindices() = New NSEindices()
+
         Dim NSEIndicesData As NSEindices
 
         Return NSEindicesList
