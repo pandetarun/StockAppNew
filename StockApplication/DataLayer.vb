@@ -4,7 +4,7 @@ Imports System.IO.StreamReader
 Imports System.Globalization
 Imports System.Data
 Imports System.IO
-Imports System.Windows
+Imports System.Windows.Forms
 
 Public Class DataLayer
     Public myCellCollection As New Collection
@@ -12,6 +12,8 @@ Public Class DataLayer
     Public myDataAdapter() As FbDataAdapter
     Public myDataSet As New DataSet
     Public myWorkRow As DataRow
+
+
 
     Public ServerType As FbServerType = FbServerType.Embedded   '!
     Public Database As String = "D:\Tarun\StockApp\StockAppDB.fdb"                   '!
