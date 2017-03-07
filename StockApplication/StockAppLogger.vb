@@ -6,32 +6,39 @@ Public Class StockAppLogger
     Shared tmpStockAppLogger As StockAppLogger
     Dim logFile As String
 
-    Public Function InitializeLogger() As StockAppLogger
+    Public Shared Function InitializeLogger() As StockAppLogger
         If tmpStockAppLogger Is Nothing Then
             tmpStockAppLogger = New StockAppLogger()
             tmpStockAppLogger.logFile = "D:\Tarun\StockApp\StockApplication\log.txt"
+
         End If
         Return tmpStockAppLogger
     End Function
 
-    Public Sub Log(logMessage As String, exec As Exception)
-        tmpWriter.Write(vbCrLf + "Log Entry : ")
-        tmpWriter.WriteLine("{0} {1}", DateTime.Now.ToLongTimeString(),
-        DateTime.Now.ToLongDateString())
-        tmpWriter.WriteLine("  :")
-        tmpWriter.WriteLine("  :{0}", logMessage)
+    Public Function LogError(logMessage As String, exec As Exception) As Boolean
+        tmpWriter = File.AppendText(tmpStockAppLogger.logFile)
+        'tmpWriter.Write(vbCrLf + "Log Entry : ")
+        tmpWriter.Write("{0} {1}", DateTime.Now.ToLongTimeString(), DateTime.Now.ToLongDateString())
+        tmpWriter.Write("  : Error")
+        tmpWriter.Write("  :{0}", logMessage)
         tmpWriter.WriteLine(exec)
         tmpWriter.WriteLine("-------------------------------")
-    End Sub
+        tmpWriter.Flush()
+        tmpWriter.Close()
+        Return True
+    End Function
 
-    Public Sub Log(logMessage As String)
-        tmpWriter.Write(vbCrLf + "Log Entry : ")
-        tmpWriter.WriteLine("{0} {1}", DateTime.Now.ToLongTimeString(),
-        DateTime.Now.ToLongDateString())
-        tmpWriter.WriteLine("  :")
+    Public Function Log(logMessage As String) As Boolean
+        tmpWriter = File.AppendText(tmpStockAppLogger.logFile)
+        'tmpWriter.Write(vbCrLf + "Log Entry : ")
+        tmpWriter.Write("{0} {1}", DateTime.Now.ToLongTimeString(), DateTime.Now.ToLongDateString())
+        tmpWriter.Write("  :")
         tmpWriter.WriteLine("  :{0}", logMessage)
         tmpWriter.WriteLine("-------------------------------")
-    End Sub
+        tmpWriter.Flush()
+        tmpWriter.Close()
+        Return True
+    End Function
 
     Public Shared Sub DumpLog(r As StreamReader)
         Dim line As String

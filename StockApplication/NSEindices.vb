@@ -5,15 +5,18 @@ Public Class NSEindices
     Dim priceChange As Double
     Dim percentageChange As Double
     Dim priceDate As Date
-    Dim myLogger As StockAppLogger
+    Dim myLogger As StockAppLogger = StockAppLogger.InitializeLogger()
 
     Public Function getIndicesListAndStore() As Boolean
         Dim rawIndicesData As String
+        Dim executionresult As Boolean
+
         myLogger.Log("getIndicesListAndStore Start")
         rawIndicesData = Helper.GetDataFromUrl("https://www.nseindia.com/homepage/Indices1.json")
         Dim NSEindicesList As List(Of NSEindices) = parseAndPopulateObjects(rawIndicesData)
+        executionresult = storeIndicesDatainDB(NSEindicesList)
         myLogger.Log("getIndicesListAndStore End")
-        Return storeIndicesDatainDB(NSEindicesList)
+        Return executionresult
     End Function
 
     Private Function parseAndPopulateObjects(ByVal rawIndicesData As String) As List(Of NSEindices)
@@ -67,10 +70,10 @@ Public Class NSEindices
                 insertValues = insertValues + tmpNSEIndices.priceDate + ");"
                 myDataLayer.ExecuteSQLStmt(insertStatement + insertValues)
             Catch exc As Exception
-                myLogger.Log("Error Occurred in inserting IndicesList = " & exc.Message())
+                myLogger.LogError("Error Occurred in inserting IndicesList = ", exc)
             End Try
         Next
-        myLogger.Log("storeIndicesDatainDB Start")
+        myLogger.Log("storeIndicesDatainDB End")
         Return True
     End Function
 End Class
