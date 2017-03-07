@@ -64,9 +64,9 @@ Public Class NSEindices
         For Each tmpNSEIndices In NSEindicesList
             Try
                 insertValues = insertValues + "'" + tmpNSEIndices.indexName + "',"
-                insertValues = insertValues + tmpNSEIndices.lastPrice + ","
-                insertValues = insertValues + tmpNSEIndices.priceChange + ","
-                insertValues = insertValues + tmpNSEIndices.percentageChange + ","
+                insertValues = insertValues + tmpNSEIndices.lastPrice.ToString("R") + ","
+                insertValues = insertValues + tmpNSEIndices.priceChange.ToString("R") + ","
+                insertValues = insertValues + tmpNSEIndices.percentageChange.ToString("R") + ","
                 insertValues = insertValues + tmpNSEIndices.priceDate + ");"
                 myDataLayer.ExecuteSQLStmt(insertStatement + insertValues)
             Catch exc As Exception
