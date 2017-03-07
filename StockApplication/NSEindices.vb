@@ -4,12 +4,15 @@ Public Class NSEindices
     Dim lastPrice As Double
     Dim priceChange As Double
     Dim percentageChange As Double
+    Dim priceDate As Date
+    Dim myLogger As StockAppLogger
 
     Public Function getIndicesListAndStore() As Boolean
         Dim rawIndicesData As String
-
+        myLogger.Log("getIndicesListAndStore Start")
         rawIndicesData = Helper.GetDataFromUrl("https://www.nseindia.com/homepage/Indices1.json")
         Dim NSEindicesList As List(Of NSEindices) = parseAndPopulateObjects(rawIndicesData)
+        myLogger.Log("getIndicesListAndStore End")
         Return storeIndicesDatainDB(NSEindicesList)
     End Function
 
@@ -20,6 +23,7 @@ Public Class NSEindices
         Dim NSEIndicesData As NSEindices
         Dim countOfSymbols As Integer
 
+        myLogger.Log("parseAndPopulateObjects Start")
         tmpRawIndicesData = rawIndicesData
         countOfSymbols = rawIndicesData.Split("{""name").Length - 2
         For count = 1 To countOfSymbols
@@ -38,14 +42,35 @@ Public Class NSEindices
             indexOfVar = tmpRawIndicesData.IndexOf("pChange")
             tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 10)
             NSEIndicesData.percentageChange = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+
+            NSEIndicesData.priceDate = Today
             NSEindicesList.Add(NSEIndicesData)
         Next count
+        myLogger.Log("parseAndPopulateObjects End")
         Return NSEindicesList
     End Function
 
     Private Function storeIndicesDatainDB(NSEindicesList As List(Of NSEindices)) As Boolean
+        Dim insertStatement As String
+        Dim insertValues As String
+        Dim myDataLayer As DataLayer = New DataLayer
 
+        myLogger.Log("storeIndicesDatainDB Start")
+        insertStatement = "INSERT INTO NSEINDICES (INDEX_NAME, LAST_PRICE, PRICE_CHANGE, PERCENTAGE_CHANGE, PRICE_DATE)"
+        insertValues = "VALUES "
+        For Each tmpNSEIndices In NSEindicesList
+            Try
+                insertValues = insertValues + "'" + tmpNSEIndices.indexName + "',"
+                insertValues = insertValues + tmpNSEIndices.lastPrice + ","
+                insertValues = insertValues + tmpNSEIndices.priceChange + ","
+                insertValues = insertValues + tmpNSEIndices.percentageChange + ","
+                insertValues = insertValues + tmpNSEIndices.priceDate + ");"
+                myDataLayer.ExecuteSQLStmt(insertStatement + insertValues)
+            Catch exc As Exception
+                myLogger.Log("Error Occurred in inserting IndicesList = " & exc.Message())
+            End Try
+        Next
+        myLogger.Log("storeIndicesDatainDB Start")
         Return True
     End Function
-
 End Class

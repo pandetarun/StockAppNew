@@ -83,6 +83,7 @@
     <Compile Include="DataLayer.vb" />
     <Compile Include="Helper.vb" />
     <Compile Include="HourlyStockQuote.vb" />
+    <Compile Include="StockAppLogger.vb" />
     <Compile Include="NSEindices.vb" />
     <Compile Include="IndexStockMapping.vb" />
     <Compile Include="TestForm.Designer.vb">
