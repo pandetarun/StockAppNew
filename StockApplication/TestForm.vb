@@ -2,6 +2,12 @@
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Dim tmpNSEindices As NSEindices
         tmpNSEindices = New NSEindices()
-        tmpNSEindices.getIndicesListAndStore()
+        'tmpNSEindices.getIndicesListAndStore()
+
+
+
+
+        Dim myDataLayer As DataLayer = New DataLayer()
+        myDataLayer.CreateDatabase()
     End Sub
 End Class

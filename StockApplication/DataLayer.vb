@@ -16,7 +16,7 @@ Public Class DataLayer
 
 
     Public ServerType As FbServerType = FbServerType.Embedded   '!
-    Public Database As String = "D:\Tarun\StockApp\StockAppDB.fdb"                   '!
+    Public Database As String = "D:\Tarun\StockApp\DB\STOCKAPPDB.fdb"                   '!
     Public DataSource As String = "FireBird"                            '!
     Public Password As String = "Jan@2017"                              '!
     Public UserID As String = "SYSDBA"                                '!

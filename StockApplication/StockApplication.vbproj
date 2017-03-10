@@ -136,15 +136,15 @@
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
-  <Import Project="..\packages\Firebird.Embedded.3.0.0.32485\build\Firebird.Embedded.targets" Condition="Exists('..\packages\Firebird.Embedded.3.0.0.32485\build\Firebird.Embedded.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Firebird.Embedded.3.0.0.32485\build\Firebird.Embedded.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Firebird.Embedded.3.0.0.32485\build\Firebird.Embedded.targets'))" />
     <Error Condition="!Exists('..\packages\Firebird.v2-5-x.Embedded.2.5.6.0006\build\Firebird.v2-5-x.Embedded.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Firebird.v2-5-x.Embedded.2.5.6.0006\build\Firebird.v2-5-x.Embedded.targets'))" />
+    <Error Condition="!Exists('..\packages\Firebird.Embedded.3.0.0.32485\build\Firebird.Embedded.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Firebird.Embedded.3.0.0.32485\build\Firebird.Embedded.targets'))" />
   </Target>
   <Import Project="..\packages\Firebird.v2-5-x.Embedded.2.5.6.0006\build\Firebird.v2-5-x.Embedded.targets" Condition="Exists('..\packages\Firebird.v2-5-x.Embedded.2.5.6.0006\build\Firebird.v2-5-x.Embedded.targets')" />
+  <Import Project="..\packages\Firebird.Embedded.3.0.0.32485\build\Firebird.Embedded.targets" Condition="Exists('..\packages\Firebird.Embedded.3.0.0.32485\build\Firebird.Embedded.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
