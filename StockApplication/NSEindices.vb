@@ -60,14 +60,15 @@ Public Class NSEindices
 
         myLogger.Log("storeIndicesDatainDB Start")
         insertStatement = "INSERT INTO NSEINDICES (INDEX_NAME, LAST_PRICE, PRICE_CHANGE, PERCENTAGE_CHANGE, PRICE_DATE)"
-        insertValues = "VALUES "
+
         For Each tmpNSEIndices In NSEindicesList
             Try
+                insertValues = "VALUES ("
                 insertValues = insertValues + "'" + tmpNSEIndices.indexName + "',"
                 insertValues = insertValues + tmpNSEIndices.lastPrice.ToString("R") + ","
                 insertValues = insertValues + tmpNSEIndices.priceChange.ToString("R") + ","
                 insertValues = insertValues + tmpNSEIndices.percentageChange.ToString("R") + ","
-                insertValues = insertValues + tmpNSEIndices.priceDate + ");"
+                insertValues = insertValues + "'" + tmpNSEIndices.priceDate + "');"
                 myDataLayer.ExecuteSQLStmt(insertStatement + insertValues)
             Catch exc As Exception
                 myLogger.LogError("Error Occurred in inserting IndicesList = ", exc)

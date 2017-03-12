@@ -15,9 +15,9 @@ Public Class DataLayer
 
 
 
-    Public ServerType As FbServerType = FbServerType.Embedded   '!
+    Public ServerType As FbServerType = FbServerType.Default   '!
     Public Database As String = "D:\Tarun\StockApp\DB\STOCKAPPDB.fdb"                   '!
-    Public DataSource As String = "FireBird"                            '!
+    Public DataSource As String = "localhost"                            '!
     Public Password As String = "Jan@2017"                              '!
     Public UserID As String = "SYSDBA"                                '!
 
@@ -59,7 +59,7 @@ Public Class DataLayer
         Try
             Dim cs = New FbConnectionStringBuilder()
 
-            If Not ServerType = FbServerType.Embedded Then
+            If Not ServerType = FbServerType.Default Then
                 cs.DataSource = DataSource
                 cs.Password = Password
                 cs.UserID = UserID
