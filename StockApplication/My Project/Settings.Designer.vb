@@ -77,6 +77,18 @@ Namespace My
                 Me("NSEIndicesURL") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Debug")>  _
+        Public Property logLevel() As String
+            Get
+                Return CType(Me("logLevel"),String)
+            End Get
+            Set
+                Me("logLevel") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

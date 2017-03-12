@@ -6,7 +6,7 @@ Public Class NSEindices
     Dim priceChange As Double
     Dim percentageChange As Double
     Dim priceDate As Date
-    Dim myLogger As StockAppLogger = StockAppLogger.InitializeLogger()
+    Dim myLogger As StockAppLogger = StockAppLogger.InitializeLogger("NSEindices")
 
     Public Function getIndicesListAndStore() As Boolean
         Dim rawIndicesData As String
