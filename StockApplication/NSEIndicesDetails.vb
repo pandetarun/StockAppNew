@@ -17,6 +17,8 @@ Public Class NSEIndicesDetails
     Dim yearlyLowPrice As Double
     Dim yearlyPercentageChange As Double
     Dim monthlyPercentageChange As Double
+    Dim updateDate As Date
+    Dim updateTime As String
     Dim myLogger As StockAppLogger = StockAppLogger.InitializeLogger("NSEIndicesDetails")
 
     Dim pathOfFileofURLs As String = My.Settings.ApplicationFileLocation & "\URLs.txt"
@@ -59,36 +61,61 @@ Public Class NSEIndicesDetails
     Private Function getNSEIndicesDetails(ByVal NSEIndicesURL As String)
         Dim rawIndicesData As String
         Dim tmpNSEIndicesDetails As NSEIndicesDetails = New NSEIndicesDetails()
-
-
+        Dim tmpRawIndicesData As String
         Dim indexOfVar As Integer
-        Dim NSEIndicesData As NSEindices
-        Dim countOfSymbols As Integer
+        'Dim NSEIndicesData As NSEindices
+        ' Dim countOfSymbols As Integer
 
         myLogger.Log("getNSEIndicesDetails Start")
         rawIndicesData = Helper.GetDataFromUrl(NSEIndicesURL)
         tmpRawIndicesData = rawIndicesData
-        countOfSymbols = rawIndicesData.Split("{""name").Length - 2
-        For count = 1 To countOfSymbols
-            NSEIndicesData = New NSEindices
-            indexOfVar = tmpRawIndicesData.IndexOf("name")
-            tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 7)
-            NSEIndicesData.indexName = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
-            indexOfVar = tmpRawIndicesData.IndexOf("lastPrice")
-            tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 12)
-            NSEIndicesData.lastPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+        'countOfSymbols = rawIndicesData.Split("{""name").Length - 2
+        'For count = 1 To countOfSymbols
+        'NSEIndicesData = New NSEindices
+        indexOfVar = tmpRawIndicesData.IndexOf("indexName")
+        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 11)
+        tmpNSEIndicesDetails.symbol = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+        indexOfVar = tmpRawIndicesData.IndexOf("open")
+        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
+        tmpNSEIndicesDetails.openPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+        indexOfVar = tmpRawIndicesData.IndexOf("high")
+        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
+        tmpNSEIndicesDetails.highPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+        indexOfVar = tmpRawIndicesData.IndexOf("low")
+        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 5)
+        tmpNSEIndicesDetails.lowPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
 
-            indexOfVar = tmpRawIndicesData.IndexOf("change")
-            tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 9)
-            NSEIndicesData.priceChange = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+        indexOfVar = tmpRawIndicesData.IndexOf("ltp")
+        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 5)
+        tmpNSEIndicesDetails.lastTradedPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+        indexOfVar = tmpRawIndicesData.IndexOf("ch")
+        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 4)
+        tmpNSEIndicesDetails.changeinPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+        indexOfVar = tmpRawIndicesData.IndexOf("per")
+        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 5)
+        tmpNSEIndicesDetails.changeInPercentage = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+        indexOfVar = tmpRawIndicesData.IndexOf("yCls")
+        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
+        tmpNSEIndicesDetails.yearlyPercentageChange = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+        indexOfVar = tmpRawIndicesData.IndexOf("mCls")
+        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
+        tmpNSEIndicesDetails.monthlyPercentageChange = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+        indexOfVar = tmpRawIndicesData.IndexOf("yHigh")
+        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 7)
+        tmpNSEIndicesDetails.yearlyHighPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+        indexOfVar = tmpRawIndicesData.IndexOf("yLow")
+        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
+        tmpNSEIndicesDetails.yearlyLowPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+        indexOfVar = tmpRawIndicesData.IndexOf("trdValueSum")
+        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 13)
+        tmpNSEIndicesDetails.turnover = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
 
-            indexOfVar = tmpRawIndicesData.IndexOf("pChange")
-            tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 10)
-            NSEIndicesData.percentageChange = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
-
-            NSEIndicesData.priceDate = Today
-            NSEindicesList.Add(NSEIndicesData)
-        Next count
+        indexOfVar = tmpRawIndicesData.IndexOf("trdVolumesum")
+        'tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 12)
+        tmpNSEIndicesDetails.monthlyPercentageChange = tmpRawIndicesData.Substring(indexOfVar + 12).Substring(0, tmpRawIndicesData.IndexOf(""","))
+        NSEIndicesData.priceDate = Today
+        NSEindicesList.Add(NSEIndicesData)
+        'Next count
         myLogger.Log("getNSEIndicesDetails End")
     End Function
 
