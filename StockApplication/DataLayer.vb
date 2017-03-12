@@ -16,7 +16,7 @@ Public Class DataLayer
 
 
     Public ServerType As FbServerType = FbServerType.Default   '!
-    Public Database As String = "D:\Tarun\StockApp\DB\STOCKAPPDB.fdb"                   '!
+    Public Database As String = My.Settings.ApplicationFileLocation & "\DB\STOCKAPPDB.fdb"                   '!
     Public DataSource As String = "localhost"                            '!
     Public Password As String = "Jan@2017"                              '!
     Public UserID As String = "SYSDBA"                                '!

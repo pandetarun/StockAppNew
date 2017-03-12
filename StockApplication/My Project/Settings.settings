@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
+  <Profiles />
+  <Settings>
+    <Setting Name="ApplicationFileLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D:\Tarun\StockApp</Value>
+    </Setting>
+    <Setting Name="NSEIndicesURL" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://www.nseindia.com/homepage/Indices1.json</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

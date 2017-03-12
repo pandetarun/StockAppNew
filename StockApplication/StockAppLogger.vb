@@ -9,7 +9,7 @@ Public Class StockAppLogger
     Public Shared Function InitializeLogger() As StockAppLogger
         If tmpStockAppLogger Is Nothing Then
             tmpStockAppLogger = New StockAppLogger()
-            tmpStockAppLogger.logFile = "D:\Tarun\StockApp\StockApplication\log.txt"
+            tmpStockAppLogger.logFile = My.Settings.ApplicationFileLocation & "\log.txt"
 
         End If
         Return tmpStockAppLogger

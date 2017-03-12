@@ -13,7 +13,7 @@ Public Class NSEindices
         Dim executionresult As Boolean
 
         myLogger.Log("getIndicesListAndStore Start")
-        rawIndicesData = Helper.GetDataFromUrl("https://www.nseindia.com/homepage/Indices1.json")
+        rawIndicesData = Helper.GetDataFromUrl(My.Settings.NSEIndicesURL)
         Dim NSEindicesList As List(Of NSEindices) = parseAndPopulateObjects(rawIndicesData)
         executionresult = storeIndicesDatainDB(NSEindicesList)
         myLogger.Log("getIndicesListAndStore End")
