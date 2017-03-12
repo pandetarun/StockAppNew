@@ -1,5 +1,8 @@
 ﻿Public Class IndexStockMapping
-    Public Function testGit() As Boolean
+    Public Function createIndicesToStockMapping(ByVal rawIndicestoStockMapping As String) As Boolean
+
+
+
         Return True
     End Function
 

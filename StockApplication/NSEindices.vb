@@ -1,4 +1,5 @@
 ﻿Imports System.Collections.Generic
+
 Public Class NSEindices
     Dim indexName As String
     Dim lastPrice As Double
