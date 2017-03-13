@@ -89,6 +89,42 @@ Namespace My
                 Me("logLevel") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("localhost")>  _
+        Public Property DataSource() As String
+            Get
+                Return CType(Me("DataSource"),String)
+            End Get
+            Set
+                Me("DataSource") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Jan@2017")>  _
+        Public Property Password() As String
+            Get
+                Return CType(Me("Password"),String)
+            End Get
+            Set
+                Me("Password") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("SYSDBA")>  _
+        Public Property UserID() As String
+            Get
+                Return CType(Me("UserID"),String)
+            End Get
+            Set
+                Me("UserID") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

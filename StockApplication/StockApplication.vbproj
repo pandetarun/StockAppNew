@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataLayer.vb" />
+    <Compile Include="DBFunctions.vb" />
     <Compile Include="Helper.vb" />
     <Compile Include="HourlyStockQuote.vb" />
     <Compile Include="My Project\Settings.Designer.vb">

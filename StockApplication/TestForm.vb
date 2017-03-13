@@ -1,18 +1,22 @@
 ﻿Imports FirebirdSql.Data.FirebirdClient
 Public Class TestForm
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        Dim tmpNSEindices As NSEindices
-        tmpNSEindices = New NSEindices()
-        tmpNSEindices.getIndicesListAndStore()
+        'NSEIndices Testing
+        'Dim tmpNSEindices As NSEindices
+        'tmpNSEindices = New NSEindices()
+        'tmpNSEindices.getIndicesListAndStore()
 
+        Dim tmpNSEIndicesDetails As NSEIndicesDetails
+        tmpNSEIndicesDetails = New NSEIndicesDetails()
+        tmpNSEIndicesDetails.getIndicesDetailsAndStore()
 
-
-
+        'DataLayer testing
         'Dim myDataLayer As DataLayer = New DataLayer()
         'myDataLayer.CreateDatabase()
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        'NSEIndices Data fetch
         Dim Fdataa As New FbDataAdapter("select * from NSEINDICES", "servertype=0;username=sysdba;password=Jan@2017;database=D:\Tarun\StockApp\DB\STOCKAPPDB.fdb;datasource=localhost")
 
         DataSet1.Tables.Add("NSEINDICES")

@@ -11,5 +11,14 @@
     <Setting Name="logLevel" Type="System.String" Scope="User">
       <Value Profile="(Default)">Debug</Value>
     </Setting>
+    <Setting Name="DataSource" Type="System.String" Scope="User">
+      <Value Profile="(Default)">localhost</Value>
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Jan@2017</Value>
+    </Setting>
+    <Setting Name="UserID" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SYSDBA</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
