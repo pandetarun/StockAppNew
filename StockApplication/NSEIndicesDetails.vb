@@ -142,6 +142,6 @@ Public Class NSEIndicesDetails
             insertValues = insertValues & "'" & tmpNSEIndicesDetails.updateTime & "');"
             DBFunctions.ExecuteSQLStmt(insertStatement & insertValues)
         Next
-
+        DBFunctions.CloseSQLConnection()
     End Sub
 End Class

@@ -75,6 +75,7 @@ Public Class NSEindices
                 myLogger.LogError("Error Occurred in inserting IndicesList = ", exc)
             End Try
         Next
+        myDataLayer.CloseSQLConnection()
         myLogger.Log("storeIndicesDatainDB End")
         Return True
     End Function
