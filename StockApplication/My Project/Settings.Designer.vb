@@ -125,6 +125,19 @@ Namespace My
                 Me("UserID") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("http://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxGetQuote"& _ 
+            "JSON.jsp?symbol=")>  _
+        Public Property TimelyStockQuote() As String
+            Get
+                Return CType(Me("TimelyStockQuote"),String)
+            End Get
+            Set
+                Me("TimelyStockQuote") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

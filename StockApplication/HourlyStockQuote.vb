@@ -1,4 +1,8 @@
-﻿Public Class HourlyStockQuote
+﻿Imports FirebirdSql.Data.FirebirdClient
+Imports System.Collections.Generic
+
+Public Class HourlyStockQuote
+
     Public CompanyCode As String
     Public LastUpdateTime As String
     Public TradedDate As Date
@@ -73,6 +77,31 @@
 
         Return True
     End Function
+
+    Private Function GetListOfStocks() As List(Of NSEIndexStockMapping)
+        Dim objNSEIndexStockMappingList As List(Of NSEIndexStockMapping) = New List(Of NSEIndexStockMapping)
+        Dim tmpStockList As List(Of String) = New List(Of String)
+        Dim tmpStockCode As String
+        Dim ds As FbDataReader = Nothing
+        Dim rawHourlyStockQuote As String
+        Dim tmpHourlyStockQuote As HourlyStockQuote
+
+        ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING")
+
+        While ds.Read()
+            tmpStockCode = ds.GetValue(ds.GetOrdinal("STOCK_NAME"))
+
+            If Not tmpStockList.Contains(tmpStockCode) Then
+                rawHourlyStockQuote = Helper.GetDataFromUrl(My.Settings.TimelyStockQuote & tmpStockCode)
+                tmpHourlyStockQuote = CreateObjectFromRawStockData(rawHourlyStockQuote)
+                DBFunctions.ExecuteSQLStmt(tmpHourlyStockQuote.insertStatement)
+                tmpStockList.Add(tmpStockCode)
+            End If
+        End While
+        DBFunctions.CloseSQLConnection()
+        Return objNSEIndexStockMappingList
+    End Function
+
     Public Function CreateObjectFromRawStockData(ByVal rawStockQuote As String) As HourlyStockQuote
 
         Dim myDelims As String() = New String() {","""}

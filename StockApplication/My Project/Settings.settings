@@ -20,5 +20,8 @@
     <Setting Name="UserID" Type="System.String" Scope="User">
       <Value Profile="(Default)">SYSDBA</Value>
     </Setting>
+    <Setting Name="TimelyStockQuote" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxGetQuoteJSON.jsp?symbol=</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

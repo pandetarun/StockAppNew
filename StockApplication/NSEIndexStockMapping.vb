@@ -7,16 +7,16 @@ Public Class NSEIndexStockMapping
     Dim myLogger As StockAppLogger = StockAppLogger.InitializeLogger("NSEIndexStockMapping")
 
     Public Function createIndicesToStockMapping(ByVal rawIndicestoStockMapping As String, ByVal indexName As String) As Boolean
-        Dim objNSEIndexStockMapping As List(Of NSEIndexStockMapping)
+        Dim objNSEIndexStockMappingList As List(Of NSEIndexStockMapping)
         myLogger.Log("createIndicesToStockMapping Strt")
-        objNSEIndexStockMapping = populateObjectFromRawData(rawIndicestoStockMapping, indexName)
-        storeIndicesToStockMapping(objNSEIndexStockMapping)
+        objNSEIndexStockMappingList = populateObjectFromRawData(rawIndicestoStockMapping, indexName)
+        storeIndicesToStockMapping(objNSEIndexStockMappingList)
         myLogger.Log("createIndicesToStockMapping End")
         Return True
     End Function
 
     Private Function populateObjectFromRawData(ByVal rawIndicestoStockMapping As String, ByVal indexName As String) As List(Of NSEIndexStockMapping)
-        Dim objNSEIndexStockMapping As List(Of NSEIndexStockMapping) = New List(Of NSEIndexStockMapping)
+        Dim objNSEIndexStockMappingList As List(Of NSEIndexStockMapping) = New List(Of NSEIndexStockMapping)
         Dim tmpRawIndicesData As String
         Dim tmpNSEIndexStockMapping As NSEIndexStockMapping
         Dim countOfSymbols As Integer
@@ -31,10 +31,10 @@ Public Class NSEIndexStockMapping
             indexOfVar = tmpRawIndicesData.IndexOf("symbol")
             tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 9)
             tmpNSEIndexStockMapping.stockName = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
-            objNSEIndexStockMapping.Add(tmpNSEIndexStockMapping)
+            objNSEIndexStockMappingList.Add(tmpNSEIndexStockMapping)
         Next
         myLogger.Log("populateObjectFromRawData End")
-        Return objNSEIndexStockMapping
+        Return objNSEIndexStockMappingList
     End Function
 
     Private Function storeIndicesToStockMapping(objNSEIndexStockMapping As List(Of NSEIndexStockMapping)) As Boolean

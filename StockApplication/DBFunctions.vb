@@ -5,6 +5,7 @@ Imports System.Globalization
 Imports System.Data
 Imports System.IO
 Imports System.Windows.Forms
+Imports System.Collections.Generic
 
 Public Class DBFunctions
 
@@ -105,41 +106,46 @@ Public Class DBFunctions
 
 
 
-    Public Shared Function getDataFromTable(ByVal tableName As String, Optional ByVal columnNames As String = "", Optional ByVal whereClause As String = "", Optional ByVal Disconnect As Boolean = False) As Boolean
+    Public Shared Function getDataFromTable(ByVal tableName As String, Optional ByVal columnNames As String = "", Optional ByVal whereClause As String = "", Optional ByVal Disconnect As Boolean = False) As FbDataReader
 
-        Dim tmpSQL As String
+        Dim conn As New FbConnection
+        Dim command As New FbCommand
+        Dim ds As FbDataReader = Nothing
+        Dim sql As String
+        Dim resultList As List(Of String)
+
         If OpenSQLConnection() = True Then
-            tmpSQL = "Select "
-            If columnNames IsNot "" Then
-                tmpSQL = tmpSQL & columnNames & "from " & tableName
-            Else
-                tmpSQL = tmpSQL & "*"
-            End If
-            tmpSQL = tmpSQL & " from " & tableName
-
-            If whereClause IsNot "" Then
-                tmpSQL = tmpSQL & whereClause
-            End If
-
-            Dim myCmd As New FbCommand(tmpSQL, myConnection)
-
             Try
-                myCmd.ExecuteNonQuery()
-                Return True
+                'excecuted the SQL command 
+                If columnNames IsNot "" Then
+                    sql = "Select " & columnNames & " from USERS"
+                Else
+                    sql = "Select * from USERS"
+                End If
+
+                If whereClause IsNot "" Then
+                    sql = sql & " where " & whereClause
+                End If
+                command.Connection = conn
+                command.CommandText = sql
+
+                ds = command.ExecuteReader
+                resultList = New List(Of String)
+                'loops and add the fields into the table 
+                ' While ds.Read()
+                'resultList.Add(ds.GetValue(ds.GetOrdinal("INDEX_NAME")))
+
+                'End While
+
+                Return ds
             Catch ex As Exception
                 MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
                 ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Return False
-            Finally
-                If Disconnect = True Then CloseSQLConnection()
-                If myCmd IsNot Nothing Then
-                    myCmd.Dispose()
-                    myCmd = Nothing
-                End If
+                Return Nothing
             End Try
 
         End If
-
+        Return ds
     End Function
 
 End Class
