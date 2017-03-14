@@ -97,7 +97,7 @@
     <Compile Include="NSEIndicesDetails.vb" />
     <Compile Include="StockAppLogger.vb" />
     <Compile Include="NSEindices.vb" />
-    <Compile Include="IndexStockMapping.vb" />
+    <Compile Include="NSEIndexStockMapping.vb" />
     <Compile Include="TestForm.Designer.vb">
       <DependentUpon>TestForm.vb</DependentUpon>
     </Compile>

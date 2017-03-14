@@ -31,7 +31,7 @@ Public Class NSEindices
         tmpRawIndicesData = rawIndicesData
         countOfSymbols = rawIndicesData.Split("{""name").Length - 2
         For count = 1 To countOfSymbols
-            NSEIndicesData = New NSEindices
+            NSEIndicesData = New NSEindices()
             indexOfVar = tmpRawIndicesData.IndexOf("name")
             tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 7)
             NSEIndicesData.indexName = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))

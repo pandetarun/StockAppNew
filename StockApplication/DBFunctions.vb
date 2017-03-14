@@ -105,7 +105,7 @@ Public Class DBFunctions
 
 
 
-    Public Shared Function getDataFromTable(ByVal tableName As String, Optional ByVal columnNames As String, Optional ByVal whereClause As String, Optional ByVal Disconnect As Boolean = False) As Boolean
+    Public Shared Function getDataFromTable(ByVal tableName As String, Optional ByVal columnNames As String = "", Optional ByVal whereClause As String = "", Optional ByVal Disconnect As Boolean = False) As Boolean
 
         Dim tmpSQL As String
         If OpenSQLConnection() = True Then

@@ -26,7 +26,7 @@ Public Class NSEIndicesDetails
     Dim NSEindicesDetailsList As List(Of NSEIndicesDetails) = New List(Of NSEIndicesDetails)
 
     Public Function getIndicesDetailsAndStore() As Boolean
-        Dim NSEindicesUrlsList As List(Of String) = New List(Of String)
+        Dim NSEindicesUrlsList As List(Of String)
         myLogger.Log("getIndicesDetailsAndStore Start")
         NSEindicesUrlsList = GetNSEUrlForAllIndices()
         getAllIndicesDetails(NSEindicesUrlsList)
@@ -50,9 +50,11 @@ Public Class NSEIndicesDetails
 
     Private Function getAllIndicesDetails(ByVal NSEindicesUrlsList As List(Of String)) As List(Of String)
         Dim NSEindicesDetailsList As List(Of String) = New List(Of String)
+
         myLogger.Log("getAllIndicesDetails Start")
         For Each NSEIndicesURL In NSEindicesUrlsList
             getNSEIndicesDetails(NSEIndicesURL)
+            StoreOrUpdateIndicesDetail()
 
         Next
         myLogger.Log("getAllIndicesDetails End")
@@ -62,6 +64,7 @@ Public Class NSEIndicesDetails
     Private Sub getNSEIndicesDetails(ByVal NSEIndicesURL As String)
         Dim rawIndicesData As String
         Dim tmpNSEIndicesDetails As NSEIndicesDetails = New NSEIndicesDetails()
+        Dim tmpNSEIndexStockMapping As NSEIndexStockMapping = New NSEIndexStockMapping
         Dim tmpRawIndicesData As String
         Dim indexOfVar As Integer
         Dim tmpString As String
@@ -116,6 +119,7 @@ Public Class NSEIndicesDetails
         tmpNSEIndicesDetails.volume = tmpString.Substring(0, tmpString.IndexOf(""","))
 
         NSEindicesDetailsList.Add(tmpNSEIndicesDetails)
+        tmpNSEIndexStockMapping.createIndicesToStockMapping(tmpRawIndicesData, tmpNSEIndicesDetails.symbol)
         myLogger.Log("getNSEIndicesDetails End")
     End Sub
 
@@ -130,6 +134,7 @@ Public Class NSEIndicesDetails
             insertValues = insertValues & tmpNSEIndicesDetails.openPrice & ","
             insertValues = insertValues & tmpNSEIndicesDetails.highPrice & ","
             insertValues = insertValues & tmpNSEIndicesDetails.lowPrice & ","
+            insertValues = insertValues & tmpNSEIndicesDetails.lastTradedPrice & ","
             insertValues = insertValues & tmpNSEIndicesDetails.changeinPrice & ","
             insertValues = insertValues & tmpNSEIndicesDetails.changeInPercentage & ","
             insertValues = insertValues & tmpNSEIndicesDetails.volume & ","
