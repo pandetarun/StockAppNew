@@ -118,15 +118,15 @@ Public Class DBFunctions
             Try
                 'excecuted the SQL command 
                 If columnNames IsNot "" Then
-                    sql = "Select " & columnNames & " from USERS"
+                    sql = "Select " & columnNames & " from " & tableName
                 Else
-                    sql = "Select * from USERS"
+                    sql = "Select * from " & tableName
                 End If
 
                 If whereClause IsNot "" Then
                     sql = sql & " where " & whereClause
                 End If
-                command.Connection = conn
+                command.Connection = myConnection
                 command.CommandText = sql
 
                 ds = command.ExecuteReader
