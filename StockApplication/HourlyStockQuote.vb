@@ -72,7 +72,7 @@ Public Class HourlyStockQuote
     Public lastUpdateDate As Date
 
     Public insertStatement As String
-    Dim myLogger As StockAppLogger = StockAppLogger.InitializeLogger("HourlyStockQuote")
+    'Dim StockAppLogger As StockAppLogger = StockAppLogger.InitializeLogger("HourlyStockQuote")
 
     Public Function GetAndStoreHourlyData() As Boolean
 
@@ -83,29 +83,28 @@ Public Class HourlyStockQuote
         Dim rawHourlyStockQuote As String
         Dim tmpHourlyStockQuote As HourlyStockQuote
 
-        myLogger.Log("GetAndStoreHourlyData Start")
+        StockAppLogger.Log("GetAndStoreHourlyData Start")
         ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING")
-
         While ds.Read()
             tmpStockCode = ds.GetValue(ds.GetOrdinal("STOCK_NAME"))
-            tmpStockCode.Replace("&", "%26")
+            tmpStockCode = tmpStockCode.Replace("&", "%26")
             If Not tmpStockList.Contains(tmpStockCode) Then
-                myLogger.Log("GetAndStoreHourlyData started running for stock = " & tmpStockCode)
+                StockAppLogger.Log("GetAndStoreHourlyData started running for stock = " & tmpStockCode)
                 rawHourlyStockQuote = Helper.GetDataFromUrl(My.Settings.TimelyStockQuote & tmpStockCode)
                 tmpHourlyStockQuote = CreateObjectFromRawStockData(rawHourlyStockQuote)
                 Try
-                    myLogger.Log("GetAndStoreHourlyData insert statement = " & tmpHourlyStockQuote.insertStatement)
+                    StockAppLogger.Log("GetAndStoreHourlyData insert statement = " & tmpHourlyStockQuote.insertStatement)
                     DBFunctions.ExecuteSQLStmt(tmpHourlyStockQuote.insertStatement)
                 Catch exc As Exception
-                    myLogger.LogError("Error Occurred in inserting hourlystockdata = ", exc)
+                    StockAppLogger.LogError("Error Occurred in inserting hourlystockdata = ", exc)
                 End Try
-                myLogger.Log("GetAndStoreHourlyData end running for stock = " & tmpStockCode)
+                StockAppLogger.Log("GetAndStoreHourlyData end running for stock = " & tmpStockCode)
                 tmpStockList.Add(tmpStockCode)
             End If
         End While
         DBFunctions.CloseSQLConnection()
 
-        myLogger.Log("GetAndStoreHourlyData End")
+        StockAppLogger.Log("GetAndStoreHourlyData End")
         Return True
     End Function
 
@@ -116,7 +115,7 @@ Public Class HourlyStockQuote
         ' Dim FirstQuoteLine() As String
         ' Dim firstQuoteLine1() As String
 
-        myLogger.Log("CreateObjectFromRawStockData Start")
+        StockAppLogger.Log("CreateObjectFromRawStockData Start")
         Dim hourlyQuoteTemp As HourlyStockQuote = New HourlyStockQuote()
         insertStatement = CreateInsertStatement()
         'Get first line for last update date time
@@ -128,7 +127,7 @@ Public Class HourlyStockQuote
 
         hourlyQuoteTemp = AssignValuestoObject(hourlyQuoteTemp, quoteLines)
 
-        myLogger.Log("CreateObjectFromRawStockData End")
+        StockAppLogger.Log("CreateObjectFromRawStockData End")
         Return hourlyQuoteTemp
     End Function
 
@@ -141,7 +140,7 @@ Public Class HourlyStockQuote
         Dim insertValues As String
         Dim lastUpdateDateTime As String
 
-        myLogger.Log("AssignValuestoObject Start")
+        StockAppLogger.Log("AssignValuestoObject Start")
         insertColumns = "INSERT INTO STOCKHOURLYDATA ("
         insertValues = "values ("
         'Get rest of the parameters
@@ -427,13 +426,13 @@ Public Class HourlyStockQuote
                 End If
             Next
         Catch exc As Exception
-            myLogger.LogError("Error Occurred in creating hourlystock object = ", exc)
+            StockAppLogger.LogError("Error Occurred in creating hourlystock object = ", exc)
         End Try
         insertColumns = insertColumns + ") "
         insertValues = insertValues + ");"
         insertStatement = insertColumns + insertValues
         hourlyQuoteTemp.insertStatement = insertStatement
-        myLogger.Log("AssignValuestoObject End")
+        StockAppLogger.Log("AssignValuestoObject End")
         Return hourlyQuoteTemp
     End Function
 

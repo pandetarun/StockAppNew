@@ -13,6 +13,7 @@ Public Class TestForm
         'DataLayer testing
         'Dim myDataLayer As DataLayer = New DataLayer()
         'myDataLayer.CreateDatabase()
+
         Dim tmpHourlyStockQuote As HourlyStockQuote
         tmpHourlyStockQuote = New HourlyStockQuote()
         tmpHourlyStockQuote.GetAndStoreHourlyData()

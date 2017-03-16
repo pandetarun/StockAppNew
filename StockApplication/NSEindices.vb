@@ -6,17 +6,17 @@ Public Class NSEindices
     Dim priceChange As Double
     Dim percentageChange As Double
     Dim priceDate As Date
-    Dim myLogger As StockAppLogger = StockAppLogger.InitializeLogger("NSEindices")
+    'Dim StockAppLogger As StockAppLogger = StockAppLogger.InitializeLogger("NSEindices")
 
     Public Function getIndicesListAndStore() As Boolean
         Dim rawIndicesData As String
         Dim executionresult As Boolean
 
-        myLogger.Log("getIndicesListAndStore Start")
+        StockAppLogger.Log("getIndicesListAndStore Start")
         rawIndicesData = Helper.GetDataFromUrl(My.Settings.NSEIndicesURL)
         Dim NSEindicesList As List(Of NSEindices) = parseAndPopulateObjects(rawIndicesData)
         executionresult = storeIndicesDatainDB(NSEindicesList)
-        myLogger.Log("getIndicesListAndStore End")
+        StockAppLogger.Log("getIndicesListAndStore End")
         Return executionresult
     End Function
 
@@ -27,7 +27,7 @@ Public Class NSEindices
         Dim NSEIndicesData As NSEindices
         Dim countOfSymbols As Integer
 
-        myLogger.Log("parseAndPopulateObjects Start")
+        StockAppLogger.Log("parseAndPopulateObjects Start")
         tmpRawIndicesData = rawIndicesData
         countOfSymbols = rawIndicesData.Split("{""name").Length - 2
         For count = 1 To countOfSymbols
@@ -50,7 +50,7 @@ Public Class NSEindices
             NSEIndicesData.priceDate = Today
             NSEindicesList.Add(NSEIndicesData)
         Next count
-        myLogger.Log("parseAndPopulateObjects End")
+        StockAppLogger.Log("parseAndPopulateObjects End")
         Return NSEindicesList
     End Function
 
@@ -59,7 +59,7 @@ Public Class NSEindices
         Dim insertValues As String
         Dim myDataLayer As DataLayer = New DataLayer
 
-        myLogger.Log("storeIndicesDatainDB Start")
+        StockAppLogger.Log("storeIndicesDatainDB Start")
         insertStatement = "INSERT INTO NSEINDICES (INDEX_NAME, LAST_PRICE, PRICE_CHANGE, PERCENTAGE_CHANGE, PRICE_DATE)"
 
         For Each tmpNSEIndices In NSEindicesList
@@ -72,11 +72,11 @@ Public Class NSEindices
                 insertValues = insertValues + "'" + tmpNSEIndices.priceDate + "');"
                 myDataLayer.ExecuteSQLStmt(insertStatement + insertValues)
             Catch exc As Exception
-                myLogger.LogError("Error Occurred in inserting IndicesList = ", exc)
+                StockAppLogger.LogError("Error Occurred in inserting IndicesList = ", exc)
             End Try
         Next
         myDataLayer.CloseSQLConnection()
-        myLogger.Log("storeIndicesDatainDB End")
+        StockAppLogger.Log("storeIndicesDatainDB End")
         Return True
     End Function
 End Class

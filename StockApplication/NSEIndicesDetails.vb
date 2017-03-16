@@ -19,7 +19,7 @@ Public Class NSEIndicesDetails
     Dim monthlyPercentageChange As Double
     Dim updateDate As Date
     Dim updateTime As String
-    Dim myLogger As StockAppLogger = StockAppLogger.InitializeLogger("NSEIndicesDetails")
+    'Dim StockAppLogger As StockAppLogger = StockAppLogger.InitializeLogger("NSEIndicesDetails")
 
     Dim pathOfFileofURLs As String = My.Settings.ApplicationFileLocation & "\URLs.txt"
     Dim RawNSEindicesDetailsList As List(Of String) = New List(Of String)
@@ -27,11 +27,11 @@ Public Class NSEIndicesDetails
 
     Public Function getIndicesDetailsAndStore() As Boolean
         Dim NSEindicesUrlsList As List(Of String)
-        myLogger.Log("getIndicesDetailsAndStore Start")
+        StockAppLogger.Log("getIndicesDetailsAndStore Start")
         NSEindicesUrlsList = GetNSEUrlForAllIndices()
         getAllIndicesDetails(NSEindicesUrlsList)
 
-        myLogger.Log("getIndicesDetailsAndStore End")
+        StockAppLogger.Log("getIndicesDetailsAndStore End")
         Return True
     End Function
 
@@ -39,25 +39,25 @@ Public Class NSEIndicesDetails
         Dim NSEindicesUrlsList As List(Of String) = New List(Of String)
         Dim reader = File.OpenText(pathOfFileofURLs)
         Dim line As String = Nothing
-        myLogger.Log("GetNSEUrlForAllIndices Start")
+        StockAppLogger.Log("GetNSEUrlForAllIndices Start")
         While (reader.Peek() <> -1)
             line = reader.ReadLine()
             NSEindicesUrlsList.Add(line)
         End While
-        myLogger.Log("GetNSEUrlForAllIndices End")
+        StockAppLogger.Log("GetNSEUrlForAllIndices End")
         Return NSEindicesUrlsList
     End Function
 
     Private Function getAllIndicesDetails(ByVal NSEindicesUrlsList As List(Of String)) As List(Of String)
         Dim NSEindicesDetailsList As List(Of String) = New List(Of String)
 
-        myLogger.Log("getAllIndicesDetails Start")
+        StockAppLogger.Log("getAllIndicesDetails Start")
         For Each NSEIndicesURL In NSEindicesUrlsList
             getNSEIndicesDetails(NSEIndicesURL)
             StoreOrUpdateIndicesDetail()
 
         Next
-        myLogger.Log("getAllIndicesDetails End")
+        StockAppLogger.Log("getAllIndicesDetails End")
         Return NSEindicesDetailsList
     End Function
 
@@ -71,7 +71,7 @@ Public Class NSEIndicesDetails
         'Dim NSEIndicesData As NSEindices
         ' Dim countOfSymbols As Integer
 
-        myLogger.Log("getNSEIndicesDetails Start")
+        StockAppLogger.Log("getNSEIndicesDetails Start")
         rawIndicesData = Helper.GetDataFromUrl(NSEIndicesURL)
         tmpRawIndicesData = rawIndicesData
 
@@ -120,7 +120,7 @@ Public Class NSEIndicesDetails
 
         NSEindicesDetailsList.Add(tmpNSEIndicesDetails)
         tmpNSEIndexStockMapping.createIndicesToStockMapping(tmpRawIndicesData, tmpNSEIndicesDetails.symbol)
-        myLogger.Log("getNSEIndicesDetails End")
+        StockAppLogger.Log("getNSEIndicesDetails End")
     End Sub
 
     Private Sub StoreOrUpdateIndicesDetail()

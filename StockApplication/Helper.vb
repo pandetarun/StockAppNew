@@ -1,8 +1,5 @@
 ﻿Imports System.Net
 Public Class Helper
-    Public Function getStockList() As String()
-
-    End Function
 
     Public Shared Function GetDataFromUrl(ByVal urlToGet As String) As String
         Dim serverUrl As String
@@ -10,15 +7,21 @@ Public Class Helper
         Dim response As HttpWebResponse
         Dim strResponse As String
 
-        'stockCode = "INFY"
-        serverUrl = urlToGet
-        ' "http://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxGetQuoteJSON.jsp?symbol=" & stockCode
-        request = WebRequest.Create(serverUrl)
-        request = CreateRequest(request)
-        response = request.GetResponse()
-        Dim sReader As New IO.StreamReader(response.GetResponseStream)
-        strResponse = sReader.ReadToEnd()
-        response.Close()
+        StockAppLogger.Log("GetDataFromUrl Starttr")
+        Try
+            serverUrl = urlToGet
+            request = WebRequest.Create(serverUrl)
+            request = CreateRequest(request)
+            response = request.GetResponse()
+            Dim sReader As New IO.StreamReader(response.GetResponseStream)
+            strResponse = sReader.ReadToEnd()
+            response.Close()
+        Catch ex As Exception
+            StockAppLogger.LogError("Error Occurred in inserting IndicesList = ", ex)
+
+            Return Nothing
+        End Try
+        StockAppLogger.Log("GetDataFromUrl End")
         Return strResponse
     End Function
 

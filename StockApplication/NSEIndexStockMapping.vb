@@ -4,14 +4,14 @@ Public Class NSEIndexStockMapping
 
     Dim indexName As String
     Dim stockName As String
-    Dim myLogger As StockAppLogger = StockAppLogger.InitializeLogger("NSEIndexStockMapping")
+    'Dim StockAppLogger As StockAppLogger = StockAppLogger.InitializeLogger("NSEIndexStockMapping")
 
     Public Function createIndicesToStockMapping(ByVal rawIndicestoStockMapping As String, ByVal indexName As String) As Boolean
         Dim objNSEIndexStockMappingList As List(Of NSEIndexStockMapping)
-        myLogger.Log("createIndicesToStockMapping Strt")
+        StockAppLogger.Log("createIndicesToStockMapping Strt")
         objNSEIndexStockMappingList = populateObjectFromRawData(rawIndicestoStockMapping, indexName)
         storeIndicesToStockMapping(objNSEIndexStockMappingList)
-        myLogger.Log("createIndicesToStockMapping End")
+        StockAppLogger.Log("createIndicesToStockMapping End")
         Return True
     End Function
 
@@ -22,9 +22,9 @@ Public Class NSEIndexStockMapping
         Dim countOfSymbols As Integer
         Dim indexOfVar As Integer
 
-        myLogger.Log("populateObjectFromRawData Start")
+        StockAppLogger.Log("populateObjectFromRawData Start")
         tmpRawIndicesData = rawIndicestoStockMapping
-        countOfSymbols = rawIndicestoStockMapping.Split("{""symbol").Length - 1
+        countOfSymbols = rawIndicestoStockMapping.Split("{""symbol").Length - 2
         For count = 1 To countOfSymbols
             tmpNSEIndexStockMapping = New NSEIndexStockMapping()
             tmpNSEIndexStockMapping.indexName = indexName
@@ -33,7 +33,7 @@ Public Class NSEIndexStockMapping
             tmpNSEIndexStockMapping.stockName = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
             objNSEIndexStockMappingList.Add(tmpNSEIndexStockMapping)
         Next
-        myLogger.Log("populateObjectFromRawData End")
+        StockAppLogger.Log("populateObjectFromRawData End")
         Return objNSEIndexStockMappingList
     End Function
 
@@ -42,14 +42,14 @@ Public Class NSEIndexStockMapping
         Dim updateOrInsert As String
         Dim updateOrInsertValues As String
 
-        myLogger.Log("storeIndicesToStockMapping Start")
+        StockAppLogger.Log("storeIndicesToStockMapping Start")
         updateOrInsert = "update Or insert into NSE_INDICES_TO_STOCK_MAPPING (INDEX_NAME, STOCK_NAME) values("
         For Each tmpNSEIndexStockMapping In objNSEIndexStockMapping
             updateOrInsertValues = "'" & tmpNSEIndexStockMapping.indexName & "', '" & tmpNSEIndexStockMapping.stockName & "') matching(INDEX_NAME, STOCK_NAME);"
             DBFunctions.ExecuteSQLStmt(updateOrInsert & updateOrInsertValues)
         Next
         DBFunctions.CloseSQLConnection()
-        myLogger.Log("storeIndicesToStockMapping End")
+        StockAppLogger.Log("storeIndicesToStockMapping End")
         Return True
     End Function
 End Class
