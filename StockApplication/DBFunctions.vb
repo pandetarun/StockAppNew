@@ -21,6 +21,7 @@ Public Class DBFunctions
     Public Shared UserID As String = My.Settings.UserID                                '!
 
     Public Shared Function OpenSQLConnection() As Boolean
+        StockAppLogger.Log("OpenSQLConnection Start")
         Try
             If myConnection.State = ConnectionState.Closed Then
                 Dim cs As New FbConnectionStringBuilder()
@@ -39,16 +40,19 @@ Public Class DBFunctions
                 myConnection.Open()
                 myDataSet.Reset()
             End If
+            StockAppLogger.Log("OpenSQLConnection End")
             Return True
         Catch ex As Exception
-            MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
-            ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            StockAppLogger.LogError("OpenSQLConnection Error Occurred in opening the connection ", ex)
+            'MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
+            'ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
         End Try
 
     End Function
 
     Public Function CreateDatabase() As Boolean
+        StockAppLogger.Log("CreateDatabase Start")
         Try
             Dim cs = New FbConnectionStringBuilder()
             If Not ServerType = FbServerType.Default Then
@@ -64,10 +68,12 @@ Public Class DBFunctions
 
             FbConnection.CreateDatabase(cs.ToString)
             If cs IsNot Nothing Then cs = Nothing
+            StockAppLogger.Log("CreateDatabase End")
             Return True
         Catch ex As Exception
-            MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
-            ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            StockAppLogger.Log("CreateDatabase Error in creating database")
+            'MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
+            'ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
         End Try
     End Function
@@ -81,16 +87,18 @@ Public Class DBFunctions
     End Sub
 
     Public Shared Function ExecuteSQLStmt(ByVal sSQL As String, Optional ByVal Disconnect As Boolean = False) As Boolean
-
+        StockAppLogger.Log("ExecuteSQLStmt Start")
         If OpenSQLConnection() = True Then
             Dim myCmd As New FbCommand(sSQL, myConnection)
 
             Try
                 myCmd.ExecuteNonQuery()
+                StockAppLogger.Log("ExecuteSQLStmt End")
                 Return True
             Catch ex As Exception
-                MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
-                ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                StockAppLogger.LogError("ExecuteSQLStmtError in executing statement" & sSQL, ex)
+                'MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
+                'ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return False
             Finally
                 If Disconnect = True Then CloseSQLConnection()
@@ -114,6 +122,7 @@ Public Class DBFunctions
         Dim sql As String
         Dim resultList As List(Of String)
 
+        StockAppLogger.Log("getDataFromTable Start")
         If OpenSQLConnection() = True Then
             Try
                 'excecuted the SQL command 
@@ -136,11 +145,12 @@ Public Class DBFunctions
                 'resultList.Add(ds.GetValue(ds.GetOrdinal("INDEX_NAME")))
 
                 'End While
-
+                StockAppLogger.Log("getDataFromTable End")
                 Return ds
             Catch ex As Exception
-                MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
-                ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                StockAppLogger.LogError("getDataFromTable Error in getting data from table " & tableName, ex)
+                'MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
+                'ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return Nothing
             End Try
 
