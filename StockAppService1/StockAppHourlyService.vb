@@ -22,11 +22,11 @@ Public Class StockAppHourlyService
         Try
             Schedular = New Timer(New TimerCallback(AddressOf SchedularCallback))
 
-
             'Set the Default Time.
             Dim scheduledTime As DateTime = DateTime.MinValue
-            Dim TimeStart As DateTime = #5:00:00 AM#
-            Dim TimeEnd As DateTime = #7:30:00 PM#
+            Dim dailyTimeStart As DateTime = #5:00:00 AM#
+            Dim dailyTimeEnd As DateTime = #8:30:00 AM#
+            Dim weekednTimeToGetNSEData As DateTime = #8:00:00 AM#
 
             Dim intervalMinutes As Integer = Convert.ToInt32(ConfigurationManager.AppSettings("IntervalMinutes"))
 
@@ -38,25 +38,31 @@ Public Class StockAppHourlyService
             End If
             'End If
 
-            If DateTime.Now.TimeOfDay > TimeStart.TimeOfDay And DateTime.Now.TimeOfDay < TimeEnd.TimeOfDay Then
-                'Indices details fetch and store
-                Me.WriteToFile("NSEDetails entry started" & DateTime.Now.TimeOfDay.ToString)
-                Dim tmpNSEIndicesDetails As NSEIndicesDetails
-                tmpNSEIndicesDetails = New NSEIndicesDetails()
-                tmpNSEIndicesDetails.getIndicesDetailsAndStore()
-                Me.WriteToFile("NSEDetails entry End" & DateTime.Now.TimeOfDay.ToString)
-                'Hourly Data fetch and entry
-                Me.WriteToFile("hourlStockdata entry started" & DateTime.Now.TimeOfDay.ToString)
-                Dim tmpHourlyStockQuote As HourlyStockQuote
-                tmpHourlyStockQuote = New HourlyStockQuote()
-                tmpHourlyStockQuote.GetAndStoreHourlyData()
-                Me.WriteToFile("hourlStockdata entry End" & DateTime.Now.TimeOfDay.ToString)
-
+            If Weekday(Today) > 1 And Weekday(Today) < 7 Then
+                'Stock Data collection will only happen on Weekdays
+                If DateTime.Now.TimeOfDay > dailyTimeStart.TimeOfDay And DateTime.Now.TimeOfDay < dailyTimeEnd.TimeOfDay Then
+                    'Indices details fetch and store
+                    Me.WriteToFile("NSEDetails entry started" & DateTime.Now.TimeOfDay.ToString)
+                    Dim tmpNSEIndicesDetails As NSEIndicesDetails
+                    tmpNSEIndicesDetails = New NSEIndicesDetails()
+                    tmpNSEIndicesDetails.getIndicesDetailsAndStore()
+                    Me.WriteToFile("NSEDetails entry End" & DateTime.Now.TimeOfDay.ToString)
+                    'Hourly Data fetch and entry
+                    Me.WriteToFile("hourlyStockdata entry started" & DateTime.Now.TimeOfDay.ToString)
+                    Dim tmpHourlyStockQuote As HourlyStockQuote
+                    tmpHourlyStockQuote = New HourlyStockQuote()
+                    tmpHourlyStockQuote.GetAndStoreHourlyData()
+                    Me.WriteToFile("hourlyStockdata entry End" & DateTime.Now.TimeOfDay.ToString)
+                End If
+            ElseIf Weekday(Today) = 1 And DateTime.Now.TimeOfDay = weekednTimeToGetNSEData.TimeOfDay Then
+                'NSE List will get updated every Sunday
+                Me.WriteToFile("NSEList entry started" & DateTime.Now.TimeOfDay.ToString)
+                Dim tmpNSEindices As NSEindices
+                tmpNSEindices = New NSEindices()
+                tmpNSEindices.getIndicesListAndStore()
+                Me.WriteToFile("NSEList entry End" & DateTime.Now.TimeOfDay.ToString)
             End If
             Dim timeSpan As TimeSpan = scheduledTime.Subtract(DateTime.Now)
-            'Dim schedule As String = String.Format("{0} day(s) {1} hour(s) {2} minute(s) {3} seconds(s)", timeSpan.Days, timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds)
-
-            'Me.WriteToFile((Convert.ToString("Simple Service scheduled to run after: ") & schedule) + " {0}")
 
             'Get the difference in Minutes between the Scheduled and Current Time.
             Dim dueTime As Integer = Convert.ToInt32(timeSpan.TotalMilliseconds)
