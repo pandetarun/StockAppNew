@@ -79,7 +79,7 @@ Public Class NSEIndicesDetails
         indexOfVar = tmpRawIndicesData.IndexOf("time")
         tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
         tmpString = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
-        tmpNSEIndicesDetails.updateTime = tmpString.Substring(tmpString.Length - 8)
+        tmpNSEIndicesDetails.updateTime = DateTime.Now.TimeOfDay.ToString 'tmpString.Substring(tmpString.Length - 8)
         indexOfVar = tmpRawIndicesData.IndexOf("indexName")
         tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 12)
         tmpNSEIndicesDetails.symbol = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))

@@ -157,7 +157,7 @@ Public Class HourlyStockQuote
                         ElseIf quoteItemTag.Contains("lastUpdateTime") Then
                             lastUpdateDateTime = quoteItemValue.Replace("""", "")
                             hourlyQuoteTemp.lastUpdateDate = Date.Parse(lastUpdateDateTime.Split(" ")(0))
-                            hourlyQuoteTemp.LastUpdateTime = lastUpdateDateTime.Split(" ")(1)
+                            hourlyQuoteTemp.LastUpdateTime = DateTime.Now.TimeOfDay.ToString 'lastUpdateDateTime.Split(" ")(1)
                             insertColumns = insertColumns + "LASTUPDATETIME,"
                             insertValues = insertValues + "'" + hourlyQuoteTemp.LastUpdateTime + "',"
                             insertColumns = insertColumns + "LASTUPDATEDATE,"

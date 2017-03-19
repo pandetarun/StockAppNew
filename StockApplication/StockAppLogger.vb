@@ -5,12 +5,13 @@ Public Class StockAppLogger
 
 
     Shared logFile As String = My.Settings.ApplicationFileLocation & "\log.txt"
+    Shared errorLogFile As String = My.Settings.ApplicationFileLocation & "\Errorlog.txt"
     Shared className As String
 
     Public Shared Function LogError(logMessage As String, exec As Exception) As Boolean
 
         Dim tmpWriter As StreamWriter
-        tmpWriter = File.AppendText(logFile)
+        tmpWriter = File.AppendText(errorLogFile)
         'tmpWriter.Write(vbCrLf + "Log Entry : ")
         tmpWriter.Write("{0} {1}", DateTime.Now.ToLongTimeString(), DateTime.Now.ToLongDateString())
         tmpWriter.Write(" " & className & "  : Error")
