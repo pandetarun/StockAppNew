@@ -26,7 +26,8 @@ Public Class StockAppHourlyService
             Dim scheduledTime As DateTime = DateTime.MinValue
             Dim dailyTimeStart As DateTime = #5:00:00 AM#
             Dim dailyTimeEnd As DateTime = #8:30:00 AM#
-            Dim weekednTimeToGetNSEData As DateTime = #8:00:00 AM#
+            Dim weekendStartTimeToGetNSEData As DateTime = #8:50:00 AM#
+            Dim weekendEndTimeToGetNSEData As DateTime = #9:10:00 AM#
 
             Dim intervalMinutes As Integer = Convert.ToInt32(ConfigurationManager.AppSettings("IntervalMinutes"))
 
@@ -54,7 +55,7 @@ Public Class StockAppHourlyService
                     tmpHourlyStockQuote.GetAndStoreHourlyData()
                     Me.WriteToFile("hourlyStockdata entry End" & DateTime.Now.TimeOfDay.ToString)
                 End If
-            ElseIf Weekday(Today) = 1 And DateTime.Now.TimeOfDay = weekednTimeToGetNSEData.TimeOfDay Then
+            ElseIf Weekday(Today) = 1 And (DateTime.Now.TimeOfDay > weekendStartTimeToGetNSEData.TimeOfDay And DateTime.Now.TimeOfDay < weekendEndTimeToGetNSEData.TimeOfDay) Then
                 'NSE List will get updated every Sunday
                 Me.WriteToFile("NSEList entry started" & DateTime.Now.TimeOfDay.ToString)
                 Dim tmpNSEindices As NSEindices
