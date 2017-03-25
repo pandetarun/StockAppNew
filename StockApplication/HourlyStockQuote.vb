@@ -90,14 +90,18 @@ Public Class HourlyStockQuote
                 StockAppLogger.Log("GetAndStoreHourlyData started running for stock = " & tmpStockCode)
                 rawHourlyStockQuote = Helper.GetDataFromUrl(My.Settings.TimelyStockQuote & tmpStockCode)
                 tmpHourlyStockQuote = CreateObjectFromRawStockData(rawHourlyStockQuote)
-                Try
-                    StockAppLogger.Log("GetAndStoreHourlyData stock = " & tmpHourlyStockQuote.CompanyCode & " insert statement = " & tmpHourlyStockQuote.insertStatement)
-                    DBFunctions.ExecuteSQLStmt(tmpHourlyStockQuote.insertStatement)
-                Catch exc As Exception
-                    StockAppLogger.LogError("Error Occurred in inserting hourlystockdata = ", exc)
-                End Try
-                StockAppLogger.Log("GetAndStoreHourlyData end running for stock = " & tmpStockCode)
-                tmpStockList.Add(tmpStockCode)
+                If tmpHourlyStockQuote Is Nothing Then
+                    StockAppLogger.Log("GetAndStoreHourlyData Error Occurred in creating hourlystockdata for stock= " & tmpStockCode)
+                Else
+                    Try
+                        StockAppLogger.Log("GetAndStoreHourlyData stock = " & tmpHourlyStockQuote.CompanyCode & " insert statement = " & tmpHourlyStockQuote.insertStatement)
+                        DBFunctions.ExecuteSQLStmt(tmpHourlyStockQuote.insertStatement)
+                    Catch exc As Exception
+                        StockAppLogger.LogError("Error Occurred in inserting hourlystockdata = ", exc)
+                    End Try
+                    StockAppLogger.Log("GetAndStoreHourlyData end running for stock = " & tmpStockCode)
+                    tmpStockList.Add(tmpStockCode)
+                End If
             End If
         End While
         DBFunctions.CloseSQLConnection()
@@ -112,7 +116,13 @@ Public Class HourlyStockQuote
         Dim quoteLines() As String = rawStockQuote.Substring(rawStockQuote.IndexOf("lastUpdateTime")).Split(myDelims, StringSplitOptions.None)
 
         StockAppLogger.Log("CreateObjectFromRawStockData Start")
+        If quoteLines.Length < 5 Then
+            StockAppLogger.Log("CreateObjectFromRawStockData not sufficient data received from API for hourly quote")
+            Return Nothing
+        End If
         Dim hourlyQuoteTemp As HourlyStockQuote = New HourlyStockQuote()
+
+
         insertStatement = CreateInsertStatement()
         'Get first line for last update date time
         myDelims = New String() {""":"}

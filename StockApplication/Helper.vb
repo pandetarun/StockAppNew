@@ -18,7 +18,7 @@ Public Class Helper
             strResponse = sReader.ReadToEnd()
             response.Close()
         Catch ex As Exception
-            StockAppLogger.Log("Error Occurred in getting data from URL = " & urlToGet
+            StockAppLogger.Log("Error Occurred in getting data from URL = " & urlToGet)
             StockAppLogger.LogError("Error Occurred in getting data from URL = " & urlToGet, ex)
             Return Nothing
         End Try
