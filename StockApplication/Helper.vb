@@ -12,13 +12,14 @@ Public Class Helper
             serverUrl = urlToGet
             request = WebRequest.Create(serverUrl)
             request = CreateRequest(request)
+            request.Timeout = 10000
             response = request.GetResponse()
             Dim sReader As New IO.StreamReader(response.GetResponseStream)
             strResponse = sReader.ReadToEnd()
             response.Close()
         Catch ex As Exception
-            StockAppLogger.LogError("Error Occurred in inserting IndicesList = ", ex)
-
+            StockAppLogger.Log("Error Occurred in getting data from URL = " & urlToGet
+            StockAppLogger.LogError("Error Occurred in getting data from URL = " & urlToGet, ex)
             Return Nothing
         End Try
         StockAppLogger.Log("GetDataFromUrl End")

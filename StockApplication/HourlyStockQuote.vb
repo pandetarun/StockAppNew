@@ -72,10 +72,8 @@ Public Class HourlyStockQuote
     Public lastUpdateDate As Date
 
     Public insertStatement As String
-    'Dim StockAppLogger As StockAppLogger = StockAppLogger.InitializeLogger("HourlyStockQuote")
 
     Public Function GetAndStoreHourlyData() As Boolean
-
 
         Dim tmpStockList As List(Of String) = New List(Of String)
         Dim tmpStockCode As String
@@ -93,7 +91,7 @@ Public Class HourlyStockQuote
                 rawHourlyStockQuote = Helper.GetDataFromUrl(My.Settings.TimelyStockQuote & tmpStockCode)
                 tmpHourlyStockQuote = CreateObjectFromRawStockData(rawHourlyStockQuote)
                 Try
-                    StockAppLogger.Log("GetAndStoreHourlyData insert statement = " & tmpHourlyStockQuote.insertStatement)
+                    StockAppLogger.Log("GetAndStoreHourlyData stock = " & tmpHourlyStockQuote.CompanyCode & " insert statement = " & tmpHourlyStockQuote.insertStatement)
                     DBFunctions.ExecuteSQLStmt(tmpHourlyStockQuote.insertStatement)
                 Catch exc As Exception
                     StockAppLogger.LogError("Error Occurred in inserting hourlystockdata = ", exc)
@@ -112,18 +110,12 @@ Public Class HourlyStockQuote
 
         Dim myDelims As String() = New String() {","""}
         Dim quoteLines() As String = rawStockQuote.Substring(rawStockQuote.IndexOf("lastUpdateTime")).Split(myDelims, StringSplitOptions.None)
-        ' Dim FirstQuoteLine() As String
-        ' Dim firstQuoteLine1() As String
 
         StockAppLogger.Log("CreateObjectFromRawStockData Start")
         Dim hourlyQuoteTemp As HourlyStockQuote = New HourlyStockQuote()
         insertStatement = CreateInsertStatement()
         'Get first line for last update date time
         myDelims = New String() {""":"}
-        'FirstQuoteLine = quoteLines(1).Split(","c)
-        'firstQuoteLine1 = FirstQuoteLine(1).Split(myDelims, StringSplitOptions.None)
-        'hourlyQuoteTemp.LastUpdateTime = DateTime.Parse(firstQuoteLine1(1).Replace("""", ""))
-        'insertStatement = insertStatement + hourlyQuoteTemp.LastUpdateTime + ","
 
         hourlyQuoteTemp = AssignValuestoObject(hourlyQuoteTemp, quoteLines)
 
