@@ -68,25 +68,25 @@ Public Class StockAppHourlyService
             End Try
             'Get the difference in Minutes between the Scheduled and Current Time.
             Dim timeSpan As TimeSpan
-                Dim dueTime As Integer
-                If Weekday(Today) > 1 And Weekday(Today) < 7 And DateTime.Now.TimeOfDay < dailyTimeStart.TimeOfDay Then
-                    Me.WriteToFile("daily time = " & dailyTimeStart.ToString)
-                    timeSpan = dailyTimeStart.Subtract(DateTime.Now)
-                    Me.WriteToFile(" 1st condition Next scheduled time set as = " & timeSpan.ToString)
-                ElseIf DateTime.Now.TimeOfDay > dailyTimeEnd.TimeOfDay Or Weekday(Today) = 1 Or Weekday(Today) = 7 Then
-                    Dim now As DateTime = DateTime.Now
-                    Dim myDate = New DateTime(now.Year, now.Month, now.Day + 1, 9, 0, 0, 0)
-                    timeSpan = myDate.Subtract(DateTime.Now)
-                    Me.WriteToFile(" 2nd condition Next scheduled time set as = " & timeSpan.ToString)
-                ElseIf Weekday(Today) > 1 And Weekday(Today) < 7 Then
-                    timeSpan = scheduledTime.Subtract(DateTime.Now)
-                    Me.WriteToFile(" 3rd condition Next scheduled time set as = " & timeSpan.ToString)
-                End If
-                dueTime = Convert.ToInt32(timeSpan.TotalMilliseconds)
-                'Change the Timer's Due Time.
-                Schedular.Change(dueTime, Timeout.Infinite)
-            Catch ex As Exception
-                WriteToFile("StockApp Service Error on: {0} " + ex.Message + ex.StackTrace)
+            Dim dueTime As Integer
+            If Weekday(Today) > 1 And Weekday(Today) < 7 And DateTime.Now.TimeOfDay < dailyTimeStart.TimeOfDay Then
+                Me.WriteToFile("daily time = " & dailyTimeStart)
+                timeSpan = dailyTimeStart.Subtract(DateTime.Now)
+                Me.WriteToFile("withintime of weekday condition Next scheduled time set as = " & timeSpan.ToString("%d") & "days and " & timeSpan.ToString("hh\:mm\:ss"))
+            ElseIf DateTime.Now.TimeOfDay > dailyTimeEnd.TimeOfDay Or Weekday(Today) = 1 Or Weekday(Today) = 7 Then
+                Dim now As DateTime = DateTime.Now
+                Dim myDate = New DateTime(now.Year, now.Month, now.Day + 1, 9, 0, 0, 0)
+                timeSpan = myDate.Subtract(DateTime.Now)
+                Me.WriteToFile(" outsidetime condition - Next scheduled time set as = " & timeSpan.ToString("%d") & "days and " & timeSpan.ToString("hh\:mm\:ss"))
+            ElseIf Weekday(Today) > 1 And Weekday(Today) < 7 Then
+                timeSpan = scheduledTime.Subtract(DateTime.Now)
+                Me.WriteToFile("weekday condition Next scheduled time set as = " & timeSpan.ToString("%d") & "days and " & timeSpan.ToString("hh\:mm\:ss"))
+            End If
+            dueTime = Convert.ToInt32(timeSpan.TotalMilliseconds)
+            'Change the Timer's Due Time.
+            Schedular.Change(dueTime, Timeout.Infinite)
+        Catch ex As Exception
+            WriteToFile("StockApp Service Error on: {0} " + ex.Message + ex.StackTrace)
             'Stop the Windows Service.
             Using serviceController As New System.ServiceProcess.ServiceController("StockService")
                 serviceController.[Stop]()
