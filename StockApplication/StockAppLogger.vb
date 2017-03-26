@@ -8,7 +8,7 @@ Public Class StockAppLogger
     Shared errorLogFile As String = My.Settings.ApplicationFileLocation & "\Errorlog.txt"
     Shared className As String
 
-    Public Shared Function LogError(logMessage As String, exec As Exception) As Boolean
+    Public Shared Function LogError(logMessage As String, exec As Exception, Optional className As String = "") As Boolean
 
         Dim tmpWriter As StreamWriter
         tmpWriter = File.AppendText(errorLogFile)
@@ -23,7 +23,7 @@ Public Class StockAppLogger
         Return True
     End Function
 
-    Public Shared Function Log(logMessage As String) As Boolean
+    Public Shared Function Log(logMessage As String, Optional className As String = "") As Boolean
         If My.Settings.logLevel = "Debug" Then
             Dim tmpWriter As StreamWriter
             tmpWriter = File.AppendText(logFile)

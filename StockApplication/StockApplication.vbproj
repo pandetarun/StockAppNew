@@ -90,6 +90,7 @@
     <Compile Include="Helper.vb" />
     <Compile Include="HourlyStockQuote.vb" />
     <Compile Include="MainModule.vb" />
+    <Compile Include="MovingAverageCalculation.vb" />
     <Compile Include="My Project\Settings.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

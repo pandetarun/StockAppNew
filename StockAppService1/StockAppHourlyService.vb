@@ -28,6 +28,7 @@ Public Class StockAppHourlyService
             Dim dailyTimeEnd As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 16, 0, 0, 0) '#4:00:00 PM#
             Dim weekendStartTimeToGetNSEData As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 8, 50, 0, 0) '#8:50:00 AM#
             Dim weekendEndTimeToGetNSEData As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 9, 10, 0, 0) ' #9:10:00 AM#
+            Dim timeSpanForWeekDaywithinLimit As TimeSpan
 
             Dim intervalMinutes As Integer = Convert.ToInt32(ConfigurationManager.AppSettings("IntervalMinutes"))
 
@@ -37,7 +38,7 @@ Public Class StockAppHourlyService
                 'If Scheduled Time is passed set Schedule for the next Interval.
                 scheduledTime = scheduledTime.AddMinutes(intervalMinutes)
             End If
-            'End If
+            timeSpanForWeekDaywithinLimit = scheduledTime.Subtract(DateTime.Now)
             Try
                 If Weekday(Today) > 1 And Weekday(Today) < 7 Then
                     'Stock Data collection will only happen on Weekdays
@@ -79,7 +80,7 @@ Public Class StockAppHourlyService
                 timeSpan = myDate.Subtract(DateTime.Now)
                 Me.WriteToFile(" outsidetime condition - Next scheduled time set as = " & timeSpan.ToString("%d") & "days and " & timeSpan.ToString("hh\:mm\:ss"))
             ElseIf Weekday(Today) > 1 And Weekday(Today) < 7 Then
-                timeSpan = scheduledTime.Subtract(DateTime.Now)
+                timeSpan = timeSpanForWeekDaywithinLimit
                 Me.WriteToFile("weekday condition Next scheduled time set as = " & timeSpan.ToString("%d") & "days and " & timeSpan.ToString("hh\:mm\:ss"))
             End If
             dueTime = Convert.ToInt32(timeSpan.TotalMilliseconds)
