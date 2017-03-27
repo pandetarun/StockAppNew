@@ -114,7 +114,7 @@ Public Class DBFunctions
 
 
 
-    Public Shared Function getDataFromTable(ByVal tableName As String, Optional ByVal columnNames As String = "", Optional ByVal whereClause As String = "", Optional ByVal Disconnect As Boolean = False) As FbDataReader
+    Public Shared Function getDataFromTable(ByVal tableName As String, Optional ByVal columnNames As String = "", Optional ByVal whereClause As String = "", Optional ByVal orderClause As String = "", Optional ByVal Disconnect As Boolean = False) As FbDataReader
 
         Dim conn As New FbConnection
         Dim command As New FbCommand
@@ -135,6 +135,11 @@ Public Class DBFunctions
                 If whereClause IsNot "" Then
                     sql = sql & " where " & whereClause
                 End If
+
+                If orderClause IsNot "" Then
+                    sql = sql & " order by " & orderClause
+                End If
+
                 command.Connection = myConnection
                 command.CommandText = sql
 

@@ -7,12 +7,12 @@ Public Class StockAppHourlyService
 
 
     Protected Overrides Sub OnStart(ByVal args() As String)
-        Me.WriteToFile("StockApp Service started at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+        Me.WriteToFile("StockAppDataDownload Service started at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
         Me.ScheduleService()
     End Sub
 
     Protected Overrides Sub OnStop()
-        Me.WriteToFile("StockApp Service stopped at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+        Me.WriteToFile("StockAppDataDownload Service stopped at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
         Me.Schedular.Dispose()
     End Sub
 
@@ -34,11 +34,7 @@ Public Class StockAppHourlyService
 
             'Set the Scheduled Time by adding the Interval to Current Time.
             scheduledTime = DateTime.Now.AddMinutes(intervalMinutes)
-            If DateTime.Now > scheduledTime Then
-                'If Scheduled Time is passed set Schedule for the next Interval.
-                scheduledTime = scheduledTime.AddMinutes(intervalMinutes)
-            End If
-            timeSpanForWeekDaywithinLimit = scheduledTime.Subtract(DateTime.Now)
+
             Try
                 If Weekday(Today) > 1 And Weekday(Today) < 7 Then
                     'Stock Data collection will only happen on Weekdays
@@ -65,11 +61,16 @@ Public Class StockAppHourlyService
                     Me.WriteToFile("NSEList entry End" & DateTime.Now.TimeOfDay.ToString)
                 End If
             Catch ex As Exception
-                WriteToFile("StockApp Service Error in getting stock data" + ex.Message + ex.StackTrace)
+                WriteToFile("StockAppDataDownload Service Error in getting stock data" + ex.Message + ex.StackTrace)
             End Try
             'Get the difference in Minutes between the Scheduled and Current Time.
             Dim timeSpan As TimeSpan
             Dim dueTime As Integer
+            If DateTime.Now > scheduledTime Then
+                'If Scheduled Time is passed set Schedule for the next Interval.
+                scheduledTime = scheduledTime.AddMinutes(intervalMinutes)
+            End If
+            timeSpanForWeekDaywithinLimit = scheduledTime.Subtract(DateTime.Now)
             If Weekday(Today) > 1 And Weekday(Today) < 7 And DateTime.Now.TimeOfDay < dailyTimeStart.TimeOfDay Then
                 Me.WriteToFile("daily time = " & dailyTimeStart)
                 timeSpan = dailyTimeStart.Subtract(DateTime.Now)
@@ -87,21 +88,21 @@ Public Class StockAppHourlyService
             'Change the Timer's Due Time.
             Schedular.Change(dueTime, Timeout.Infinite)
         Catch ex As Exception
-            WriteToFile("StockApp Service Error on: {0} " + ex.Message + ex.StackTrace)
+            WriteToFile("StockAppDataDownload Service Error on: {0} " + ex.Message + ex.StackTrace)
             'Stop the Windows Service.
-            Using serviceController As New System.ServiceProcess.ServiceController("StockService")
+            Using serviceController As New System.ServiceProcess.ServiceController("StockAppDataDownload")
                 serviceController.[Stop]()
             End Using
         End Try
     End Sub
 
     Private Sub SchedularCallback(e As Object)
-        Me.WriteToFile("StockApp Service callback Log: " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+        Me.WriteToFile("StockAppDataDownload Service callback Log: " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
         Me.ScheduleService()
     End Sub
 
     Private Sub WriteToFile(text As String)
-        Dim path As String = "C:\ServiceLog.txt"
+        Dim path As String = "C:\StockAppDataDownloadServiceLog.txt"
         Using writer As New StreamWriter(path, True)
             writer.WriteLine(String.Format(text, DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")))
             writer.Close()
