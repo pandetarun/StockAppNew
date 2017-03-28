@@ -81,7 +81,7 @@ Public Class HourlyStockQuote
         Dim rawHourlyStockQuote As String
         Dim tmpHourlyStockQuote As HourlyStockQuote
 
-        StockAppLogger.Log("GetAndStoreHourlyData Start")
+        StockAppLogger.Log("GetAndStoreHourlyData Start", "HourlyStockQuote")
         ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING")
         While ds.Read()
             tmpStockCode = ds.GetValue(ds.GetOrdinal("STOCK_NAME"))
@@ -106,7 +106,7 @@ Public Class HourlyStockQuote
         End While
         DBFunctions.CloseSQLConnection()
 
-        StockAppLogger.Log("GetAndStoreHourlyData End")
+        StockAppLogger.Log("GetAndStoreHourlyData End", "HourlyStockQuote")
         Return True
     End Function
 
@@ -115,7 +115,7 @@ Public Class HourlyStockQuote
         Dim myDelims As String() = New String() {","""}
         Dim quoteLines() As String = rawStockQuote.Substring(rawStockQuote.IndexOf("lastUpdateTime")).Split(myDelims, StringSplitOptions.None)
 
-        StockAppLogger.Log("CreateObjectFromRawStockData Start")
+        StockAppLogger.Log("CreateObjectFromRawStockData Start", "HourlyStockQuote")
         If quoteLines.Length < 5 Then
             StockAppLogger.Log("CreateObjectFromRawStockData not sufficient data received from API for hourly quote")
             Return Nothing
@@ -129,7 +129,7 @@ Public Class HourlyStockQuote
 
         hourlyQuoteTemp = AssignValuestoObject(hourlyQuoteTemp, quoteLines)
 
-        StockAppLogger.Log("CreateObjectFromRawStockData End")
+        StockAppLogger.Log("CreateObjectFromRawStockData End", "HourlyStockQuote")
         Return hourlyQuoteTemp
     End Function
 
@@ -142,7 +142,7 @@ Public Class HourlyStockQuote
         Dim insertValues As String
         Dim lastUpdateDateTime As String
 
-        StockAppLogger.Log("AssignValuestoObject Start")
+        StockAppLogger.Log("AssignValuestoObject Start", "HourlyStockQuote")
         insertColumns = "INSERT INTO STOCKHOURLYDATA ("
         insertValues = "values ("
         'Get rest of the parameters
@@ -428,13 +428,13 @@ Public Class HourlyStockQuote
                 End If
             Next
         Catch exc As Exception
-            StockAppLogger.LogError("Error Occurred in creating hourlystock object = ", exc)
+            StockAppLogger.LogError("Error Occurred in creating hourlystock object = ", exc, "HourlyStockQuote")
         End Try
         insertColumns = insertColumns + ") "
         insertValues = insertValues + ");"
         insertStatement = insertColumns + insertValues
         hourlyQuoteTemp.insertStatement = insertStatement
-        StockAppLogger.Log("AssignValuestoObject End")
+        StockAppLogger.Log("AssignValuestoObject End", "HourlyStockQuote")
         Return hourlyQuoteTemp
     End Function
 
