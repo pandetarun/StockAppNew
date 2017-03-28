@@ -19,19 +19,17 @@ Public Class NSEIndicesDetails
     Dim monthlyPercentageChange As Double
     Dim updateDate As Date
     Dim updateTime As String
-    'Dim StockAppLogger As StockAppLogger = StockAppLogger.InitializeLogger("NSEIndicesDetails")
 
     Dim pathOfFileofURLs As String = My.Settings.ApplicationFileLocation & "\URLs.txt"
-    Dim RawNSEindicesDetailsList As List(Of String) = New List(Of String)
     Dim NSEindicesDetailsList As List(Of NSEIndicesDetails) = New List(Of NSEIndicesDetails)
 
     Public Function getIndicesDetailsAndStore() As Boolean
         Dim NSEindicesUrlsList As List(Of String)
-        StockAppLogger.Log("getIndicesDetailsAndStore Start")
+        StockAppLogger.Log("getIndicesDetailsAndStore Start", "NSEIndicesDetails")
         NSEindicesUrlsList = GetNSEUrlForAllIndices()
         getAllIndicesDetails(NSEindicesUrlsList)
 
-        StockAppLogger.Log("getIndicesDetailsAndStore End")
+        StockAppLogger.Log("getIndicesDetailsAndStore End", "NSEIndicesDetails")
         Return True
     End Function
 
@@ -39,25 +37,24 @@ Public Class NSEIndicesDetails
         Dim NSEindicesUrlsList As List(Of String) = New List(Of String)
         Dim reader = File.OpenText(pathOfFileofURLs)
         Dim line As String = Nothing
-        StockAppLogger.Log("GetNSEUrlForAllIndices Start")
+        StockAppLogger.Log("GetNSEUrlForAllIndices Start", "NSEIndicesDetails")
         While (reader.Peek() <> -1)
             line = reader.ReadLine()
             NSEindicesUrlsList.Add(line)
         End While
-        StockAppLogger.Log("GetNSEUrlForAllIndices End")
+        StockAppLogger.Log("GetNSEUrlForAllIndices End", "NSEIndicesDetails")
         Return NSEindicesUrlsList
     End Function
 
     Private Function getAllIndicesDetails(ByVal NSEindicesUrlsList As List(Of String)) As List(Of String)
         Dim NSEindicesDetailsList As List(Of String) = New List(Of String)
 
-        StockAppLogger.Log("getAllIndicesDetails Start")
+        StockAppLogger.Log("getAllIndicesDetails Start", "NSEIndicesDetails")
         For Each NSEIndicesURL In NSEindicesUrlsList
             getNSEIndicesDetails(NSEIndicesURL)
-            StoreOrUpdateIndicesDetail()
-
         Next
-        StockAppLogger.Log("getAllIndicesDetails End")
+        StoreOrUpdateIndicesDetail()
+        StockAppLogger.Log("getAllIndicesDetails End", "NSEIndicesDetails")
         Return NSEindicesDetailsList
     End Function
 
@@ -68,10 +65,9 @@ Public Class NSEIndicesDetails
         Dim tmpRawIndicesData As String
         Dim indexOfVar As Integer
         Dim tmpString As String
-        'Dim NSEIndicesData As NSEindices
-        ' Dim countOfSymbols As Integer
+        Dim dailyTimeEnd As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 9, 20, 0, 0) '#4:00:00 PM#
 
-        StockAppLogger.Log("getNSEIndicesDetails Start")
+        StockAppLogger.Log("getNSEIndicesDetails Start", "NSEIndicesDetails")
         rawIndicesData = Helper.GetDataFromUrl(NSEIndicesURL)
         tmpRawIndicesData = rawIndicesData
 
@@ -119,14 +115,17 @@ Public Class NSEIndicesDetails
         tmpNSEIndicesDetails.volume = tmpString.Substring(0, tmpString.IndexOf(""","))
 
         NSEindicesDetailsList.Add(tmpNSEIndicesDetails)
-        tmpNSEIndexStockMapping.createIndicesToStockMapping(tmpRawIndicesData, tmpNSEIndicesDetails.symbol)
-        StockAppLogger.Log("getNSEIndicesDetails End")
+        If DateTime.Now.TimeOfDay < dailyTimeEnd.TimeOfDay Then
+            tmpNSEIndexStockMapping.createIndicesToStockMapping(tmpRawIndicesData, tmpNSEIndicesDetails.symbol)
+        End If
+        StockAppLogger.Log("getNSEIndicesDetails End", "NSEIndicesDetails")
     End Sub
 
     Private Sub StoreOrUpdateIndicesDetail()
         Dim insertStatement As String
         Dim insertValues As String
 
+        StockAppLogger.Log("StoreOrUpdateIndicesDetail Start", "NSEIndicesDetails")
         For Each tmpNSEIndicesDetails In NSEindicesDetailsList
             insertStatement = "INSERT INTO NSE_INDICES_DETAILS (INDEXNAME, OPENPRICE, HIGHPRICE, LOWPRICE, LAST_TRADED_PRICE, CHANGE, CHANGE_PERCENTAGE, VOLUME, TURNOVER_IN_CRS, YEARLY_HIGH, YEARLY_LOW, YERLY_PERCENTAGE_CHANGE, MONTHLY_PERCENTAGE_CHANGE, UPDATEDATE, UPDATETIME)"
             insertValues = " VALUES ('"
@@ -148,5 +147,6 @@ Public Class NSEIndicesDetails
             DBFunctions.ExecuteSQLStmt(insertStatement & insertValues)
         Next
         DBFunctions.CloseSQLConnection()
+        StockAppLogger.Log("StoreOrUpdateIndicesDetail End", "NSEIndicesDetails")
     End Sub
 End Class

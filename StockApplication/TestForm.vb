@@ -14,9 +14,13 @@ Public Class TestForm
         'Dim myDataLayer As DataLayer = New DataLayer()
         'myDataLayer.CreateDatabase()
 
-        Dim tmpHourlyStockQuote As HourlyStockQuote
-        tmpHourlyStockQuote = New HourlyStockQuote()
-        tmpHourlyStockQuote.GetAndStoreHourlyData()
+        'Dim tmpHourlyStockQuote As HourlyStockQuote
+        'tmpHourlyStockQuote = New HourlyStockQuote()
+        'tmpHourlyStockQuote.GetAndStoreHourlyData()
+
+        Dim tmpMovingAverageCalculation As MovingAverageCalculation
+        tmpMovingAverageCalculation = New MovingAverageCalculation()
+        tmpMovingAverageCalculation.CalculateAndStoreIntraDayMA()
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
