@@ -51,7 +51,7 @@ Public Class StockAppHourlyService
                         Me.WriteToFile("hourlyStockdata entry End " & DateTime.Now.TimeOfDay.ToString)
                         'IntraDay moving average starts
                         Me.WriteToFile("IntraDayMovingAverage entry started" & DateTime.Now.TimeOfDay.ToString)
-                        Dim tmpMovingAverageCalculation As MovingAverageCalculation = New MovingAverageCalculation()
+                        Dim tmpMovingAverageCalculation As MovingAverage = New MovingAverage()
                         tmpMovingAverageCalculation.CalculateAndStoreIntraDayMA()
                         Me.WriteToFile("IntraDayMovingAverage entry End" & DateTime.Now.TimeOfDay.ToString)
                     End If
@@ -64,7 +64,7 @@ Public Class StockAppHourlyService
                         Me.WriteToFile("DailyStockDetails entry End " & DateTime.Now.TimeOfDay.ToString)
                         'Daily moving average starts
                         Me.WriteToFile("DailyMovingAverage entry started" & DateTime.Now.TimeOfDay.ToString)
-                        Dim tmpMovingAverageCalculation As MovingAverageCalculation = New MovingAverageCalculation()
+                        Dim tmpMovingAverageCalculation As MovingAverage = New MovingAverage()
                         tmpMovingAverageCalculation.CalculateAndStoreDayMA()
                         Me.WriteToFile("DailyMovingAverage entry End" & DateTime.Now.TimeOfDay.ToString)
                     End If

@@ -85,13 +85,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BollingerBands.vb" />
     <Compile Include="DailyStockQuote.vb" />
     <Compile Include="DataLayer.vb" />
     <Compile Include="DBFunctions.vb" />
     <Compile Include="Helper.vb" />
     <Compile Include="HourlyStockQuote.vb" />
     <Compile Include="MainModule.vb" />
-    <Compile Include="MovingAverageCalculation.vb" />
+    <Compile Include="MovingAverage.vb" />
     <Compile Include="My Project\Settings.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

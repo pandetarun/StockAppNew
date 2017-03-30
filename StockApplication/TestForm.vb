@@ -18,8 +18,8 @@ Public Class TestForm
         'tmpHourlyStockQuote = New HourlyStockQuote()
         'tmpHourlyStockQuote.GetAndStoreHourlyData()
 
-        Dim tmpMovingAverageCalculation As MovingAverageCalculation
-        tmpMovingAverageCalculation = New MovingAverageCalculation()
+        Dim tmpMovingAverageCalculation As MovingAverage
+        tmpMovingAverageCalculation = New MovingAverage()
         tmpMovingAverageCalculation.CalculateAndStoreIntraDayMA()
     End Sub
 
