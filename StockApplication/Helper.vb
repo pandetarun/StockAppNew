@@ -12,7 +12,7 @@ Public Class Helper
             serverUrl = urlToGet
             request = WebRequest.Create(serverUrl)
             request = CreateRequest(request)
-            request.Timeout = 10000
+            request.Timeout = 5000
             response = request.GetResponse()
             Dim sReader As New IO.StreamReader(response.GetResponseStream)
             strResponse = sReader.ReadToEnd()
