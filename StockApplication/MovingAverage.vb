@@ -101,7 +101,7 @@ Public Class MovingAverage
                 If counter = 3 Then
                     threeSampleSMA = simpleMA / 3
                     If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("THREEEMA")))
+                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("THREEEMA")))
                         threeSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
                     Else
                         threeSampleEMA = threeSampleSMA
@@ -109,7 +109,7 @@ Public Class MovingAverage
                 ElseIf counter = 5 Then
                     fiveSampleSMA = simpleMA / 5
                     If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("FIVEEMA")))
+                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIVEEMA")))
                         fiveSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
                     Else
                         fiveSampleEMA = fiveSampleSMA
@@ -117,7 +117,7 @@ Public Class MovingAverage
                 ElseIf counter = 10 Then
                     tenSampleSMA = simpleMA / 10
                     If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("TENEMA")))
+                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TENEMA")))
                         tenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
                     Else
                         tenSampleEMA = tenSampleSMA
@@ -125,7 +125,7 @@ Public Class MovingAverage
                 ElseIf counter = 14 Then
                     fourteenSampleSMA = simpleMA / 14
                     If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("FOURTEENEMA")))
+                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")))
                         fourteenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
                     Else
                         fourteenSampleEMA = fourteenSampleSMA
@@ -133,7 +133,7 @@ Public Class MovingAverage
                 ElseIf counter = 20 Then
                     twentySampleSMA = simpleMA / 20
                     If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("TWENTYEMA")))
+                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")))
                         twentySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
                     Else
                         twentySampleEMA = twentySampleSMA
@@ -141,7 +141,7 @@ Public Class MovingAverage
                 ElseIf counter = 50 Then
                     FiftySampleSMA = simpleMA / 50
                     If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("FIFTYEMA")))
+                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")))
                         FiftySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
                     Else
                         FiftySampleEMA = FiftySampleSMA
@@ -338,7 +338,7 @@ Public Class MovingAverage
                 If counter = 3 Then
                     threeSampleSMA = simpleMA / 3
                     If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("THREEEMA")))
+                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("THREEEMA")))
                         threeSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
                     Else
                         threeSampleEMA = threeSampleSMA
@@ -346,7 +346,7 @@ Public Class MovingAverage
                 ElseIf counter = 5 Then
                     fiveSampleSMA = simpleMA / 5
                     If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("FIVEEMA")))
+                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIVEEMA")))
                         fiveSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
                     Else
                         fiveSampleEMA = fiveSampleSMA
@@ -354,7 +354,7 @@ Public Class MovingAverage
                 ElseIf counter = 10 Then
                     tenSampleSMA = simpleMA / 10
                     If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("TENEMA")))
+                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TENEMA")))
                         tenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
                     Else
                         tenSampleEMA = tenSampleSMA
@@ -362,7 +362,7 @@ Public Class MovingAverage
                 ElseIf counter = 14 Then
                     fourteenSampleSMA = simpleMA / 14
                     If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("FOURTEENEMA")))
+                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")))
                         fourteenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
                     Else
                         fourteenSampleEMA = fourteenSampleSMA
@@ -370,7 +370,7 @@ Public Class MovingAverage
                 ElseIf counter = 20 Then
                     twentySampleSMA = simpleMA / 20
                     If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("TWENTYEMA")))
+                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")))
                         twentySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
                     Else
                         twentySampleEMA = twentySampleSMA
@@ -378,7 +378,7 @@ Public Class MovingAverage
                 ElseIf counter = 50 Then
                     FiftySampleSMA = simpleMA / 50
                     If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("FIFTYEMA")))
+                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")))
                         FiftySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
                     Else
                         FiftySampleEMA = FiftySampleSMA
@@ -386,7 +386,7 @@ Public Class MovingAverage
                 ElseIf counter = 200 Then
                     TwoHundredMA = simpleMA / 200
                     If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("TWOHUNDREDEMA")))
+                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWOHUNDREDEMA")))
                         TwoHundredEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
                     Else
                         TwoHundredEMA = TwoHundredMA

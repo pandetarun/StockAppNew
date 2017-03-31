@@ -24,7 +24,7 @@ Public Class StockAppHourlyService
 
             'Set the Default Time.
             Dim scheduledTime As DateTime = DateTime.MinValue
-            Dim dailyTimeStart As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 9, 0, 0, 0) '#9:00:00 AM#
+            Dim dailyTimeStart As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 9, 5, 0, 0) '#9:00:00 AM#
             Dim dailyTimeEnd As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 16, 10, 0, 0) '#4:00:00 PM#
             Dim weekendStartTimeToGetNSEData As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 8, 50, 0, 0) '#8:50:00 AM#
             Dim weekendEndTimeToGetNSEData As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 9, 10, 0, 0) ' #9:10:00 AM#
