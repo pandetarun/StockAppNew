@@ -56,7 +56,7 @@ Public Class MovingAverage
         Dim whereClause, whereClause1 As String
         Dim orderClause, orderClause1 As String
         Dim closingPrice As Double
-        Dim laststoredEMA As Double
+        Dim laststoredThreeEMA, laststoredFiveEMA, laststoredTenEMA, laststoredFourteenEMA, laststoredTwentyEMA, laststoredFiftyEMA As Double
         Dim recordPresentInTable As Boolean
 
         StockAppLogger.Log("IntraDayMACalculation Start", "MovingAverage")
@@ -70,7 +70,12 @@ Public Class MovingAverage
         fourteenSampleSMA = 0
         twentySampleSMA = 0
         FiftySampleSMA = 0
-
+        laststoredThreeEMA = 0
+        laststoredFiveEMA = 0
+        laststoredTenEMA = 0
+        laststoredFourteenEMA = 0
+        laststoredTwentyEMA = 0
+        laststoredFiftyEMA = 0
         threeSampleEMA = 0
         fiveSampleEMA = 0
         tenSampleEMA = 0
@@ -89,7 +94,31 @@ Public Class MovingAverage
             'orderClause1 = "lastupdatetime"
             ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
             ds1 = DBFunctions.getDataFromTable("INTRADAYMOVINGAVERAGES", " * ", whereClause1, orderClause1)
-            recordPresentInTable = ds1.Read()
+
+            While ds1.Read()
+                recordPresentInTable = True
+                If ds1.GetValue(ds1.GetOrdinal("THREEEMA")) IsNot Nothing Then
+                    laststoredThreeEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("THREEEMA")))
+                End If
+
+                If ds1.GetValue(ds1.GetOrdinal("FIVEEMA")) IsNot Nothing Then
+                    laststoredFiveEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIVEEMA")))
+                End If
+
+                If ds1.GetValue(ds1.GetOrdinal("TENEMA")) IsNot Nothing Then
+                    laststoredTenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TENEMA")))
+                End If
+                If ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")) IsNot Nothing Then
+                    laststoredFourteenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")))
+                End If
+                If ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")) IsNot Nothing Then
+                    laststoredTwentyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")))
+                End If
+                If ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")) IsNot Nothing Then
+                    laststoredFiftyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")))
+                End If
+            End While
+
             While ds.Read()
                 counter = counter + 1
                 If counter = 1 Then
@@ -100,49 +129,43 @@ Public Class MovingAverage
                 simpleMA = simpleMA + Double.Parse(ds.GetValue(ds.GetOrdinal("lastClosingPrice")))
                 If counter = 3 Then
                     threeSampleSMA = simpleMA / 3
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("THREEEMA")))
-                        threeSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
+                    If recordPresentInTable And laststoredThreeEMA > 0 Then
+                        threeSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredThreeEMA) + laststoredThreeEMA
                     Else
                         threeSampleEMA = threeSampleSMA
                     End If
                 ElseIf counter = 5 Then
                     fiveSampleSMA = simpleMA / 5
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIVEEMA")))
-                        fiveSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
+                    If recordPresentInTable And laststoredFiveEMA > 0 Then
+                        fiveSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFiveEMA) + laststoredFiveEMA
                     Else
                         fiveSampleEMA = fiveSampleSMA
                     End If
                 ElseIf counter = 10 Then
                     tenSampleSMA = simpleMA / 10
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TENEMA")))
-                        tenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
+                    If recordPresentInTable And laststoredTenEMA > 0 Then
+                        tenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredTenEMA) + laststoredTenEMA
                     Else
                         tenSampleEMA = tenSampleSMA
                     End If
                 ElseIf counter = 14 Then
                     fourteenSampleSMA = simpleMA / 14
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")))
-                        fourteenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
+                    If recordPresentInTable And laststoredFourteenEMA > 0 Then
+                        fourteenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFourteenEMA) + laststoredFourteenEMA
                     Else
                         fourteenSampleEMA = fourteenSampleSMA
                     End If
                 ElseIf counter = 20 Then
                     twentySampleSMA = simpleMA / 20
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")))
-                        twentySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
+                    If recordPresentInTable And laststoredTwentyEMA > 0 Then
+                        twentySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredTwentyEMA) + laststoredTwentyEMA
                     Else
                         twentySampleEMA = twentySampleSMA
                     End If
                 ElseIf counter = 50 Then
                     FiftySampleSMA = simpleMA / 50
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")))
-                        FiftySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
+                    If recordPresentInTable And laststoredFiftyEMA > 0 Then
+                        FiftySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFiftyEMA) + laststoredFiftyEMA
                     Else
                         FiftySampleEMA = FiftySampleSMA
                     End If
@@ -293,10 +316,17 @@ Public Class MovingAverage
         Dim whereClause, whereClause1 As String
         Dim orderClause, orderClause1 As String
         Dim closingPrice As Double
-        Dim laststoredEMA As Double
+        Dim laststoredThreeEMA, laststoredFiveEMA, laststoredTenEMA, laststoredFourteenEMA, laststoredTwentyEMA, laststoredFiftyEMA, laststoredTwoHundredEMA As Double
         Dim recordPresentInTable As Boolean
 
         StockAppLogger.Log("DailyMACalculation Start", "MovingAverage")
+        laststoredThreeEMA = 0
+        laststoredFiveEMA = 0
+        laststoredTenEMA = 0
+        laststoredFourteenEMA = 0
+        laststoredTwentyEMA = 0
+        laststoredFiftyEMA = 0
+        laststoredTwoHundredEMA = 0
         lastTradedPrice = 0
         counter = 0
         simpleMA = 0
@@ -326,7 +356,32 @@ Public Class MovingAverage
             'orderClause1 = "lastupdatetime"
             ds = DBFunctions.getDataFromTable("DAILYSTOCKDATA", " LAST_TRADED_PRICE", whereClause, orderClause)
             ds1 = DBFunctions.getDataFromTable("DAILYMOVINGAVERAGES", " * ", whereClause1, orderClause1)
-            recordPresentInTable = ds1.Read()
+            While ds1.Read()
+                recordPresentInTable = True
+                If ds1.GetValue(ds1.GetOrdinal("THREEEMA")) IsNot Nothing Then
+                    laststoredThreeEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("THREEEMA")))
+                End If
+
+                If ds1.GetValue(ds1.GetOrdinal("FIVEEMA")) IsNot Nothing Then
+                    laststoredFiveEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIVEEMA")))
+                End If
+
+                If ds1.GetValue(ds1.GetOrdinal("TENEMA")) IsNot Nothing Then
+                    laststoredTenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TENEMA")))
+                End If
+                If ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")) IsNot Nothing Then
+                    laststoredFourteenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")))
+                End If
+                If ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")) IsNot Nothing Then
+                    laststoredTwentyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")))
+                End If
+                If ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")) IsNot Nothing Then
+                    laststoredFiftyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")))
+                End If
+                If ds1.GetValue(ds1.GetOrdinal("TWOHUNDREDEMA")) IsNot Nothing Then
+                    laststoredTwoHundredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")))
+                End If
+            End While
             While ds.Read()
                 counter = counter + 1
                 If counter = 1 Then
@@ -337,57 +392,50 @@ Public Class MovingAverage
                 simpleMA = simpleMA + Double.Parse(ds.GetValue(ds.GetOrdinal("LAST_TRADED_PRICE")))
                 If counter = 3 Then
                     threeSampleSMA = simpleMA / 3
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("THREEEMA")))
-                        threeSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
+                    If recordPresentInTable And laststoredThreeEMA > 0 Then
+                        threeSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredThreeEMA) + laststoredThreeEMA
                     Else
                         threeSampleEMA = threeSampleSMA
                     End If
                 ElseIf counter = 5 Then
                     fiveSampleSMA = simpleMA / 5
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIVEEMA")))
-                        fiveSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
+                    If recordPresentInTable And laststoredFiveEMA > 0 Then
+                        fiveSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFiveEMA) + laststoredFiveEMA
                     Else
                         fiveSampleEMA = fiveSampleSMA
                     End If
                 ElseIf counter = 10 Then
                     tenSampleSMA = simpleMA / 10
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TENEMA")))
-                        tenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
+                    If recordPresentInTable And laststoredTenEMA > 0 Then
+                        tenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredTenEMA) + laststoredTenEMA
                     Else
                         tenSampleEMA = tenSampleSMA
                     End If
                 ElseIf counter = 14 Then
                     fourteenSampleSMA = simpleMA / 14
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")))
-                        fourteenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
+                    If recordPresentInTable And laststoredFourteenEMA > 0 Then
+                        fourteenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFourteenEMA) + laststoredFourteenEMA
                     Else
                         fourteenSampleEMA = fourteenSampleSMA
                     End If
                 ElseIf counter = 20 Then
                     twentySampleSMA = simpleMA / 20
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")))
-                        twentySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
+                    If recordPresentInTable And laststoredTwentyEMA > 0 Then
+                        twentySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredTwentyEMA) + laststoredTwentyEMA
                     Else
                         twentySampleEMA = twentySampleSMA
                     End If
                 ElseIf counter = 50 Then
                     FiftySampleSMA = simpleMA / 50
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")))
-                        FiftySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
+                    If recordPresentInTable And laststoredFiftyEMA > 0 Then
+                        FiftySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFiftyEMA) + laststoredFiftyEMA
                     Else
                         FiftySampleEMA = FiftySampleSMA
                     End If
                 ElseIf counter = 200 Then
                     TwoHundredMA = simpleMA / 200
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWOHUNDREDEMA")))
-                        TwoHundredEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
+                    If recordPresentInTable And laststoredTwoHundredEMA > 0 Then
+                        TwoHundredEMA = (2 / (counter + 1)) * (closingPrice - laststoredTwoHundredEMA) + laststoredTwoHundredEMA
                     Else
                         TwoHundredEMA = TwoHundredMA
                     End If

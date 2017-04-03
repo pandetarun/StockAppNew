@@ -6,8 +6,10 @@ Public Class Helper
         Dim request As HttpWebRequest
         Dim response As HttpWebResponse
         Dim strResponse As String
-
+        Dim counter As Integer
+        counter = 0
         StockAppLogger.Log("GetDataFromUrl Starttr")
+Retry:
         Try
             serverUrl = urlToGet
             request = WebRequest.Create(serverUrl)
@@ -20,6 +22,11 @@ Public Class Helper
         Catch ex As Exception
             StockAppLogger.Log("Error Occurred in getting data from URL = " & urlToGet)
             StockAppLogger.LogError("Error Occurred in getting data from URL = " & urlToGet, ex)
+            If counter = 0 Then
+                counter = counter + 1
+                StockAppLogger.Log("Retrying fetch for URL = " & urlToGet)
+                GoTo Retry
+            End If
             Return Nothing
         End Try
         StockAppLogger.Log("GetDataFromUrl End")

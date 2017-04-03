@@ -26,42 +26,34 @@ Public Class TestForm
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
-        'NSEIndices Data fetch
-        'Dim Fdataa As New FbDataAdapter("select * from STOCKHOURLYDATA", "servertype=0;username=sysdba;password=Jan@2017;database=D:\Tarun\StockApp\DB\STOCKAPPDB.fdb;datasource=localhost")
 
-        'DataSet1.Tables.Add("STOCKHOURLYDATA")
-        'Me.DataGridView1.DataSource = DataSet1
-        'Me.DataGridView1.DataMember = "STOCKHOURLYDATA"
-
-        'Fdataa.Fill(DataSet1, "STOCKHOURLYDATA")
-
-        'Chart1.Series.Add("Price")
+    End Sub
 
 
+
+    Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
+        Dim whereClause, orderClause As String
+        Dim ds As FbDataReader = Nothing
         Chart1.ChartAreas.Clear()
         Chart1.Series.Clear()
+        whereClause = "TRADEDDATE = '30-Mar-2017' and companycode = '" & ListBox1.SelectedItem.ToString() & "'"
 
+        ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " Max(lastClosingPrice) maxprice, Min(lastClosingPrice) minprice", whereClause)
         'Create a chartarea
         Dim area As New ChartArea("AREA")
         'If you don't set these limits, they will be generated automatically depending on the data.
         area.AxisX.Interval = 1
-        'area.AxisX.Minimum = 9
-        'area.AxisX.Maximum = 17
-        area.AxisY.Minimum = 86.4
-        'area.AxisX.LabelStyle.Format = "HH:MM:SS"
-        'area.AxisX.IntervalType = DateTimeIntervalType.Minutes
-
-
-        area.AxisY.Maximum = 89.8
+        If ds.Read Then
+            area.AxisY.Minimum = ds("minprice") + -1
+            area.AxisY.Maximum = ds("maxprice") + 1
+            area.AxisY.Interval = (ds("maxprice") - ds("minprice")) / 10
+        Else
+            area.AxisY.Minimum = 80
+            area.AxisY.Maximum = 100
+        End If
+        ds.Close()
         'Add the chart area to the chart
         Chart1.ChartAreas.Add(area)
-
-
-
-
-
-
-
         'Create a Series
         Dim StockData As Series = New Series("Price")
         StockData.ChartType = SeriesChartType.Line
@@ -70,35 +62,34 @@ Public Class TestForm
         'Add the series to the chart
         Chart1.Series.Add(StockData)
         Chart1.Series(0).IsXValueIndexed = True
-        Dim whereClause, orderClause As String
-        Dim ds As FbDataReader = Nothing
-        whereClause = "TRADEDDATE = '30-Mar-2017' and companycode = 'IDEA'"
+
+        whereClause = "TRADEDDATE = '30-Mar-2017' and companycode = '" & ListBox1.SelectedItem.ToString() & "'"
         orderClause = "lastupdatetime"
-
-
         ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
-        ' Open database connection
-        'Dim Fdataa As New FbDataAdapter("select * from STOCKHOURLYDATA", "servertype=0;username=sysdba;password=Jan@2017;database=D:\Tarun\StockApp\DB\STOCKAPPDB.fdb;datasource=localhost")
-        'Dim myConnection As New OleDbConnection(myConnectionString)
-        'Dim myCommand As New OleDbCommand(mySelectQuery, myConnection)
-
-        'myCommand.Connection.Open()
-
-
-
-        'Fdataa.Fill(DataSet1, "STOCKHOURLYDATA")
-        ' Create a database reader    
-        'Dim myReader As OleDbDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection)
-
-
         While ds.Read()
             Chart1.Series("Price").Points.AddXY(ds("lastupdatetime"), ds("lastClosingPrice"))
         End While
-
         ' Close the reader and the connection
         ds.Close()
         DBFunctions.CloseSQLConnection()
     End Sub
 
+    Private Sub TestForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ListBox1.ClearSelected()
 
+        Dim ds As FbDataReader = Nothing
+        Chart1.ChartAreas.Clear()
+        Chart1.Series.Clear()
+        'whereClause = "TRADEDDATE = '30-Mar-2017' and companycode = 'IDEA'"
+
+        ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING", " distinct STOCK_NAME")
+
+        If ds.HasRows Then
+            Do While ds.Read()
+                ListBox1.Items.Add(ds("STOCK_NAME"))
+            Loop
+        End If
+        ds.Close()
+        DBFunctions.CloseSQLConnection()
+    End Sub
 End Class

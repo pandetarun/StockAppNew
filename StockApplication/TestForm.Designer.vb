@@ -22,21 +22,21 @@ Partial Class TestForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
-        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
+        Dim ChartArea4 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New System.Windows.Forms.DataVisualization.Charting.ChartArea()
+        Dim Legend4 As System.Windows.Forms.DataVisualization.Charting.Legend = New System.Windows.Forms.DataVisualization.Charting.Legend()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.Button2 = New System.Windows.Forms.Button()
         Me.DataSet1 = New System.Data.DataSet()
-        Me.DataGridView1 = New System.Windows.Forms.DataGridView()
         Me.Chart1 = New System.Windows.Forms.DataVisualization.Charting.Chart()
+        Me.ListBox1 = New System.Windows.Forms.ListBox()
+        Me.DateTimePicker1 = New System.Windows.Forms.DateTimePicker()
         CType(Me.DataSet1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Chart1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(28, 331)
+        Me.Button1.Location = New System.Drawing.Point(12, 448)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(139, 39)
         Me.Button1.TabIndex = 0
@@ -45,7 +45,7 @@ Partial Class TestForm
         '
         'Button2
         '
-        Me.Button2.Location = New System.Drawing.Point(290, 332)
+        Me.Button2.Location = New System.Drawing.Point(274, 449)
         Me.Button2.Name = "Button2"
         Me.Button2.Size = New System.Drawing.Size(119, 37)
         Me.Button2.TabIndex = 1
@@ -56,39 +56,46 @@ Partial Class TestForm
         '
         Me.DataSet1.DataSetName = "NewDataSet"
         '
-        'DataGridView1
-        '
-        Me.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridView1.Location = New System.Drawing.Point(28, 12)
-        Me.DataGridView1.Name = "DataGridView1"
-        Me.DataGridView1.Size = New System.Drawing.Size(89, 40)
-        Me.DataGridView1.TabIndex = 2
-        '
         'Chart1
         '
-        ChartArea1.Name = "ChartArea1"
-        Me.Chart1.ChartAreas.Add(ChartArea1)
-        Legend1.Name = "Legend1"
-        Me.Chart1.Legends.Add(Legend1)
-        Me.Chart1.Location = New System.Drawing.Point(123, 35)
+        ChartArea4.Name = "ChartArea1"
+        Me.Chart1.ChartAreas.Add(ChartArea4)
+        Legend4.Name = "Legend1"
+        Me.Chart1.Legends.Add(Legend4)
+        Me.Chart1.Location = New System.Drawing.Point(12, 80)
         Me.Chart1.Name = "Chart1"
-        Me.Chart1.Size = New System.Drawing.Size(991, 271)
+        Me.Chart1.Size = New System.Drawing.Size(1248, 362)
         Me.Chart1.TabIndex = 3
         Me.Chart1.Text = "Chart1"
+        '
+        'ListBox1
+        '
+        Me.ListBox1.FormattingEnabled = True
+        Me.ListBox1.Location = New System.Drawing.Point(349, 37)
+        Me.ListBox1.Name = "ListBox1"
+        Me.ListBox1.Size = New System.Drawing.Size(210, 30)
+        Me.ListBox1.TabIndex = 4
+        '
+        'DateTimePicker1
+        '
+        Me.DateTimePicker1.Location = New System.Drawing.Point(615, 33)
+        Me.DateTimePicker1.Name = "DateTimePicker1"
+        Me.DateTimePicker1.Size = New System.Drawing.Size(202, 20)
+        Me.DateTimePicker1.TabIndex = 5
         '
         'TestForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1126, 396)
+        Me.ClientSize = New System.Drawing.Size(1284, 511)
+        Me.Controls.Add(Me.DateTimePicker1)
+        Me.Controls.Add(Me.ListBox1)
         Me.Controls.Add(Me.Chart1)
-        Me.Controls.Add(Me.DataGridView1)
         Me.Controls.Add(Me.Button2)
         Me.Controls.Add(Me.Button1)
         Me.Name = "TestForm"
         Me.Text = "TestForm"
         CType(Me.DataSet1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.Chart1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
@@ -97,6 +104,7 @@ Partial Class TestForm
     Friend WithEvents Button1 As System.Windows.Forms.Button
     Friend WithEvents Button2 As System.Windows.Forms.Button
     Friend WithEvents DataSet1 As Data.DataSet
-    Friend WithEvents DataGridView1 As System.Windows.Forms.DataGridView
     Friend WithEvents Chart1 As System.Windows.Forms.DataVisualization.Charting.Chart
+    Friend WithEvents ListBox1 As System.Windows.Forms.ListBox
+    Friend WithEvents DateTimePicker1 As System.Windows.Forms.DateTimePicker
 End Class

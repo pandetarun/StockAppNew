@@ -21,7 +21,7 @@ Public Class DBFunctions
     Public Shared UserID As String = My.Settings.UserID                                '!
 
     Public Shared Function OpenSQLConnection() As Boolean
-        StockAppLogger.Log("OpenSQLConnection Start")
+        StockAppLogger.Log("OpenSQLConnection Start", "DBFunctions")
         Try
             If myConnection.State = ConnectionState.Closed Then
                 Dim cs As New FbConnectionStringBuilder()
@@ -40,10 +40,10 @@ Public Class DBFunctions
                 myConnection.Open()
                 myDataSet.Reset()
             End If
-            StockAppLogger.Log("OpenSQLConnection End")
+            StockAppLogger.Log("OpenSQLConnection End", "DBFunctions")
             Return True
         Catch ex As Exception
-            StockAppLogger.LogError("OpenSQLConnection Error Occurred in opening the connection ", ex)
+            StockAppLogger.LogError("OpenSQLConnection Error Occurred in opening the connection ", ex, "DBFunctions")
             'MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
             'ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
@@ -52,7 +52,7 @@ Public Class DBFunctions
     End Function
 
     Public Function CreateDatabase() As Boolean
-        StockAppLogger.Log("CreateDatabase Start")
+        StockAppLogger.Log("CreateDatabase Start", "DBFunctions")
         Try
             Dim cs = New FbConnectionStringBuilder()
             If Not ServerType = FbServerType.Default Then
@@ -68,10 +68,10 @@ Public Class DBFunctions
 
             FbConnection.CreateDatabase(cs.ToString)
             If cs IsNot Nothing Then cs = Nothing
-            StockAppLogger.Log("CreateDatabase End")
+            StockAppLogger.Log("CreateDatabase End", "DBFunctions")
             Return True
         Catch ex As Exception
-            StockAppLogger.Log("CreateDatabase Error in creating database")
+            StockAppLogger.Log("CreateDatabase Error in creating database", "DBFunctions")
             'MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
             'ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
@@ -87,16 +87,16 @@ Public Class DBFunctions
     End Sub
 
     Public Shared Function ExecuteSQLStmt(ByVal sSQL As String, Optional ByVal Disconnect As Boolean = False) As Boolean
-        StockAppLogger.Log("ExecuteSQLStmt Start")
+        StockAppLogger.Log("ExecuteSQLStmt Start", "DBFunctions")
         If OpenSQLConnection() = True Then
             Dim myCmd As New FbCommand(sSQL, myConnection)
 
             Try
                 myCmd.ExecuteNonQuery()
-                StockAppLogger.Log("ExecuteSQLStmt End")
+                StockAppLogger.Log("ExecuteSQLStmt End", "DBFunctions")
                 Return True
             Catch ex As Exception
-                StockAppLogger.LogError("ExecuteSQLStmtError in executing statement" & sSQL, ex)
+                StockAppLogger.LogError("ExecuteSQLStmtError in executing statement" & sSQL, ex, "DBFunctions")
                 'MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
                 'ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return False
@@ -122,7 +122,7 @@ Public Class DBFunctions
         Dim sql As String
         Dim resultList As List(Of String)
 
-        StockAppLogger.Log("getDataFromTable Start")
+        StockAppLogger.Log("getDataFromTable Start", "DBFunctions")
         If OpenSQLConnection() = True Then
             Try
                 'excecuted the SQL command 
@@ -150,10 +150,10 @@ Public Class DBFunctions
                 'resultList.Add(ds.GetValue(ds.GetOrdinal("INDEX_NAME")))
 
                 'End While
-                StockAppLogger.Log("getDataFromTable End")
+                StockAppLogger.Log("getDataFromTable End", "DBFunctions")
                 Return ds
             Catch ex As Exception
-                StockAppLogger.LogError("getDataFromTable Error in getting data from table " & tableName, ex)
+                StockAppLogger.LogError("getDataFromTable Error in getting data from table " & tableName, ex, "DBFunctions")
                 'MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
                 'ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return Nothing
