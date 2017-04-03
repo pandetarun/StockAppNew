@@ -97,24 +97,23 @@ Public Class MovingAverage
 
             While ds1.Read()
                 recordPresentInTable = True
-                If ds1.GetValue(ds1.GetOrdinal("THREEEMA")) IsNot Nothing Then
+                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("THREEEMA"))) Then
                     laststoredThreeEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("THREEEMA")))
                 End If
-
-                If ds1.GetValue(ds1.GetOrdinal("FIVEEMA")) IsNot Nothing Then
+                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FIVEEMA"))) Then
                     laststoredFiveEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIVEEMA")))
                 End If
 
-                If ds1.GetValue(ds1.GetOrdinal("TENEMA")) IsNot Nothing Then
+                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TENEMA"))) Then
                     laststoredTenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TENEMA")))
                 End If
-                If ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")) IsNot Nothing Then
+                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA"))) Then
                     laststoredFourteenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")))
                 End If
-                If ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")) IsNot Nothing Then
+                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA"))) Then
                     laststoredTwentyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")))
                 End If
-                If ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")) IsNot Nothing Then
+                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA"))) Then
                     laststoredFiftyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")))
                 End If
             End While
@@ -207,7 +206,6 @@ Public Class MovingAverage
         If lastTradedPrice <> 0 Then
             insertStatement = insertStatement & ", LASTTRADEDPRICE"
             insertValues = insertValues & ", " & lastTradedPrice
-            fireQuery = True
         End If
         If threeSampleSMA <> 0 Then
             insertStatement = insertStatement & ", THREEMA"
@@ -358,28 +356,28 @@ Public Class MovingAverage
             ds1 = DBFunctions.getDataFromTable("DAILYMOVINGAVERAGES", " * ", whereClause1, orderClause1)
             While ds1.Read()
                 recordPresentInTable = True
-                If ds1.GetValue(ds1.GetOrdinal("THREEEMA")) IsNot Nothing Then
+                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("THREEEMA"))) Then
                     laststoredThreeEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("THREEEMA")))
                 End If
 
-                If ds1.GetValue(ds1.GetOrdinal("FIVEEMA")) IsNot Nothing Then
+                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FIVEEMA"))) Then
                     laststoredFiveEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIVEEMA")))
                 End If
 
-                If ds1.GetValue(ds1.GetOrdinal("TENEMA")) IsNot Nothing Then
+                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TENEMA"))) Then
                     laststoredTenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TENEMA")))
                 End If
-                If ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")) IsNot Nothing Then
+                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA"))) Then
                     laststoredFourteenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")))
                 End If
-                If ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")) IsNot Nothing Then
+                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA"))) Then
                     laststoredTwentyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")))
                 End If
-                If ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")) IsNot Nothing Then
+                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA"))) Then
                     laststoredFiftyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")))
                 End If
-                If ds1.GetValue(ds1.GetOrdinal("TWOHUNDREDEMA")) IsNot Nothing Then
-                    laststoredTwoHundredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")))
+                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TWOHUNDREDEMA"))) Then
+                    laststoredTwoHundredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWOHUNDREDEMA")))
                 End If
             End While
             While ds.Read()
@@ -480,7 +478,6 @@ Public Class MovingAverage
         If lastTradedPrice <> 0 Then
             insertStatement = insertStatement & ", LASTTRADEDPRICE"
             insertValues = insertValues & ", " & lastTradedPrice
-            fireQuery = True
         End If
         If threeSampleSMA <> 0 Then
             insertStatement = insertStatement & ", THREEMA"

@@ -66,25 +66,26 @@ Public Class DailyStockQuote
         Dim tmpString As String
         Dim lastUpdatedDate As Date
         Dim lastupdatedTime As String
+        Dim tmpStockSymbol As String
 
         StockAppLogger.Log("getDailyStockDetails Start", "DailyStockQuote")
-        Try { 
+        Try
             rawIndicesData = Helper.GetDataFromUrl(NSEIndicesURL)
             tmpRawStockDailyData = rawIndicesData
             lastUpdatedDate = Today
             indexOfVar = tmpRawStockDailyData.IndexOf("time")
-            tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
+            tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
             tmpString = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
             lastupdatedTime = tmpString.Substring(tmpString.Length - 8)
 
             While tmpRawStockDailyData.IndexOf("symbol") >= 1
-                If Not stockList.Contains(tmpRawStockDailyData.IndexOf("symbol")) Then
+                indexOfVar = tmpRawStockDailyData.IndexOf("symbol")
+                tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 9)
+                tmpStockSymbol = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                If Not stockList.Contains(tmpStockSymbol) Then
                     tmpDailyStockQuote = New DailyStockQuote()
                     tmpDailyStockQuote.updateDate = lastUpdatedDate
-                    tmpDailyStockQuote.updateTime = lastupdatedTime
-                    indexOfVar = tmpRawStockDailyData.IndexOf("symbol")
-                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 9)
-                    tmpDailyStockQuote.symbol = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                    tmpDailyStockQuote.symbol = tmpStockSymbol
                     indexOfVar = tmpRawStockDailyData.IndexOf("open")
                     tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
                     tmpDailyStockQuote.openPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
@@ -95,7 +96,7 @@ Public Class DailyStockQuote
                     tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
                     tmpDailyStockQuote.lowPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
 
-                    indexOfVar = tmpRawStockDailyData.IndexOf("ltp")
+                    indexOfVar = tmpRawStockDailyData.IndexOf("ltP")
                     tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
                     tmpDailyStockQuote.lastTradedPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
                     indexOfVar = tmpRawStockDailyData.IndexOf("ptsC")
@@ -108,21 +109,21 @@ Public Class DailyStockQuote
                     tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 9)
                     tmpDailyStockQuote.volume = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
 
-                    indexOfVar = tmpRawStockDailyData.IndexOf("ntp")
+                    indexOfVar = tmpRawStockDailyData.IndexOf("ntP")
                     tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
                     tmpDailyStockQuote.turnover = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
                     indexOfVar = tmpRawStockDailyData.IndexOf("wkhi")
-                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 8)
+                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
                     tmpDailyStockQuote.yearlyHighPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
                     indexOfVar = tmpRawStockDailyData.IndexOf("wklo")
                     tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
-                    tmpDailyStockQuote.yearlyLowPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf("""}"))
+                    tmpDailyStockQuote.yearlyLowPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
                     indexOfVar = tmpRawStockDailyData.IndexOf("yPC")
                     tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
                     tmpDailyStockQuote.yearlyPercentageChange = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
                     indexOfVar = tmpRawStockDailyData.IndexOf("mPC")
                     tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
-                    tmpDailyStockQuote.monthlyPercentageChange = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                    tmpDailyStockQuote.monthlyPercentageChange = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf("""}"))
 
                     stockList.Add(tmpDailyStockQuote.symbol)
                     dailyStockDetailsList.Add(tmpDailyStockQuote)
@@ -140,9 +141,10 @@ Public Class DailyStockQuote
         Dim insertValues As String
 
         StockAppLogger.Log("StoreDailyStockDetail Start", "DailyStockQuote")
-        Try {
+        Try
             For Each tmpDailyStockDetails In dailyStockDetailsList
-                insertStatement = "INSERT INTO DAILYSTOCKDATA (STOCKNAME, OPENPRICE, HIGHPRICE, LOWPRICE, LAST_TRADED_PRICE, CHANGE, CHANGE_PERCENTAGE, VOLUME, TURNOVER_IN_CRS, YEARLY_HIGH, YEARLY_LOW, YERLY_PERCENTAGE_CHANGE, MONTHLY_PERCENTAGE_CHANGE, UPDATEDATE, UPDATETIME)"
+                StockAppLogger.Log("StoreDailyStockDetail storing daily data for stock = " & tmpDailyStockDetails.symbol, "DailyStockQuote")
+                insertStatement = "INSERT INTO DAILYSTOCKDATA (STOCKNAME, OPENPRICE, HIGHPRICE, LOWPRICE, LAST_TRADED_PRICE, CHANGE, CHANGE_PERCENTAGE, VOLUME, TURNOVER_IN_CRS, YEARLY_HIGH, YEARLY_LOW, YERLY_PERCENTAGE_CHANGE, MONTHLY_PERCENTAGE_CHANGE, TRADEDDATE)"
                 insertValues = " VALUES ('"
                 insertValues = insertValues & tmpDailyStockDetails.symbol & "',"
                 insertValues = insertValues & tmpDailyStockDetails.openPrice & ","
@@ -157,8 +159,7 @@ Public Class DailyStockQuote
                 insertValues = insertValues & tmpDailyStockDetails.yearlyLowPrice & ","
                 insertValues = insertValues & tmpDailyStockDetails.yearlyPercentageChange & ","
                 insertValues = insertValues & tmpDailyStockDetails.monthlyPercentageChange & ","
-                insertValues = insertValues & "'" & tmpDailyStockDetails.updateDate & "',"
-                insertValues = insertValues & "'" & tmpDailyStockDetails.updateTime & "');"
+                insertValues = insertValues & "'" & tmpDailyStockDetails.updateDate & "');"
                 DBFunctions.ExecuteSQLStmt(insertStatement & insertValues)
             Next
 

@@ -20,9 +20,13 @@ Public Class TestForm
         'tmpHourlyStockQuote = New HourlyStockQuote()
         'tmpHourlyStockQuote.GetAndStoreHourlyData()
 
-        Dim tmpMovingAverageCalculation As MovingAverage
-        tmpMovingAverageCalculation = New MovingAverage()
-        tmpMovingAverageCalculation.CalculateAndStoreIntraDayMA()
+        Dim tmpHourlyStockQuote As DailyStockQuote
+        tmpHourlyStockQuote = New DailyStockQuote()
+        tmpHourlyStockQuote.getDailyStockDetailsAndStore()
+
+        'Dim tmpMovingAverageCalculation As MovingAverage
+        'tmpMovingAverageCalculation = New MovingAverage()
+        'tmpMovingAverageCalculation.CalculateAndStoreIntraDayMA()
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
