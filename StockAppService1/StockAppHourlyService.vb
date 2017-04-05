@@ -25,7 +25,7 @@ Public Class StockAppHourlyService
             'Set the Default Time.
             Dim scheduledTime As DateTime = DateTime.MinValue
             Dim dailyTimeStart As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 9, 5, 0, 0) '#9:00:00 AM#
-            Dim dailyTimeEnd As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 16, 10, 0, 0) '#4:00:00 PM#
+            Dim dailyTimeEnd As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 16, 5, 0, 0) '#4:00:00 PM#
             Dim weekendStartTimeToGetNSEData As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 8, 50, 0, 0) '#8:50:00 AM#
             Dim weekendEndTimeToGetNSEData As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 9, 10, 0, 0) ' #9:10:00 AM#
             Dim weekdayTimeToGetDailyStockDataStart As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 17, 0, 0, 0)
@@ -38,7 +38,7 @@ Public Class StockAppHourlyService
             Try
                 If Weekday(Today) > 1 And Weekday(Today) < 7 Then
                     'Stock Data collection will only happen on Weekdays betwen 9 to 4PM
-                    If DateTime.Now.TimeOfDay >= dailyTimeStart.TimeOfDay And DateTime.Now.TimeOfDay <= dailyTimeEnd.TimeOfDay Then
+                    If DateTime.Now.TimeOfDay >= dailyTimeStart.TimeOfDay And DateTime.Now.TimeOfDay < dailyTimeEnd.TimeOfDay Then
                         'Indices details fetch and store
                         Me.WriteToFile("NSEDetails entry started " & DateTime.Now.TimeOfDay.ToString)
                         Dim tmpNSEIndicesDetails As NSEIndicesDetails = New NSEIndicesDetails()
@@ -56,7 +56,7 @@ Public Class StockAppHourlyService
                         Me.WriteToFile("IntraDayMovingAverage entry End" & DateTime.Now.TimeOfDay.ToString)
                     End If
                     'Daily stock collection data for daily table will happen at 5PM every day 
-                    If DateTime.Now.TimeOfDay >= weekdayTimeToGetDailyStockDataStart.TimeOfDay And DateTime.Now.TimeOfDay <= weekdayTimeToGetDailyStockDataEnd.TimeOfDay Then
+                    If DateTime.Now.TimeOfDay >= weekdayTimeToGetDailyStockDataStart.TimeOfDay And DateTime.Now.TimeOfDay < weekdayTimeToGetDailyStockDataEnd.TimeOfDay Then
                         'Daily stock entry 
                         Me.WriteToFile("DailyStockDetails entry started " & DateTime.Now.TimeOfDay.ToString)
                         Dim tmpDailyStockQuote As DailyStockQuote = New DailyStockQuote()

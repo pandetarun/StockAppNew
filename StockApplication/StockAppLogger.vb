@@ -8,6 +8,21 @@ Public Class StockAppLogger
     Shared errorLogFile As String = My.Settings.ApplicationFileLocation & "\Errorlog.txt"
     Shared className As String
 
+    Public Shared Function LogInfo(logMessage As String, Optional className As String = "") As Boolean
+        If My.Settings.logLevel = "Info" Then
+            Dim tmpWriter As StreamWriter
+            tmpWriter = File.AppendText(logFile)
+            'tmpWriter.Write(vbCrLf + "Log Entry : ")
+            tmpWriter.Write("{0} {1}", DateTime.Now.ToLongTimeString(), DateTime.Now.ToLongDateString())
+            tmpWriter.Write(" " & className & "  : Error")
+            tmpWriter.Write("  :{0}", logMessage)
+            tmpWriter.WriteLine("-------------------------------")
+            tmpWriter.Flush()
+            tmpWriter.Close()
+        End If
+        Return True
+    End Function
+
     Public Shared Function LogError(logMessage As String, exec As Exception, Optional className As String = "") As Boolean
 
         Dim tmpWriter As StreamWriter

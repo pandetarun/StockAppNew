@@ -20,7 +20,7 @@ Retry:
             strResponse = sReader.ReadToEnd()
             response.Close()
         Catch ex As Exception
-            StockAppLogger.Log("Error Occurred in getting data from URL = " & urlToGet)
+            StockAppLogger.LogInfo("Error Occurred in getting data from URL = " & urlToGet)
             StockAppLogger.LogError("Error Occurred in getting data from URL = " & urlToGet, ex)
             If counter = 0 Then
                 counter = counter + 1

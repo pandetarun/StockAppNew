@@ -20,6 +20,7 @@ Public Class DailyStockQuote
     Dim updateDate As Date
     Dim updateTime As String
 
+
     Dim pathOfFileofURLs As String = My.Settings.ApplicationFileLocation & "\URLs.txt"
     Dim dailyStockDetailsList As List(Of DailyStockQuote) = New List(Of DailyStockQuote)
     Dim stockList As List(Of String) = New List(Of String)

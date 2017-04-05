@@ -68,56 +68,63 @@ Public Class NSEIndicesDetails
         Dim dailyTimeEnd As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 9, 20, 0, 0) '#4:00:00 PM#
 
         StockAppLogger.Log("getNSEIndicesDetails Start", "NSEIndicesDetails")
-        rawIndicesData = Helper.GetDataFromUrl(NSEIndicesURL)
-        tmpRawIndicesData = rawIndicesData
+        Try
+            rawIndicesData = Helper.GetDataFromUrl(NSEIndicesURL)
+            If rawIndicesData IsNot Nothing Then
+                tmpRawIndicesData = rawIndicesData
+                tmpNSEIndicesDetails.updateDate = Today
+                indexOfVar = tmpRawIndicesData.IndexOf("time")
+                tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
+                tmpString = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+                tmpNSEIndicesDetails.updateTime = tmpString.Substring(tmpString.Length - 8)
+                indexOfVar = tmpRawIndicesData.IndexOf("indexName")
+                tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 12)
+                tmpNSEIndicesDetails.symbol = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+                indexOfVar = tmpRawIndicesData.IndexOf("open")
+                tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 7)
+                tmpNSEIndicesDetails.openPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+                indexOfVar = tmpRawIndicesData.IndexOf("high")
+                tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 7)
+                tmpNSEIndicesDetails.highPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+                indexOfVar = tmpRawIndicesData.IndexOf("low")
+                tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
+                tmpNSEIndicesDetails.lowPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
 
-        tmpNSEIndicesDetails.updateDate = Today
-        indexOfVar = tmpRawIndicesData.IndexOf("time")
-        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
-        tmpString = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
-        tmpNSEIndicesDetails.updateTime = tmpString.Substring(tmpString.Length - 8)
-        indexOfVar = tmpRawIndicesData.IndexOf("indexName")
-        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 12)
-        tmpNSEIndicesDetails.symbol = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
-        indexOfVar = tmpRawIndicesData.IndexOf("open")
-        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 7)
-        tmpNSEIndicesDetails.openPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
-        indexOfVar = tmpRawIndicesData.IndexOf("high")
-        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 7)
-        tmpNSEIndicesDetails.highPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
-        indexOfVar = tmpRawIndicesData.IndexOf("low")
-        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
-        tmpNSEIndicesDetails.lowPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+                indexOfVar = tmpRawIndicesData.IndexOf("ltp")
+                tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
+                tmpNSEIndicesDetails.lastTradedPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+                indexOfVar = tmpRawIndicesData.IndexOf("ch")
+                tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 5)
+                tmpNSEIndicesDetails.changeinPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+                indexOfVar = tmpRawIndicesData.IndexOf("per")
+                tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
+                tmpNSEIndicesDetails.changeInPercentage = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+                indexOfVar = tmpRawIndicesData.IndexOf("yCls")
+                tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 7)
+                tmpNSEIndicesDetails.yearlyPercentageChange = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+                indexOfVar = tmpRawIndicesData.IndexOf("mCls")
+                tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 7)
+                tmpNSEIndicesDetails.monthlyPercentageChange = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+                indexOfVar = tmpRawIndicesData.IndexOf("yHigh")
+                tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 8)
+                tmpNSEIndicesDetails.yearlyHighPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
+                indexOfVar = tmpRawIndicesData.IndexOf("yLow")
+                tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 7)
+                tmpNSEIndicesDetails.yearlyLowPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf("""}"))
+                indexOfVar = tmpRawIndicesData.IndexOf("trdVolumesum")
+                tmpString = tmpRawIndicesData.Substring(indexOfVar + 15)
+                tmpNSEIndicesDetails.volume = tmpString.Substring(0, tmpString.IndexOf(""","))
 
-        indexOfVar = tmpRawIndicesData.IndexOf("ltp")
-        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
-        tmpNSEIndicesDetails.lastTradedPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
-        indexOfVar = tmpRawIndicesData.IndexOf("ch")
-        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 5)
-        tmpNSEIndicesDetails.changeinPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
-        indexOfVar = tmpRawIndicesData.IndexOf("per")
-        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
-        tmpNSEIndicesDetails.changeInPercentage = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
-        indexOfVar = tmpRawIndicesData.IndexOf("yCls")
-        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 7)
-        tmpNSEIndicesDetails.yearlyPercentageChange = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
-        indexOfVar = tmpRawIndicesData.IndexOf("mCls")
-        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 7)
-        tmpNSEIndicesDetails.monthlyPercentageChange = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
-        indexOfVar = tmpRawIndicesData.IndexOf("yHigh")
-        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 8)
-        tmpNSEIndicesDetails.yearlyHighPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
-        indexOfVar = tmpRawIndicesData.IndexOf("yLow")
-        tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 7)
-        tmpNSEIndicesDetails.yearlyLowPrice = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf("""}"))
-        indexOfVar = tmpRawIndicesData.IndexOf("trdVolumesum")
-        tmpString = tmpRawIndicesData.Substring(indexOfVar + 15)
-        tmpNSEIndicesDetails.volume = tmpString.Substring(0, tmpString.IndexOf(""","))
-
-        NSEindicesDetailsList.Add(tmpNSEIndicesDetails)
-        If DateTime.Now.TimeOfDay < dailyTimeEnd.TimeOfDay Then
-            tmpNSEIndexStockMapping.createIndicesToStockMapping(tmpRawIndicesData, tmpNSEIndicesDetails.symbol)
-        End If
+                NSEindicesDetailsList.Add(tmpNSEIndicesDetails)
+                If DateTime.Now.TimeOfDay < dailyTimeEnd.TimeOfDay Then
+                    tmpNSEIndexStockMapping.createIndicesToStockMapping(tmpRawIndicesData, tmpNSEIndicesDetails.symbol)
+                End If
+            Else
+                StockAppLogger.LogInfo("getNSEIndicesDetails GetDataFromUrl did not get data for URL = " + NSEIndicesURL, "NSEIndicesDetails")
+            End If
+        Catch exc As Exception
+            StockAppLogger.LogError("getNSEIndicesDetails Error Occurred in creating NSEDetails object = ", exc, "NSEIndicesDetails")
+        End Try
         StockAppLogger.Log("getNSEIndicesDetails End", "NSEIndicesDetails")
     End Sub
 
@@ -126,26 +133,30 @@ Public Class NSEIndicesDetails
         Dim insertValues As String
 
         StockAppLogger.Log("StoreOrUpdateIndicesDetail Start", "NSEIndicesDetails")
-        For Each tmpNSEIndicesDetails In NSEindicesDetailsList
-            insertStatement = "INSERT INTO NSE_INDICES_DETAILS (INDEXNAME, OPENPRICE, HIGHPRICE, LOWPRICE, LAST_TRADED_PRICE, CHANGE, CHANGE_PERCENTAGE, VOLUME, TURNOVER_IN_CRS, YEARLY_HIGH, YEARLY_LOW, YERLY_PERCENTAGE_CHANGE, MONTHLY_PERCENTAGE_CHANGE, UPDATEDATE, UPDATETIME)"
-            insertValues = " VALUES ('"
-            insertValues = insertValues & tmpNSEIndicesDetails.symbol & "',"
-            insertValues = insertValues & tmpNSEIndicesDetails.openPrice & ","
-            insertValues = insertValues & tmpNSEIndicesDetails.highPrice & ","
-            insertValues = insertValues & tmpNSEIndicesDetails.lowPrice & ","
-            insertValues = insertValues & tmpNSEIndicesDetails.lastTradedPrice & ","
-            insertValues = insertValues & tmpNSEIndicesDetails.changeinPrice & ","
-            insertValues = insertValues & tmpNSEIndicesDetails.changeInPercentage & ","
-            insertValues = insertValues & tmpNSEIndicesDetails.volume & ","
-            insertValues = insertValues & tmpNSEIndicesDetails.turnover & ","
-            insertValues = insertValues & tmpNSEIndicesDetails.yearlyHighPrice & ","
-            insertValues = insertValues & tmpNSEIndicesDetails.yearlyLowPrice & ","
-            insertValues = insertValues & tmpNSEIndicesDetails.yearlyPercentageChange & ","
-            insertValues = insertValues & tmpNSEIndicesDetails.monthlyPercentageChange & ","
-            insertValues = insertValues & "'" & tmpNSEIndicesDetails.updateDate & "',"
-            insertValues = insertValues & "'" & tmpNSEIndicesDetails.updateTime & "');"
-            DBFunctions.ExecuteSQLStmt(insertStatement & insertValues)
-        Next
+        Try
+            For Each tmpNSEIndicesDetails In NSEindicesDetailsList
+                insertStatement = "INSERT INTO NSE_INDICES_DETAILS (INDEXNAME, OPENPRICE, HIGHPRICE, LOWPRICE, LAST_TRADED_PRICE, CHANGE, CHANGE_PERCENTAGE, VOLUME, TURNOVER_IN_CRS, YEARLY_HIGH, YEARLY_LOW, YERLY_PERCENTAGE_CHANGE, MONTHLY_PERCENTAGE_CHANGE, UPDATEDATE, UPDATETIME)"
+                insertValues = " VALUES ('"
+                insertValues = insertValues & tmpNSEIndicesDetails.symbol & "',"
+                insertValues = insertValues & tmpNSEIndicesDetails.openPrice & ","
+                insertValues = insertValues & tmpNSEIndicesDetails.highPrice & ","
+                insertValues = insertValues & tmpNSEIndicesDetails.lowPrice & ","
+                insertValues = insertValues & tmpNSEIndicesDetails.lastTradedPrice & ","
+                insertValues = insertValues & tmpNSEIndicesDetails.changeinPrice & ","
+                insertValues = insertValues & tmpNSEIndicesDetails.changeInPercentage & ","
+                insertValues = insertValues & tmpNSEIndicesDetails.volume & ","
+                insertValues = insertValues & tmpNSEIndicesDetails.turnover & ","
+                insertValues = insertValues & tmpNSEIndicesDetails.yearlyHighPrice & ","
+                insertValues = insertValues & tmpNSEIndicesDetails.yearlyLowPrice & ","
+                insertValues = insertValues & tmpNSEIndicesDetails.yearlyPercentageChange & ","
+                insertValues = insertValues & tmpNSEIndicesDetails.monthlyPercentageChange & ","
+                insertValues = insertValues & "'" & tmpNSEIndicesDetails.updateDate & "',"
+                insertValues = insertValues & "'" & tmpNSEIndicesDetails.updateTime & "');"
+                DBFunctions.ExecuteSQLStmt(insertStatement & insertValues)
+            Next
+        Catch exc As Exception
+            StockAppLogger.LogError("StoreOrUpdateIndicesDetail Error Occurred in storing NSEDetails object = ", exc, "NSEIndicesDetails")
+        End Try
         DBFunctions.CloseSQLConnection()
         StockAppLogger.Log("StoreOrUpdateIndicesDetail End", "NSEIndicesDetails")
     End Sub
