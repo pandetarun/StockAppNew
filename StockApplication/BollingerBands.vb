@@ -3,7 +3,8 @@ Imports System.Collections.Generic
 
 Public Class BollingerBands
 
-    Dim lastTradedPrice, fourteenSampleBBUper, fourteenSampleBBLower, twentySampleBBUper, twentySampleBBLower, twentySixSampleBBUper, twentySixSampleBBLower, simpleMA As Double
+    Dim lastTradedPrice, BBUper, BBLower, simpleMA As Double
+    Dim PeriodBandwidth As Double
     Dim MATime, MAStock As String
     Dim MADate As Date
     Dim counter As Integer
@@ -42,41 +43,33 @@ Public Class BollingerBands
         Return True
     End Function
 
-    Private Function IntraDayMACalculation(tmpStockCode As String) As Boolean
+    Private Function IntraDayBBCalculation(tmpStockCode As String) As Boolean
 
         Dim ds As FbDataReader = Nothing
         Dim ds1 As FbDataReader = Nothing
-        Dim whereClause, whereClause1 As String
-        Dim orderClause, orderClause1 As String
+        Dim whereClause As String
+        Dim orderClause As String
         Dim closingPrice As Double
-        Dim laststoredEMA As Double
-        Dim recordPresentInTable As Boolean
+        Dim tradedPrice, totalTradedPrice As Double
+        Dim perioddeviation As Double
+        Dim PeriodData As List(Of Double) = New List(Of Double)
 
-        StockAppLogger.Log("IntraDayMACalculation Start", "MovingAverage")
+        Dim tmpPeriodData As List(Of Double)
+
+        StockAppLogger.Log("IntraDayBBCalculation Start", "BollingerBands")
 
         lastTradedPrice = 0
         counter = 0
+        totalTradedPrice = 0
         simpleMA = 0
-        fourteenSampleBBUper = 0
-        fourteenSampleBBLower = 0
-        twentySampleBBUper = 0
-        twentySampleBBLower = 0
-        twentySixSampleBBUper = 0
-        twentySixSampleBBLower = 0
-
+        BBUper = 0
+        BBLower = 0
         MAStock = tmpStockCode
-
         Try
-            whereClause1 = "TRADEDDATE='" & Today & "' and STOCK_NAME = '" & tmpStockCode & "'"
-            orderClause1 = "LASTUPDATETIME desc"
             whereClause = "TRADEDDATE='" & Today & "' and companycode = '" & tmpStockCode & "'"
             orderClause = "lastupdatetime desc"
-
             MADate = Today
-            'orderClause1 = "lastupdatetime"
             ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
-            ds1 = DBFunctions.getDataFromTable("INTRADAYMOVINGAVERAGES", " * ", whereClause1, orderClause1)
-            recordPresentInTable = ds1.Read()
             While ds.Read()
                 counter = counter + 1
                 If counter = 1 Then
@@ -84,44 +77,94 @@ Public Class BollingerBands
                     closingPrice = ds.GetValue(ds.GetOrdinal("lastClosingPrice"))
                     lastTradedPrice = closingPrice
                 End If
-                simpleMA = simpleMA + Double.Parse(ds.GetValue(ds.GetOrdinal("lastClosingPrice")))
-                If counter = 3 Then
-                    'threeSampleSMA = simpleMA / 3
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("THREEEMA")))
-                        'threeSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
-                    Else
-                        'threeSampleEMA = threeSampleSMA
-                    End If
+                tradedPrice = Double.Parse(ds.GetValue(ds.GetOrdinal("lastClosingPrice")))
+                totalTradedPrice = totalTradedPrice + tradedPrice
+                PeriodData.Add(tradedPrice)
+                If counter = 14 Then
+                    perioddeviation = 0
+                    BBLower = 0
+                    BBUper = 0
+                    tmpPeriodData = New List(Of Double)
+                    simpleMA = totalTradedPrice / 14
+                    For counter1 As Integer = 1 To 14
+                        tmpPeriodData.Item(counter1) = PeriodData.Item(counter1) - simpleMA
+                        tmpPeriodData.Item(counter1) = tmpPeriodData.Item(counter1) * tmpPeriodData.Item(counter1)
+                        perioddeviation = perioddeviation + tmpPeriodData.Item(counter1)
+                    Next counter1
+                    perioddeviation = perioddeviation / 14
+                    perioddeviation = Math.Sqrt(perioddeviation)
+                    BBLower = simpleMA - 2 * perioddeviation
+                    BBUper = simpleMA + 2 * perioddeviation
+                    PeriodBandwidth = BBUper - BBLower
+                    InsertIntraDayBBtoDB(14)
+                End If
 
-                ElseIf counter = 20 Then
-                    'twentySampleSMA = simpleMA / 20
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("TWENTYEMA")))
-                        ' twentySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
-                    Else
-                        'twentySampleEMA = twentySampleSMA
-                    End If
-                ElseIf counter = 50 Then
-                    ' FiftySampleSMA = simpleMA / 50
-                    If recordPresentInTable Then
-                        laststoredEMA = Double.Parse(ds1.GetValue(ds.GetOrdinal("FIFTYEMA")))
-                        'FiftySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredEMA) + laststoredEMA
-                    Else
-                        'FiftySampleEMA = FiftySampleSMA
-                    End If
+                If counter = 20 Then
+                    perioddeviation = 0
+                    BBLower = 0
+                    BBUper = 0
+                    tmpPeriodData = New List(Of Double)
+                    simpleMA = totalTradedPrice / 20
+                    For counter1 As Integer = 1 To 20
+                        tmpPeriodData.Item(counter1) = PeriodData.Item(counter1) - simpleMA
+                        tmpPeriodData.Item(counter1) = tmpPeriodData.Item(counter1) * tmpPeriodData.Item(counter1)
+                        perioddeviation = perioddeviation + tmpPeriodData.Item(counter1)
+                    Next counter1
+                    perioddeviation = perioddeviation / 20
+                    perioddeviation = Math.Sqrt(perioddeviation)
+                    BBLower = simpleMA - 2 * perioddeviation
+                    BBUper = simpleMA + 2 * perioddeviation
+                    PeriodBandwidth = BBUper - BBLower
+                    InsertIntraDayBBtoDB(20)
+                End If
+                If counter = 26 Then
+                    perioddeviation = 0
+                    BBLower = 0
+                    BBUper = 0
+                    tmpPeriodData = New List(Of Double)
+                    simpleMA = totalTradedPrice / 26
+                    For counter1 As Integer = 1 To 26
+                        tmpPeriodData.Item(counter1) = PeriodData.Item(counter1) - simpleMA
+                        tmpPeriodData.Item(counter1) = tmpPeriodData.Item(counter1) * tmpPeriodData.Item(counter1)
+                        perioddeviation = perioddeviation + tmpPeriodData.Item(counter1)
+                    Next counter1
+                    perioddeviation = perioddeviation / 26
+                    perioddeviation = Math.Sqrt(perioddeviation)
+                    BBLower = simpleMA - 2 * perioddeviation
+                    BBUper = simpleMA + 2 * perioddeviation
+                    PeriodBandwidth = BBUper - BBLower
+                    InsertIntraDayBBtoDB(26)
                     Exit While
                 End If
             End While
-            If counter = 1 Then
-                'threeSampleSMA = simpleMA
-
-            End If
         Catch exc As Exception
-            StockAppLogger.LogError("Error Occurred in calculating intraday moving average = ", exc, "MovingAverage")
+            StockAppLogger.LogError("Error Occurred in calculating intraday Bollinger Band = ", exc, "BollingerBands")
             Return False
         End Try
-        StockAppLogger.Log("IntraDayMACalculation End", "MovingAverage")
+        StockAppLogger.Log("IntraDayBBCalculation End", "BollingerBands")
+        Return True
+    End Function
+
+    Private Function InsertIntraDayBBtoDB(ByVal period As Integer) As Boolean
+
+        Dim insertStatement As String
+        Dim insertValues As String
+        Dim sqlStatement As String
+        Dim fireQuery As Boolean = False
+
+        StockAppLogger.Log("InsertIntraDayBBtoDB Start", "BollingerBands")
+        Try
+            insertStatement = "INSERT INTO INTRADAYBOLLINGERBANDS (TRADEDDATE, STOCK_NAME, LASTUPDATETIME, PERIOD, CLOSINGPRICE, SMA, UPPERBAND, LOWERBAND, BANDWIDTH"
+            insertValues = "VALUES ('" & MADate & "', '" & MAStock & "', '" & MATime & "', " & period & ", " & lastTradedPrice & ", " & simpleMA & ", " & BBUper & ", " & BBLower & ", " & PeriodBandwidth & ")"
+
+            sqlStatement = insertStatement & insertValues
+            DBFunctions.ExecuteSQLStmt(sqlStatement)
+        Catch exc As Exception
+            StockAppLogger.LogError("Error Occurred in storing intraday bollinger band = ", exc, "BollingerBands")
+            Return False
+        End Try
+        StockAppLogger.Log("InsertIntraDayBBtoDB End", "BollingerBands")
         Return True
     End Function
 End Class
+

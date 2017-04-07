@@ -347,7 +347,7 @@ Public Class MovingAverage
         Try
             whereClause1 = "STOCK_NAME = '" & tmpStockCode & "'"
             orderClause1 = "TRADEDDATE desc"
-            whereClause = "STOCKNAME = '" & tmpStockCode & "' and TRADEDDATE > '" & DateTime.Now.AddDays(-200) & "'"
+            whereClause = "STOCKNAME = '" & tmpStockCode & "' and TRADEDDATE > '" & Today.AddDays(-200) & "'"
             orderClause = "TRADEDDATE desc"
 
             MADate = Today

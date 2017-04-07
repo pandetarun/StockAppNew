@@ -74,63 +74,63 @@ Public Class DailyStockQuote
             rawIndicesData = Helper.GetDataFromUrl(NSEIndicesURL)
             tmpRawStockDailyData = rawIndicesData
             lastUpdatedDate = Today
-            indexOfVar = tmpRawStockDailyData.IndexOf("time")
-            tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
-            tmpString = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-            lastupdatedTime = tmpString.Substring(tmpString.Length - 8)
+            If rawIndicesData IsNot Nothing Then
+                indexOfVar = tmpRawStockDailyData.IndexOf("time")
+                tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
+                tmpString = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                lastupdatedTime = tmpString.Substring(tmpString.Length - 8)
 
-            While tmpRawStockDailyData.IndexOf("symbol") >= 1
-                indexOfVar = tmpRawStockDailyData.IndexOf("symbol")
-                tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 9)
-                tmpStockSymbol = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                If Not stockList.Contains(tmpStockSymbol) Then
-                    tmpDailyStockQuote = New DailyStockQuote()
-                    tmpDailyStockQuote.updateDate = lastUpdatedDate
-                    tmpDailyStockQuote.symbol = tmpStockSymbol
-                    indexOfVar = tmpRawStockDailyData.IndexOf("open")
-                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
-                    tmpDailyStockQuote.openPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                    indexOfVar = tmpRawStockDailyData.IndexOf("high")
-                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
-                    tmpDailyStockQuote.highPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                    indexOfVar = tmpRawStockDailyData.IndexOf("low")
-                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
-                    tmpDailyStockQuote.lowPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-
-                    indexOfVar = tmpRawStockDailyData.IndexOf("ltP")
-                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
-                    tmpDailyStockQuote.lastTradedPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                    indexOfVar = tmpRawStockDailyData.IndexOf("ptsC")
-                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
-                    tmpDailyStockQuote.changeinPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                    indexOfVar = tmpRawStockDailyData.IndexOf("per")
-                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
-                    tmpDailyStockQuote.changeInPercentage = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                    indexOfVar = tmpRawStockDailyData.IndexOf("trdVol")
+                While tmpRawStockDailyData.IndexOf("symbol") >= 1
+                    indexOfVar = tmpRawStockDailyData.IndexOf("symbol")
                     tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 9)
-                    tmpDailyStockQuote.volume = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-
-                    indexOfVar = tmpRawStockDailyData.IndexOf("ntP")
-                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
-                    tmpDailyStockQuote.turnover = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                    indexOfVar = tmpRawStockDailyData.IndexOf("wkhi")
-                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
-                    tmpDailyStockQuote.yearlyHighPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                    indexOfVar = tmpRawStockDailyData.IndexOf("wklo")
-                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
-                    tmpDailyStockQuote.yearlyLowPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                    indexOfVar = tmpRawStockDailyData.IndexOf("yPC")
-                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
-                    tmpDailyStockQuote.yearlyPercentageChange = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                    indexOfVar = tmpRawStockDailyData.IndexOf("mPC")
-                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
-                    tmpDailyStockQuote.monthlyPercentageChange = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf("""}"))
-
-                    stockList.Add(tmpDailyStockQuote.symbol)
-                    dailyStockDetailsList.Add(tmpDailyStockQuote)
-                End If
-
-            End While
+                    tmpStockSymbol = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                    If Not stockList.Contains(tmpStockSymbol) Then
+                        tmpDailyStockQuote = New DailyStockQuote()
+                        tmpDailyStockQuote.updateDate = lastUpdatedDate
+                        tmpDailyStockQuote.symbol = tmpStockSymbol
+                        indexOfVar = tmpRawStockDailyData.IndexOf("open")
+                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
+                        tmpDailyStockQuote.openPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                        indexOfVar = tmpRawStockDailyData.IndexOf("high")
+                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
+                        tmpDailyStockQuote.highPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                        indexOfVar = tmpRawStockDailyData.IndexOf("low")
+                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
+                        tmpDailyStockQuote.lowPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                        indexOfVar = tmpRawStockDailyData.IndexOf("ltP")
+                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
+                        tmpDailyStockQuote.lastTradedPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                        indexOfVar = tmpRawStockDailyData.IndexOf("ptsC")
+                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
+                        tmpDailyStockQuote.changeinPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                        indexOfVar = tmpRawStockDailyData.IndexOf("per")
+                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
+                        tmpDailyStockQuote.changeInPercentage = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                        indexOfVar = tmpRawStockDailyData.IndexOf("trdVol")
+                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 9)
+                        tmpDailyStockQuote.volume = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                        indexOfVar = tmpRawStockDailyData.IndexOf("ntP")
+                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
+                        tmpDailyStockQuote.turnover = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                        indexOfVar = tmpRawStockDailyData.IndexOf("wkhi")
+                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
+                        tmpDailyStockQuote.yearlyHighPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                        indexOfVar = tmpRawStockDailyData.IndexOf("wklo")
+                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
+                        tmpDailyStockQuote.yearlyLowPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                        indexOfVar = tmpRawStockDailyData.IndexOf("yPC")
+                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
+                        tmpDailyStockQuote.yearlyPercentageChange = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
+                        indexOfVar = tmpRawStockDailyData.IndexOf("mPC")
+                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
+                        tmpDailyStockQuote.monthlyPercentageChange = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf("""}"))
+                        stockList.Add(tmpDailyStockQuote.symbol)
+                        dailyStockDetailsList.Add(tmpDailyStockQuote)
+                    End If
+                End While
+            Else
+                StockAppLogger.LogInfo("getDailyStockDetails GetDataFromUrl did not get data for URL = " + NSEIndicesURL, "DailyStockQuote")
+            End If
         Catch ex As Exception
             StockAppLogger.LogError("getDailyStockDetails Error in creating daily record ", ex, "DailyStockQuote")
         End Try
