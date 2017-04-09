@@ -8,7 +8,7 @@ Public Class Helper
         Dim strResponse As String
         Dim counter As Integer
         counter = 0
-        StockAppLogger.Log("GetDataFromUrl Starttr")
+        StockAppLogger.Log("GetDataFromUrl Start", "Helper")
 Retry:
         Try
             serverUrl = urlToGet
@@ -20,20 +20,20 @@ Retry:
             strResponse = sReader.ReadToEnd()
             response.Close()
         Catch ex As Exception
-            StockAppLogger.LogInfo("Error Occurred in getting data from URL = " & urlToGet)
-            StockAppLogger.LogError("Error Occurred in getting data from URL = " & urlToGet, ex)
+            StockAppLogger.LogError("Error Occurred in getting data from URL = " & urlToGet, ex, "Helper")
             If counter = 0 Then
                 counter = counter + 1
-                StockAppLogger.Log("Retrying fetch for URL = " & urlToGet)
+                StockAppLogger.LogInfo("Retrying fetch for URL = " & urlToGet, "Helper")
                 GoTo Retry
             End If
             Return Nothing
         End Try
-        StockAppLogger.Log("GetDataFromUrl End")
+        StockAppLogger.Log("GetDataFromUrl End", "Helper")
         Return strResponse
     End Function
 
     Private Shared Function CreateRequest(ByRef request As HttpWebRequest) As HttpWebRequest
+        StockAppLogger.Log("CreateRequest Start", "Helper")
         request.UseDefaultCredentials = True
         request.Method = WebRequestMethods.Http.Post
         request.ContentType = "application/json"
@@ -42,12 +42,12 @@ Retry:
             .KeepAlive = False
             .Method = "GET"
             .AllowAutoRedirect = True
-            .Timeout = 60 * 1000
             .Headers.Add("Pragma", "no-cache")
             .Headers.Add("Cache-Control", "no-cache")
             .Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
             .ServicePoint.Expect100Continue = False
         End With
+        StockAppLogger.Log("CreateRequest End", "Helper")
         Return request
     End Function
 End Class

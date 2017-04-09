@@ -23,5 +23,8 @@
     <Setting Name="TimelyStockQuote" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxGetQuoteJSON.jsp?symbol=</Value>
     </Setting>
+    <Setting Name="DataBase" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\DB\STOCKAPPDB.fdb</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

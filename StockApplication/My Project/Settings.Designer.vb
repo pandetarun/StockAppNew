@@ -138,6 +138,18 @@ Namespace My
                 Me("TimelyStockQuote") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("\DB\STOCKAPPDB.fdb")>  _
+        Public Property DataBase() As String
+            Get
+                Return CType(Me("DataBase"),String)
+            End Get
+            Set
+                Me("DataBase") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

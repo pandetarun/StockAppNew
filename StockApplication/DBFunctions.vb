@@ -1,5 +1,4 @@
-﻿'Imports FirebirdSql.Data.Firebird
-Imports FirebirdSql.Data.FirebirdClient
+﻿Imports FirebirdSql.Data.FirebirdClient
 Imports System.IO.StreamReader
 Imports System.Globalization
 Imports System.Data
@@ -9,16 +8,13 @@ Imports System.Collections.Generic
 
 Public Class DBFunctions
 
-    'Public myCellCollection As New Collection
     Public Shared myConnection As New FbConnection
-    'Public myDataAdapter() As FbDataAdapter
     Public Shared myDataSet As New DataSet
-    'Public myWorkRow As DataRow
-    Public Shared ServerType As FbServerType = FbServerType.Default   '!
-    Public Shared Database As String = My.Settings.ApplicationFileLocation & "\DB\STOCKAPPDB.fdb"                   '!
-    Public Shared DataSource As String = My.Settings.DataSource                            '!
-    Public Shared Password As String = My.Settings.Password                              '!
-    Public Shared UserID As String = My.Settings.UserID                                '!
+    Public Shared ServerType As FbServerType = FbServerType.Default
+    Public Shared Database As String = My.Settings.ApplicationFileLocation & My.Settings.DataBase
+    Public Shared DataSource As String = My.Settings.DataSource
+    Public Shared Password As String = My.Settings.Password
+    Public Shared UserID As String = My.Settings.UserID
 
     Public Shared Function OpenSQLConnection() As Boolean
         StockAppLogger.Log("OpenSQLConnection Start", "DBFunctions")
@@ -44,11 +40,8 @@ Public Class DBFunctions
             Return True
         Catch ex As Exception
             StockAppLogger.LogError("OpenSQLConnection Error Occurred in opening the connection ", ex, "DBFunctions")
-            'MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
-            'ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
         End Try
-
     End Function
 
     Public Function CreateDatabase() As Boolean
@@ -65,25 +58,20 @@ Public Class DBFunctions
             cs.Database = Database
             cs.Charset = "UNICODE_FSS"
             cs.ServerType = ServerType
-
             FbConnection.CreateDatabase(cs.ToString)
             If cs IsNot Nothing Then cs = Nothing
             StockAppLogger.Log("CreateDatabase End", "DBFunctions")
             Return True
         Catch ex As Exception
             StockAppLogger.Log("CreateDatabase Error in creating database", "DBFunctions")
-            'MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
-            'ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
         End Try
     End Function
 
     Public Shared Sub CloseSQLConnection()
-
         If myConnection.State = ConnectionState.Open Then
             myConnection.Close()
         End If
-
     End Sub
 
     Public Shared Function ExecuteSQLStmt(ByVal sSQL As String, Optional ByVal Disconnect As Boolean = False) As Boolean
@@ -97,8 +85,6 @@ Public Class DBFunctions
                 Return True
             Catch ex As Exception
                 StockAppLogger.LogError("ExecuteSQLStmtError in executing statement" & sSQL, ex, "DBFunctions")
-                'MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
-                'ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return False
             Finally
                 If Disconnect = True Then CloseSQLConnection()
@@ -111,8 +97,6 @@ Public Class DBFunctions
             Return False
         End If
     End Function
-
-
 
     Public Shared Function getDataFromTable(ByVal tableName As String, Optional ByVal columnNames As String = "", Optional ByVal whereClause As String = "", Optional ByVal orderClause As String = "", Optional ByVal Disconnect As Boolean = False) As FbDataReader
 
@@ -131,36 +115,23 @@ Public Class DBFunctions
                 Else
                     sql = "Select * from " & tableName
                 End If
-
                 If whereClause IsNot "" Then
                     sql = sql & " where " & whereClause
                 End If
-
                 If orderClause IsNot "" Then
                     sql = sql & " order by " & orderClause
                 End If
-
                 command.Connection = myConnection
                 command.CommandText = sql
-
                 ds = command.ExecuteReader
                 resultList = New List(Of String)
-                'loops and add the fields into the table 
-                ' While ds.Read()
-                'resultList.Add(ds.GetValue(ds.GetOrdinal("INDEX_NAME")))
-
-                'End While
                 StockAppLogger.Log("getDataFromTable End", "DBFunctions")
                 Return ds
             Catch ex As Exception
-                StockAppLogger.LogError("getDataFromTable Error in getting data from table " & tableName, ex, "DBFunctions")
-                'MessageBox.Show("An error has occured!" & vbCrLf & vbCrLf &
-                'ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                StockAppLogger.LogError("getDataFromTable Error in getting data for query " & sql, ex, "DBFunctions")
                 Return Nothing
             End Try
-
         End If
         Return ds
     End Function
-
 End Class

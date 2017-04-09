@@ -3,7 +3,7 @@ Imports System.Collections.Generic
 
 Public Class MovingAverage
     Dim lastTradedPrice, threeSampleSMA, fiveSampleSMA, tenSampleSMA, fourteenSampleSMA, twentySampleSMA, FiftySampleSMA, TwoHundredMA, simpleMA As Double
-    Dim threeSampleEMA, fiveSampleEMA, tenSampleEMA, fourteenSampleEMA, twentySampleEMA, FiftySampleEMA, TwoHundredEMA As Double
+    Dim eMA, threeSampleEMA, fiveSampleEMA, tenSampleEMA, fourteenSampleEMA, twentySampleEMA, FiftySampleEMA, TwoHundredEMA As Double
 
     Dim MATime, MAStock As String
     Dim MADate As Date
@@ -33,10 +33,10 @@ Public Class MovingAverage
                 tmpStockCode = ds.GetValue(ds.GetOrdinal("STOCK_NAME"))
                 If Not tmpStockList.Contains(tmpStockCode) Then
                     tmpStockList.Add(tmpStockCode)
-                    If IntraDayMACalculation(tmpStockCode) Then
-                        InsertIntraDayMAtoDB()
+                    If IntraDaySNEMACalculation(tmpStockCode) Then
+                        StockAppLogger.Log("GetStockListAndCalculateIntraDayMA IntraDaySNEMACalculation successfull for Stock = " & tmpStockCode & " at time = " & MATime, "MovingAverage")
                     Else
-                        StockAppLogger.Log("GetStockListAndCalculateIntraDayMA IntraDayMACalcultaion failed for Stock = " & tmpStockCode & " at time = " & MATime, "MovingAverage")
+                        StockAppLogger.LogInfo("GetStockListAndCalculateIntraDayMA IntraDaySNEMACalculation failed for Stock = " & tmpStockCode & " at time = " & MATime, "MovingAverage")
                     End If
                 End If
             End While
@@ -193,6 +193,96 @@ Public Class MovingAverage
         Return True
     End Function
 
+    Private Function IntraDaySNEMACalculation(tmpStockCode As String) As Boolean
+
+        Dim ds As FbDataReader = Nothing
+        Dim ds1 As FbDataReader = Nothing
+        Dim orderClause, whereClause, configuredSMAPeriods, configuredEMAPeriods As String
+        Dim closingPrice As Double
+        Dim laststoredEMA, tmpSimpleMA As Double
+        Dim tmpMAPeriods, tmpEMAPeriods As List(Of String)
+
+        StockAppLogger.Log("IntraDaySNEMACalculation Start", "MovingAverage")
+
+        tmpMAPeriods = Nothing
+        tmpEMAPeriods = Nothing
+        lastTradedPrice = 0
+        counter = 0
+        simpleMA = 0
+        eMA = 0
+        tmpSimpleMA = 0
+        laststoredEMA = 0
+        MAStock = tmpStockCode
+        Try
+            whereClause = "TRADEDDATE='" & Today & "' and companycode = '" & tmpStockCode & "'"
+            orderClause = "lastupdatetime desc"
+            MADate = Today
+            ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
+            'Get period details for the stock
+            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " INTRADAYSMAPERIOD, INTRADAYEMAPERIOD", "stockname = '" & tmpStockCode)
+            If ds1.Read() Then
+                configuredSMAPeriods = ds1.GetValue(ds1.GetOrdinal("INTRADAYSMAPERIOD"))
+                configuredEMAPeriods = ds1.GetValue(ds1.GetOrdinal("INTRADAYEMAPERIOD"))
+                tmpMAPeriods = New List(Of String)(configuredSMAPeriods.Split(","))
+                tmpEMAPeriods = New List(Of String)(configuredEMAPeriods.Split(","))
+            End If
+            While ds.Read()
+                counter = counter + 1
+                If counter = 1 Then
+                    MATime = ds.GetValue(ds.GetOrdinal("lastupdatetime"))
+                    closingPrice = ds.GetValue(ds.GetOrdinal("lastClosingPrice"))
+                    lastTradedPrice = closingPrice
+                End If
+                tmpSimpleMA = tmpSimpleMA + Double.Parse(ds.GetValue(ds.GetOrdinal("lastClosingPrice")))
+                If tmpMAPeriods.Contains(counter) Then
+                    simpleMA = tmpSimpleMA / counter
+                    CalculateEMAForPeriod(counter, tmpStockCode, closingPrice)
+                    If InsertIntraDaySNEMAtoDB(counter) Then
+                        StockAppLogger.Log("IntraDaySNEMACalculation period " & counter & " inserted in DB for stock = " & tmpStockCode, "MovingAverage")
+                    Else
+                        StockAppLogger.LogInfo("IntraDaySNEMACalculation period " & counter & " not inserted in DB  for stock = " & tmpStockCode, "MovingAverage")
+                    End If
+                    If tmpMAPeriods.IndexOf(counter) = tmpMAPeriods.Count Then
+                        Exit While
+                    End If
+                End If
+            End While
+            If counter = 1 Then
+                simpleMA = tmpSimpleMA
+                If InsertIntraDaySNEMAtoDB(counter) Then
+                    StockAppLogger.Log("IntraDaySNEMACalculation period " & counter & " inserted in DB for stock = " & tmpStockCode, "MovingAverage")
+                Else
+                    StockAppLogger.LogInfo("IntraDaySNEMACalculation period " & counter & " not inserted in DB  for stock = " & tmpStockCode, "MovingAverage")
+                End If
+            End If
+        Catch exc As Exception
+            StockAppLogger.LogError("IntraDaySNEMACalculation Error Occurred in calculating intraday moving average = ", exc, "MovingAverage")
+            Return False
+        End Try
+        StockAppLogger.Log("IntraDaySNEMACalculation End", "MovingAverage")
+        Return True
+    End Function
+
+    Private Function CalculateEMAForPeriod(ByVal period As Integer, tmpStockCode As String, closingprice As Double) As Boolean
+        Dim orderClause, whereClause As String
+        Dim ds As FbDataReader = Nothing
+        Dim laststoredEMA As Double
+
+        laststoredEMA = 0
+        whereClause = "TRADEDDATE='" & Today & "' and STOCKNAME = '" & tmpStockCode & "' and PERIOD = " & counter
+        orderClause = "LASTUPDATETIME desc"
+        ds = DBFunctions.getDataFromTable("INTRADAYSNEMOVINGAVERAGES", " * ", whereClause, orderClause)
+        If ds.Read() Then
+            laststoredEMA = Double.Parse(ds.GetValue(ds.GetOrdinal("EMA")))
+        End If
+        If laststoredEMA <> 0 Then
+            eMA = (2 / (counter + 1)) * (closingprice - laststoredEMA) + laststoredEMA
+        Else
+            eMA = simpleMA
+        End If
+        Return True
+    End Function
+
     Private Function InsertIntraDayMAtoDB() As Boolean
 
         Dim insertStatement As String
@@ -279,6 +369,27 @@ Public Class MovingAverage
         Return True
     End Function
 
+    Private Function InsertIntraDaySNEMAtoDB(ByVal period As Integer) As Boolean
+
+        Dim insertStatement As String
+        Dim insertValues As String
+        Dim sqlStatement As String
+        Dim fireQuery As Boolean = False
+
+        StockAppLogger.Log("InsertIntraDaySNEMAtoDB Start", "MovingAverage")
+        insertStatement = "INSERT INTO INTRADAYSNEMOVINGAVERAGES (TRADEDDATE, LASTUPDATETIME, STOCKNAME, LASTTRADEDPRICE, SMA, EMA, PERIOD"
+        insertValues = "VALUES ('" & MADate & "','" & MATime & "', '" & MAStock & "'," & lastTradedPrice & ", " & simpleMA & ", " & eMA & ", " & period
+
+        insertStatement = insertStatement & ") "
+        insertValues = insertValues & ");"
+        sqlStatement = insertStatement & insertValues
+
+        DBFunctions.ExecuteSQLStmt(sqlStatement)
+
+        StockAppLogger.Log("InsertIntraDaySNEMAtoDB End", "MovingAverage")
+        Return True
+    End Function
+
     Private Function GetStockListAndCalculateDailyMA() As Boolean
         Dim tmpStockList As List(Of String) = New List(Of String)
         Dim tmpStockCode As String
@@ -291,10 +402,10 @@ Public Class MovingAverage
                 tmpStockCode = ds.GetValue(ds.GetOrdinal("STOCK_NAME"))
                 If Not tmpStockList.Contains(tmpStockCode) Then
                     tmpStockList.Add(tmpStockCode)
-                    If DailyMACalculation(tmpStockCode) Then
-                        InsertDailyMAtoDB()
+                    If DailySNEMACalculation(tmpStockCode) Then
+                        StockAppLogger.Log("GetStockList HourlyMACalcultaion successfull for Stock = " & tmpStockCode & " at Date = " & MADate, "MovingAverage")
                     Else
-                        StockAppLogger.Log("GetStockList HourlyMACalcultaion failed for Stock = " & tmpStockCode & " at time = " & MATime, "MovingAverage")
+                        StockAppLogger.LogInfo("GetStockList HourlyMACalcultaion failed for Stock = " & tmpStockCode & " at Date = " & MADate, "MovingAverage")
                     End If
                 End If
             End While
@@ -465,6 +576,95 @@ Public Class MovingAverage
         Return True
     End Function
 
+    Private Function DailySNEMACalculation(tmpStockCode As String) As Boolean
+
+        Dim ds As FbDataReader = Nothing
+        Dim ds1 As FbDataReader = Nothing
+        Dim orderClause, whereClause, configuredSMAPeriods, configuredEMAPeriods As String
+        Dim closingPrice As Double
+        Dim laststoredEMA, tmpSimpleMA As Double
+        Dim tmpMAPeriods, tmpEMAPeriods As List(Of String)
+
+        StockAppLogger.Log("DailySNEMACalculation Start", "MovingAverage")
+
+        tmpMAPeriods = Nothing
+        tmpEMAPeriods = Nothing
+        lastTradedPrice = 0
+        counter = 0
+        simpleMA = 0
+        eMA = 0
+        tmpSimpleMA = 0
+        laststoredEMA = 0
+        MAStock = tmpStockCode
+        Try
+            whereClause = "STOCKNAME = '" & tmpStockCode & "' and TRADEDDATE > '" & Today.AddDays(-200) & "'"
+            orderClause = "TRADEDDATE desc"
+            MADate = Today
+            ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " LAST_TRADED_PRICE", whereClause, orderClause)
+            'Get period details for the stock
+            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " DAILYSMAPERIOD, DAILYEMAPERIOD", "stockname = '" & tmpStockCode)
+            If ds1.Read() Then
+                configuredSMAPeriods = ds1.GetValue(ds1.GetOrdinal("DAILYSMAPERIOD"))
+                configuredEMAPeriods = ds1.GetValue(ds1.GetOrdinal("DAILYEMAPERIOD"))
+                tmpMAPeriods = New List(Of String)(configuredSMAPeriods.Split(","))
+                tmpEMAPeriods = New List(Of String)(configuredEMAPeriods.Split(","))
+            End If
+            While ds.Read()
+                counter = counter + 1
+                If counter = 1 Then
+                    closingPrice = ds.GetValue(ds.GetOrdinal("lastClosingPrice"))
+                    lastTradedPrice = closingPrice
+                End If
+                tmpSimpleMA = tmpSimpleMA + Double.Parse(ds.GetValue(ds.GetOrdinal("LAST_TRADED_PRICE")))
+                If tmpMAPeriods.Contains(counter) Then
+                    simpleMA = tmpSimpleMA / counter
+                    CalculateDailyEMAForPeriod(counter, tmpStockCode, closingPrice)
+                    If InsertDailySNEMAtoDB(counter) Then
+                        StockAppLogger.Log("DailySNEMACalculation period " & counter & " inserted in DB for stock = " & tmpStockCode, "MovingAverage")
+                    Else
+                        StockAppLogger.LogInfo("DailySNEMACalculation period " & counter & " not inserted in DB  for stock = " & tmpStockCode, "MovingAverage")
+                    End If
+                    If tmpMAPeriods.IndexOf(counter) = tmpMAPeriods.Count Then
+                        Exit While
+                    End If
+                End If
+            End While
+            If counter = 1 Then
+                simpleMA = tmpSimpleMA
+                If InsertIntraDaySNEMAtoDB(counter) Then
+                    StockAppLogger.Log("DailySNEMACalculation period " & counter & " inserted in DB for stock = " & tmpStockCode, "MovingAverage")
+                Else
+                    StockAppLogger.LogInfo("DailySNEMACalculation period " & counter & " not inserted in DB  for stock = " & tmpStockCode, "MovingAverage")
+                End If
+            End If
+        Catch exc As Exception
+            StockAppLogger.LogError("DailySNEMACalculation Error Occurred in calculating intraday moving average = ", exc, "MovingAverage")
+            Return False
+        End Try
+        StockAppLogger.Log("DailySNEMACalculation End", "MovingAverage")
+        Return True
+    End Function
+
+    Private Function CalculateDailyEMAForPeriod(ByVal period As Integer, tmpStockCode As String, closingprice As Double) As Boolean
+        Dim orderClause, whereClause As String
+        Dim ds As FbDataReader = Nothing
+        Dim laststoredEMA As Double
+
+        laststoredEMA = 0
+        whereClause = "STOCKNAME = '" & tmpStockCode & "' and PERIOD = " & counter
+        orderClause = "TRADEDDATE desc"
+        ds = DBFunctions.getDataFromTable("DAILYMOVINGAVERAGES", " * ", whereClause, orderClause)
+        If ds.Read() Then
+            laststoredEMA = Double.Parse(ds.GetValue(ds.GetOrdinal("EMA")))
+        End If
+        If laststoredEMA <> 0 Then
+            eMA = (2 / (counter + 1)) * (closingprice - laststoredEMA) + laststoredEMA
+        Else
+            eMA = simpleMA
+        End If
+        Return True
+    End Function
+
     Private Function InsertDailyMAtoDB() As Boolean
 
         Dim insertStatement As String
@@ -559,6 +759,26 @@ Public Class MovingAverage
             StockAppLogger.Log("InsertDailyMAtoDB Insert Query not fired for stock = " & MAStock & " at Date = " & MADate, "MovingAverage")
         End If
         StockAppLogger.Log("InsertDailyMAtoDB End", "MovingAverage")
+        Return True
+    End Function
+
+    Private Function InsertDailySNEMAtoDB(ByVal period As Integer) As Boolean
+        Dim insertStatement As String
+        Dim insertValues As String
+        Dim sqlStatement As String
+        Dim fireQuery As Boolean = False
+
+        StockAppLogger.Log("InsertDailySNEMAtoDB Start", "MovingAverage")
+        insertStatement = "INSERT INTO DAILYSNEMOVINGAVERAGES (TRADEDDATE, STOCKNAME, CLOSINGPRICE, SMA, EMA, PERIOD"
+        insertValues = "VALUES ('" & MADate & "', '" & MAStock & "'," & lastTradedPrice & ", " & simpleMA & ", " & eMA & ", " & period
+
+        insertStatement = insertStatement & ") "
+        insertValues = insertValues & ");"
+        sqlStatement = insertStatement & insertValues
+
+        DBFunctions.ExecuteSQLStmt(sqlStatement)
+
+        StockAppLogger.Log("InsertDailySNEMAtoDB End", "MovingAverage")
         Return True
     End Function
 
