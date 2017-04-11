@@ -219,7 +219,7 @@ Public Class MovingAverage
             MADate = Today
             ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
             'Get period details for the stock
-            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " INTRADAYSMAPERIOD, INTRADAYEMAPERIOD", "stockname = '" & tmpStockCode)
+            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " INTRADAYSMAPERIOD, INTRADAYEMAPERIOD", "stockname = '" & tmpStockCode & "'")
             If ds1.Read() Then
                 configuredSMAPeriods = ds1.GetValue(ds1.GetOrdinal("INTRADAYSMAPERIOD"))
                 configuredEMAPeriods = ds1.GetValue(ds1.GetOrdinal("INTRADAYEMAPERIOD"))
@@ -602,7 +602,7 @@ Public Class MovingAverage
             MADate = Today
             ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " LAST_TRADED_PRICE", whereClause, orderClause)
             'Get period details for the stock
-            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " DAILYSMAPERIOD, DAILYEMAPERIOD", "stockname = '" & tmpStockCode)
+            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " DAILYSMAPERIOD, DAILYEMAPERIOD", "stockname = '" & tmpStockCode & "'")
             If ds1.Read() Then
                 configuredSMAPeriods = ds1.GetValue(ds1.GetOrdinal("DAILYSMAPERIOD"))
                 configuredEMAPeriods = ds1.GetValue(ds1.GetOrdinal("DAILYEMAPERIOD"))

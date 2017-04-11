@@ -65,9 +65,9 @@ Public Class BollingerBands
             orderClause = "lastupdatetime desc"
             MADate = Today
             ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
-            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " DAILYBBPERIOD", "stockname = '" & tmpStockCode)
+            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " INTRADAYBBPERIOD", "stockname = '" & tmpStockCode & "'")
             If ds1.Read() Then
-                configuredBBPeriods = ds1.GetValue(ds1.GetOrdinal("DAILYBBPERIOD"))
+                configuredBBPeriods = ds1.GetValue(ds1.GetOrdinal("INTRADAYBBPERIOD"))
                 tmpBBPeriods = New List(Of String)(configuredBBPeriods.Split(","))
             End If
             While ds.Read()
@@ -104,7 +104,7 @@ Public Class BollingerBands
 
             End While
         Catch exc As Exception
-            StockAppLogger.LogError("Error Occurred in calculating intraday Bollinger Band = ", exc, "BollingerBands")
+            StockAppLogger.LogError("IntraDayBBCalculation Error Occurred in calculating intraday Bollinger Band = ", exc, "BollingerBands")
             Return False
         End Try
         StockAppLogger.Log("IntraDayBBCalculation End", "BollingerBands")
@@ -121,12 +121,12 @@ Public Class BollingerBands
         StockAppLogger.Log("InsertIntraDayBBtoDB Start", "BollingerBands")
         Try
             insertStatement = "INSERT INTO INTRADAYBOLLINGERBANDS (TRADEDDATE, STOCK_NAME, LASTUPDATETIME, PERIOD, CLOSINGPRICE, SMA, UPPERBAND, LOWERBAND, BANDWIDTH"
-            insertValues = "VALUES ('" & MADate & "', '" & MAStock & "', '" & MATime & "', " & period & ", " & lastTradedPrice & ", " & simpleMA & ", " & BBUper & ", " & BBLower & ", " & PeriodBandwidth & ")"
+            insertValues = "VALUES ('" & MADate & "', '" & MAStock & "', '" & MATime & "', " & period & ", " & lastTradedPrice & ", " & simpleMA & ", " & BBUper & ", " & BBLower & ", " & PeriodBandwidth & ");"
 
             sqlStatement = insertStatement & insertValues
             DBFunctions.ExecuteSQLStmt(sqlStatement)
         Catch exc As Exception
-            StockAppLogger.LogError("Error Occurred in storing intraday bollinger band = ", exc, "BollingerBands")
+            StockAppLogger.LogError("InsertIntraDayBBtoDB Error Occurred in storing intraday bollinger band = ", exc, "BollingerBands")
             Return False
         End Try
         StockAppLogger.Log("InsertIntraDayBBtoDB End", "BollingerBands")
@@ -191,7 +191,7 @@ Public Class BollingerBands
             orderClause = "TRADEDDATE desc"
             MADate = Today
             ds = DBFunctions.getDataFromTable("DAILYSTOCKDATA", " last_traded_price", whereClause, orderClause)
-            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " DAILYBBPERIOD", "stockname = '" & tmpStockCode)
+            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " DAILYBBPERIOD", "stockname = '" & tmpStockCode & "'")
             If ds1.Read() Then
                 configuredBBPeriods = ds1.GetValue(ds1.GetOrdinal("DAILYBBPERIOD"))
                 tmpBBPeriods = New List(Of String)(configuredBBPeriods.Split(","))
@@ -244,8 +244,8 @@ Public Class BollingerBands
 
         StockAppLogger.Log("InsertDailyBBtoDB Start", "BollingerBands")
         Try
-            insertStatement = "INSERT INTO INTRADAYBOLLINGERBANDS (TRADEDDATE, STOCK_NAME, PERIOD, CLOSINGPRICE, SMA, UPPERBAND, LOWERBAND, BANDWIDTH"
-            insertValues = "VALUES ('" & MADate & "', '" & MAStock & "', ', " & period & ", " & lastTradedPrice & ", " & simpleMA & ", " & BBUper & ", " & BBLower & ", " & PeriodBandwidth & ")"
+            insertStatement = "INSERT INTO DAILYBOLLINGERBANDS (TRADEDDATE, STOCKNAME, PERIOD, CLOSINGPRICE, SMA, UPPERBAND, LOWERBAND, BANDWIDTH"
+            insertValues = "VALUES ('" & MADate & "', '" & MAStock & "', ', " & period & ", " & lastTradedPrice & ", " & simpleMA & ", " & BBUper & ", " & BBLower & ", " & PeriodBandwidth & ");"
 
             sqlStatement = insertStatement & insertValues
             DBFunctions.ExecuteSQLStmt(sqlStatement)
