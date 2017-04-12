@@ -87,7 +87,7 @@ Public Class MovingAverage
         Try
             whereClause1 = "TRADEDDATE='" & Today & "' and STOCK_NAME = '" & tmpStockCode & "'"
             orderClause1 = "LASTUPDATETIME desc"
-            whereClause = "TRADEDDATE='" & Today & "' and companycode = '" & tmpStockCode & "'"
+            whereClause = "LASTUPDATEDATE='" & Today & "' and companycode = '" & tmpStockCode & "'"
             orderClause = "lastupdatetime desc"
 
             MADate = Today
@@ -214,7 +214,7 @@ Public Class MovingAverage
         laststoredEMA = 0
         MAStock = tmpStockCode
         Try
-            whereClause = "TRADEDDATE='" & Today & "' and companycode = '" & tmpStockCode & "'"
+            whereClause = "LASTUPDATEDATE='" & Today & "' and companycode = '" & tmpStockCode & "'"
             orderClause = "lastupdatetime desc"
             MADate = Today
             ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
@@ -377,7 +377,7 @@ Public Class MovingAverage
         Dim fireQuery As Boolean = False
 
         StockAppLogger.Log("InsertIntraDaySNEMAtoDB Start", "MovingAverage")
-        insertStatement = "INSERT INTO INTRADAYSNEMOVINGAVERAGES (TRADEDDATE, LASTUPDATETIME, STOCKNAME, LASTTRADEDPRICE, SMA, EMA, PERIOD"
+        insertStatement = "INSERT INTO INTRADAYSNEMOVINGAVERAGES (TRADEDDATE, LASTUPDATETIME, STOCKNAME, CLOSINGPRICE, SMA, EMA, PERIOD"
         insertValues = "VALUES ('" & MADate & "','" & MATime & "', '" & MAStock & "'," & lastTradedPrice & ", " & simpleMA & ", " & eMA & ", " & period
 
         insertStatement = insertStatement & ") "
@@ -600,7 +600,7 @@ Public Class MovingAverage
             whereClause = "STOCKNAME = '" & tmpStockCode & "' and TRADEDDATE > '" & Today.AddDays(-200) & "'"
             orderClause = "TRADEDDATE desc"
             MADate = Today
-            ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " LAST_TRADED_PRICE", whereClause, orderClause)
+            ds = DBFunctions.getDataFromTable("DAILYSTOCKDATA", " last_traded_price", whereClause, orderClause)
             'Get period details for the stock
             ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " DAILYSMAPERIOD, DAILYEMAPERIOD", "stockname = '" & tmpStockCode & "'")
             If ds1.Read() Then
@@ -612,7 +612,7 @@ Public Class MovingAverage
             While ds.Read()
                 counter = counter + 1
                 If counter = 1 Then
-                    closingPrice = ds.GetValue(ds.GetOrdinal("lastClosingPrice"))
+                    closingPrice = ds.GetValue(ds.GetOrdinal("last_traded_price"))
                     lastTradedPrice = closingPrice
                 End If
                 tmpSimpleMA = tmpSimpleMA + Double.Parse(ds.GetValue(ds.GetOrdinal("LAST_TRADED_PRICE")))
@@ -653,7 +653,7 @@ Public Class MovingAverage
         laststoredEMA = 0
         whereClause = "STOCKNAME = '" & tmpStockCode & "' and PERIOD = " & counter
         orderClause = "TRADEDDATE desc"
-        ds = DBFunctions.getDataFromTable("DAILYMOVINGAVERAGES", " * ", whereClause, orderClause)
+        ds = DBFunctions.getDataFromTable("DAILYSNEMOVINGAVERAGES", " * ", whereClause, orderClause)
         If ds.Read() Then
             laststoredEMA = Double.Parse(ds.GetValue(ds.GetOrdinal("EMA")))
         End If

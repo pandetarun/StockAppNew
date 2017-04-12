@@ -6,8 +6,9 @@ Public Class MACD
     Dim MADate As Date
     Dim counter As Integer
     Dim lastTradedPrice As Double
+    Dim signalLine, MACD As Double
 
-    Public Function CalculateAndStoreMACD() As Boolean
+    Public Function CalculateAndStoreIntraDayMACD() As Boolean
         GetStockListAndCalculateIntraDayMACD()
         Return False
     End Function
@@ -50,64 +51,76 @@ Public Class MACD
         Dim ds As FbDataReader = Nothing
         Dim ds1 As FbDataReader = Nothing
         Dim orderClause, whereClause, configuredMACDPeriods As String
-        Dim closingPrice As Double
-        Dim laststoredEMA, tmpSimpleMA As Double
+        Dim fastEMA, slowEMA As Double
         Dim tmpMACDPeriods As List(Of String)
 
-        StockAppLogger.Log("IntraDayMACDCalculation Start", "MovingAverage")
-
+        StockAppLogger.Log("IntraDayMACDCalculation Start", "MACD")
+        MACD = 0
+        fastEMA = 0
+        slowEMA = 0
         tmpMACDPeriods = Nothing
         lastTradedPrice = 0
-        counter = 0
-        'simpleMA = 0
-        tmpSimpleMA = 0
-        laststoredEMA = 0
         MAStock = tmpStockCode
         Try
-            whereClause = "TRADEDDATE='" & Today & "' and STOCKNAME = '" & tmpStockCode & "' and period"
             orderClause = "lastupdatetime desc"
             MADate = Today
-            ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
             'Get period details for the stock
             ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " MACD", "stockname = '" & tmpStockCode & "'")
             If ds1.Read() Then
                 configuredMACDPeriods = ds1.GetValue(ds1.GetOrdinal("MACD"))
                 tmpMACDPeriods = New List(Of String)(configuredMACDPeriods.Split(","))
             End If
-            '    While ds.Read()
-            '        counter = counter + 1
-            '        If counter = 1 Then
-            '            MATime = ds.GetValue(ds.GetOrdinal("lastupdatetime"))
-            '            closingPrice = ds.GetValue(ds.GetOrdinal("lastClosingPrice"))
-            '            lastTradedPrice = closingPrice
-            '        End If
-            '        tmpSimpleMA = tmpSimpleMA + Double.Parse(ds.GetValue(ds.GetOrdinal("lastClosingPrice")))
-            '        If tmpMACDPeriods.Contains(counter) Then
-            '            simpleMA = tmpSimpleMA / counter
-            '            CalculateEMAForPeriod(counter, tmpStockCode, closingPrice)
-            '            If InsertIntraDaySNEMAtoDB(counter) Then
-            '                StockAppLogger.Log("IntraDaySNEMACalculation period " & counter & " inserted in DB for stock = " & tmpStockCode, "MovingAverage")
-            '            Else
-            '                StockAppLogger.LogInfo("IntraDaySNEMACalculation period " & counter & " not inserted in DB  for stock = " & tmpStockCode, "MovingAverage")
-            '            End If
-            '            If tmpMAPeriods.IndexOf(counter) = tmpMAPeriods.Count Then
-            '                Exit While
-            '            End If
-            '        End If
-            '    End While
-            '    If counter = 1 Then
-            '        simpleMA = tmpSimpleMA
-            '        If InsertIntraDaySNEMAtoDB(counter) Then
-            '            StockAppLogger.Log("IntraDaySNEMACalculation period " & counter & " inserted in DB for stock = " & tmpStockCode, "MovingAverage")
-            '        Else
-            '            StockAppLogger.LogInfo("IntraDaySNEMACalculation period " & counter & " not inserted in DB  for stock = " & tmpStockCode, "MovingAverage")
-            '        End If
-            '    End If
+            If tmpMACDPeriods IsNot Nothing Then
+                whereClause = "TRADEDDATE='" & Today & "' and STOCKNAME = '" & tmpStockCode & "' and period = " & tmpMACDPeriods.Item(0)
+                ds = DBFunctions.getDataFromTable("INTRADAYSNEMOVINGAVERAGES", " EMA ", whereClause, orderClause)
+                If ds.Read() Then
+                    signalLine = ds.GetValue(ds.GetOrdinal("EMA"))
+                End If
+                ds.Close()
+                whereClause = "TRADEDDATE='" & Today & "' and STOCKNAME = '" & tmpStockCode & "' and period = " & tmpMACDPeriods.Item(1)
+                ds = DBFunctions.getDataFromTable("INTRADAYSNEMOVINGAVERAGES", " EMA ", whereClause, orderClause)
+                If ds.Read() Then
+                    fastEMA = ds.GetValue(ds.GetOrdinal("EMA"))
+                End If
+                ds.Close()
+                whereClause = "TRADEDDATE='" & Today & "' and STOCKNAME = '" & tmpStockCode & "' and period = " & tmpMACDPeriods.Item(2)
+                ds = DBFunctions.getDataFromTable("INTRADAYSNEMOVINGAVERAGES", " EMA ", whereClause, orderClause)
+                If ds.Read() Then
+                    slowEMA = ds.GetValue(ds.GetOrdinal("EMA"))
+                End If
+                ds.Close()
+                If fastEMA <> 0 And slowEMA <> 0 Then
+                    MACD = fastEMA - slowEMA
+                    'insert MACD
+                End If
+
+            End If
         Catch exc As Exception
-            StockAppLogger.LogError("IntraDaySNEMACalculation Error Occurred in calculating intraday moving average = ", exc, "MovingAverage")
+            StockAppLogger.LogError("IntraDayMACDCalculation Error Occurred in calculating MACD = ", exc, "MACD")
             Return False
         End Try
-        StockAppLogger.Log("IntraDaySNEMACalculation End", "MovingAverage")
+        StockAppLogger.Log("IntraDayMACDCalculation End", "MACD")
+        Return True
+    End Function
+
+    Private Function InsertIntraDayMACDtoDB(ByVal period As Integer) As Boolean
+
+        Dim insertStatement As String
+        Dim insertValues As String
+        Dim sqlStatement As String
+        Dim fireQuery As Boolean = False
+
+        StockAppLogger.Log("InsertIntraDayMACDtoDB Start", "MACD")
+        insertStatement = "INSERT INTO INTRADAYMACD (TRADEDDATE, LASTUPDATETIME, STOCKNAME, SIGNAL, MACD"
+        insertValues = "VALUES ('" & MADate & "','" & MATime & "', '" & MAStock & "'," & signalLine & ", " & MACD
+
+        insertStatement = insertStatement & ") "
+        insertValues = insertValues & ");"
+        sqlStatement = insertStatement & insertValues
+
+        DBFunctions.ExecuteSQLStmt(sqlStatement)
+
+        StockAppLogger.Log("InsertIntraDayMACDtoDB End", "MACD")
         Return True
     End Function
 

@@ -29,9 +29,13 @@ Public Class TestForm
         'tmpMovingAverageCalculation = New MovingAverage()
         'tmpMovingAverageCalculation.CalculateAndStoreIntraDayMA()
 
-        Dim tmpMovingAverageCalculation As MovingAverage
-        tmpMovingAverageCalculation = New MovingAverage()
-        tmpMovingAverageCalculation.CalculateAndStoreDayMA()
+        'Dim tmpMovingAverageCalculation As MovingAverage
+        'tmpMovingAverageCalculation = New MovingAverage()
+        'tmpMovingAverageCalculation.CalculateAndStoreDayMA()
+
+        Dim tmpMovingAverageCalculation As BollingerBands
+        tmpMovingAverageCalculation = New BollingerBands()
+        tmpMovingAverageCalculation.CalculateAndStoreIntradayBollingerBands()
 
     End Sub
 

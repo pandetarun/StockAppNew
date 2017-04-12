@@ -14,7 +14,7 @@ Public Class StockAppLogger
             tmpWriter = File.AppendText(logFile)
             'tmpWriter.Write(vbCrLf + "Log Entry : ")
             tmpWriter.Write("{0} {1}", DateTime.Now.ToLongTimeString(), DateTime.Now.ToLongDateString())
-            tmpWriter.Write(" " & className & "  : Error")
+            tmpWriter.Write(" " & className & "  : ")
             tmpWriter.Write("  :{0}", logMessage)
             tmpWriter.WriteLine("-------------------------------")
             tmpWriter.Flush()

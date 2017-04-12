@@ -54,11 +54,16 @@ Public Class StockAppHourlyService
                         Dim tmpMovingAverageCalculation As MovingAverage = New MovingAverage()
                         tmpMovingAverageCalculation.CalculateAndStoreIntraDayMA()
                         Me.WriteToFile("IntraDayMovingAverage entry End" & DateTime.Now.TimeOfDay.ToString)
-                        'IntraDay moving average starts
+                        'IntraDay bollinger band starts
                         Me.WriteToFile("IntraDay Bollinger Band entry started" & DateTime.Now.TimeOfDay.ToString)
                         Dim tmpBBCalculation As BollingerBands = New BollingerBands()
                         tmpBBCalculation.CalculateAndStoreIntradayBollingerBands()
                         Me.WriteToFile("IntraDay Bollinger Band entry End" & DateTime.Now.TimeOfDay.ToString)
+                        'IntraDay MACD starts
+                        Me.WriteToFile("IntraDay MACD entry started" & DateTime.Now.TimeOfDay.ToString)
+                        Dim tmpMACDCalculation As MACD = New MACD()
+                        tmpMACDCalculation.CalculateAndStoreIntraDayMACD()
+                        Me.WriteToFile("IntraDay MACD entry End" & DateTime.Now.TimeOfDay.ToString)
                     End If
                     'Daily stock collection data for daily table will happen at 5PM every day 
                     If DateTime.Now.TimeOfDay >= weekdayTimeToGetDailyStockDataStart.TimeOfDay And DateTime.Now.TimeOfDay < weekdayTimeToGetDailyStockDataEnd.TimeOfDay Then
