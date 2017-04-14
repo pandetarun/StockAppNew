@@ -2,30 +2,38 @@
 Imports System.Threading
 Imports System.Configuration
 Imports StockApplication
-Imports TechnicalIndicatorsCalculationServiceProj
 Imports System.ServiceModel
 Imports System.ServiceModel.Web
 Imports System.ServiceModel.Description
 
-Public Class StockAppHourlyService
-
+Public Class TechnicalIndicatorsCalculationService
 
     Protected Overrides Sub OnStart(ByVal args() As String)
-        Me.WriteToFile("StockAppDataDownload Service started at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
-        Using cf As New ChannelFactory(Of IConnectorService)(New WebHttpBinding(), "http://localhost:6060")
-            cf.Endpoint.Behaviors.Add(New WebHttpBehavior())
-            Dim channel As IConnectorService = cf.CreateChannel()
-            Me.WriteToFile("StockAppDataDownload Service calling connector Service " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
-            channel.DoWork()
-            Me.WriteToFile("StockAppDataDownload Service called connector Service " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
-        End Using
-
+        Me.WriteToFile("TechnicalIndicatorsCalculationService Service about to start at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+        Dim host As WebServiceHost = New WebServiceHost(GetType(TechnicalIndicatorConnectorService), New Uri("http://localhost:6060/"))
+        Dim ep As ServiceEndpoint = host.AddServiceEndpoint(GetType(IConnectorService), New WebHttpBinding(), "")
+        host.Open()
+        Me.WriteToFile("TechnicalIndicatorsCalculationService Service started at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
         'Me.ScheduleService()
     End Sub
 
     Protected Overrides Sub OnStop()
-        Me.WriteToFile("StockAppDataDownload Service stopped at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
-        Me.Schedular.Dispose()
+        Me.WriteToFile("TechnicalIndicatorsCalculationService Service stopped at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+
+        'Me.Schedular.Dispose()
+    End Sub
+
+    Private Sub SchedularCallback(e As Object)
+        Me.WriteToFile("TechnicalIndicatorsCalculationService Service callback Log: " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+        Me.ScheduleService()
+    End Sub
+
+    Private Sub WriteToFile(text As String)
+        Dim path As String = "D:\Tarun\StockApp\Log\TechnicalIndicatorsCalculationServiceLog.txt"
+        Using writer As New StreamWriter(path, True)
+            writer.WriteLine(String.Format(text, DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")))
+            writer.Close()
+        End Using
     End Sub
 
     Private Schedular As Timer
@@ -51,16 +59,6 @@ Public Class StockAppHourlyService
                 If Weekday(Today) > 1 And Weekday(Today) < 7 Then
                     'Stock Data collection will only happen on Weekdays betwen 9 to 4PM
                     If DateTime.Now.TimeOfDay >= dailyTimeStart.TimeOfDay And DateTime.Now.TimeOfDay < dailyTimeEnd.TimeOfDay Then
-                        'Indices details fetch and store
-                        Me.WriteToFile("NSEDetails entry started " & DateTime.Now.TimeOfDay.ToString)
-                        Dim tmpNSEIndicesDetails As NSEIndicesDetails = New NSEIndicesDetails()
-                        tmpNSEIndicesDetails.getIndicesDetailsAndStore()
-                        Me.WriteToFile("NSEDetails entry End " & DateTime.Now.TimeOfDay.ToString)
-                        'Hourly Data fetch and entry
-                        Me.WriteToFile("hourlyStockdata entry started" & DateTime.Now.TimeOfDay.ToString)
-                        Dim tmpHourlyStockQuote As HourlyStockQuote = New HourlyStockQuote()
-                        tmpHourlyStockQuote.GetAndStoreHourlyData()
-                        Me.WriteToFile("hourlyStockdata entry End " & DateTime.Now.TimeOfDay.ToString)
                         'IntraDay moving average starts
                         Me.WriteToFile("IntraDayMovingAverage entry started" & DateTime.Now.TimeOfDay.ToString)
                         Dim tmpMovingAverageCalculation As MovingAverage = New MovingAverage()
@@ -79,23 +77,13 @@ Public Class StockAppHourlyService
                     End If
                     'Daily stock collection data for daily table will happen at 5PM every day 
                     If DateTime.Now.TimeOfDay >= weekdayTimeToGetDailyStockDataStart.TimeOfDay And DateTime.Now.TimeOfDay < weekdayTimeToGetDailyStockDataEnd.TimeOfDay Then
-                        'Daily stock entry 
-                        Me.WriteToFile("DailyStockDetails entry started " & DateTime.Now.TimeOfDay.ToString)
-                        Dim tmpDailyStockQuote As DailyStockQuote = New DailyStockQuote()
-                        tmpDailyStockQuote.getDailyStockDetailsAndStore()
-                        Me.WriteToFile("DailyStockDetails entry End " & DateTime.Now.TimeOfDay.ToString)
+
                         'Daily moving average starts
                         Me.WriteToFile("DailyMovingAverage entry started" & DateTime.Now.TimeOfDay.ToString)
                         Dim tmpMovingAverageCalculation As MovingAverage = New MovingAverage()
                         tmpMovingAverageCalculation.CalculateAndStoreDayMA()
                         Me.WriteToFile("DailyMovingAverage entry End" & DateTime.Now.TimeOfDay.ToString)
                     End If
-                ElseIf Weekday(Today) = 1 And (DateTime.Now.TimeOfDay > weekendStartTimeToGetNSEData.TimeOfDay And DateTime.Now.TimeOfDay < weekendEndTimeToGetNSEData.TimeOfDay) Then
-                    'NSE List will get updated every Sunday
-                    Me.WriteToFile("NSEList entry started " & DateTime.Now.TimeOfDay.ToString)
-                    Dim tmpNSEindices As NSEindices = New NSEindices()
-                        tmpNSEindices.getIndicesListAndStore()
-                    Me.WriteToFile("NSEList entry End " & DateTime.Now.TimeOfDay.ToString)
                 End If
             Catch ex As Exception
                 WriteToFile("StockAppDataDownload Service Error in getting stock data " + ex.Message + ex.StackTrace)
@@ -136,8 +124,8 @@ Public Class StockAppHourlyService
             End Try
             'Change the Timer's Due Time.
             Schedular.Change(dueTime, Timeout.Infinite)
-            Catch ex As Exception
-                WriteToFile("StockAppDataDownload Service Error on: {0} " + ex.Message + ex.StackTrace)
+        Catch ex As Exception
+            WriteToFile("StockAppDataDownload Service Error on: {0} " + ex.Message + ex.StackTrace)
             'Stop the Windows Service.
             Using serviceController As New System.ServiceProcess.ServiceController("StockAppDataDownload")
                 serviceController.[Stop]()
@@ -145,16 +133,4 @@ Public Class StockAppHourlyService
         End Try
     End Sub
 
-    Private Sub SchedularCallback(e As Object)
-        Me.WriteToFile("StockAppDataDownload Service callback Log: " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
-        Me.ScheduleService()
-    End Sub
-
-    Private Sub WriteToFile(text As String)
-        Dim path As String = "D:\Tarun\StockApp\Log\StockAppDataDownloadServiceLog.txt"
-        Using writer As New StreamWriter(path, True)
-            writer.WriteLine(String.Format(text, DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")))
-            writer.Close()
-        End Using
-    End Sub
 End Class

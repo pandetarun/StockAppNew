@@ -4,30 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1AE8B3CA-EC21-4C78-8E4C-94056DF8CF98}</ProjectGuid>
+    <ProjectGuid>{270C45DD-9476-406F-BDC8-1166432AEA1E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>StockAppService1.StockAppHourlyService</StartupObject>
-    <RootNamespace>StockAppService1</RootNamespace>
-    <AssemblyName>StockAppService1</AssemblyName>
+    <StartupObject>TechnicalIndicatorsCalculationServiceProj.TechnicalIndicatorsCalculationService</StartupObject>
+    <RootNamespace>TechnicalIndicatorsCalculationServiceProj</RootNamespace>
+    <AssemblyName>TechnicalIndicatorsCalculationServiceProj</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Console</MyType>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -36,7 +22,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>StockAppService1.xml</DocumentationFile>
+    <DocumentationFile>TechnicalIndicatorsCalculationServiceProj.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -46,7 +32,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>StockAppService1.xml</DocumentationFile>
+    <DocumentationFile>TechnicalIndicatorsCalculationServiceProj.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -67,10 +53,10 @@
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -89,21 +75,23 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="My Project\Application.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Application.myapp</DependentUpon>
-    </Compile>
     <Compile Include="ProjectInstaller.Designer.vb">
       <DependentUpon>ProjectInstaller.vb</DependentUpon>
     </Compile>
     <Compile Include="ProjectInstaller.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="StockAppHourlyService.vb">
+    <Compile Include="TechnicalIndicatorConnectorService.vb" />
+    <Compile Include="IConnectorService.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="TechnicalIndicatorsCalculationService.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="StockAppHourlyService.Designer.vb">
-      <DependentUpon>StockAppHourlyService.vb</DependentUpon>
+    <Compile Include="TechnicalIndicatorsCalculationService.Designer.vb">
+      <DependentUpon>TechnicalIndicatorsCalculationService.vb</DependentUpon>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
@@ -127,9 +115,6 @@
     <EmbeddedResource Include="ProjectInstaller.resx">
       <DependentUpon>ProjectInstaller.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockAppHourlyService.resx">
-      <DependentUpon>StockAppHourlyService.vb</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="My Project\Application.myapp">
@@ -145,25 +130,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StockApplication\StockApplication.vbproj">
-      <Project>{329E97B8-5D8C-484D-93AE-EA6AFF4B8FFC}</Project>
+      <Project>{329e97b8-5d8c-484d-93ae-ea6aff4b8ffc}</Project>
       <Name>StockApplication</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TechnicalIndicatorsCalculationServiceProj\TechnicalIndicatorsCalculationServiceProj.vbproj">
-      <Project>{270c45dd-9476-406f-bdc8-1166432aea1e}</Project>
-      <Name>TechnicalIndicatorsCalculationServiceProj</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

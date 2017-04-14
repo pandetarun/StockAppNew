@@ -78,9 +78,9 @@ Public Class BollingerBands
             End If
             If totalRecords > tmpBBPeriods.Item(0) Then
                 While ds.Read()
-                    counter = counter + 1
-                    If counter < tmpBBPeriods.Item(tmpBBPeriods.Count()) Then
-                        If counter = 1 Then
+
+                    If counter < tmpBBPeriods.Item(tmpBBPeriods.Count() - 1) Then
+                        If counter = 0 Then
                             MATime = ds.GetValue(ds.GetOrdinal("lastupdatetime"))
                             closingPrice = ds.GetValue(ds.GetOrdinal("lastClosingPrice"))
                             lastTradedPrice = closingPrice
@@ -94,8 +94,8 @@ Public Class BollingerBands
                             BBUper = 0
                             tmpPeriodData = New List(Of Double)
                             simpleMA = totalTradedPrice / counter
-                            For counter1 As Integer = 1 To counter
-                                tmpPeriodData.Item(counter1) = PeriodData.Item(counter1) - simpleMA
+                            For counter1 As Integer = 0 To counter
+                                tmpPeriodData.Add(PeriodData.Item(counter1) - simpleMA)
                                 tmpPeriodData.Item(counter1) = tmpPeriodData.Item(counter1) * tmpPeriodData.Item(counter1)
                                 perioddeviation = perioddeviation + tmpPeriodData.Item(counter1)
                             Next counter1
@@ -112,6 +112,7 @@ Public Class BollingerBands
                     Else
                         Exit While
                     End If
+                    counter = counter + 1
                 End While
             End If
         Catch exc As Exception
@@ -131,7 +132,7 @@ Public Class BollingerBands
 
         StockAppLogger.Log("InsertIntraDayBBtoDB Start", "BollingerBands")
         Try
-            insertStatement = "INSERT INTO INTRADAYBOLLINGERBANDS (TRADEDDATE, STOCK_NAME, LASTUPDATETIME, PERIOD, CLOSINGPRICE, SMA, UPPERBAND, LOWERBAND, BANDWIDTH"
+            insertStatement = "INSERT INTO INTRADAYBOLLINGERBANDS (TRADEDDATE, STOCKNAME, LASTUPDATETIME, PERIOD, CLOSINGPRICE, SMA, UPPERBAND, LOWERBAND, BANDWIDTH) "
             insertValues = "VALUES ('" & MADate & "', '" & MAStock & "', '" & MATime & "', " & period & ", " & lastTradedPrice & ", " & simpleMA & ", " & BBUper & ", " & BBLower & ", " & PeriodBandwidth & ");"
 
             sqlStatement = insertStatement & insertValues
@@ -208,8 +209,8 @@ Public Class BollingerBands
                 tmpBBPeriods = New List(Of String)(configuredBBPeriods.Split(","))
             End If
             While ds.Read()
-                counter = counter + 1
-                If counter = 1 Then
+
+                If counter = 0 Then
                     closingPrice = ds.GetValue(ds.GetOrdinal("last_traded_price"))
                     lastTradedPrice = closingPrice
                 End If
@@ -222,7 +223,7 @@ Public Class BollingerBands
                     BBUper = 0
                     tmpPeriodData = New List(Of Double)
                     simpleMA = totalTradedPrice / counter
-                    For counter1 As Integer = 1 To counter
+                    For counter1 As Integer = 0 To counter
                         tmpPeriodData.Item(counter1) = PeriodData.Item(counter1) - simpleMA
                         tmpPeriodData.Item(counter1) = tmpPeriodData.Item(counter1) * tmpPeriodData.Item(counter1)
                         perioddeviation = perioddeviation + tmpPeriodData.Item(counter1)
@@ -233,10 +234,11 @@ Public Class BollingerBands
                     BBUper = simpleMA + 2 * perioddeviation
                     PeriodBandwidth = BBUper - BBLower
                     InsertIntraDayBBtoDB(counter)
-                    If tmpBBPeriods.IndexOf(counter) = tmpBBPeriods.Count Then
+                    If tmpBBPeriods.IndexOf(counter) = tmpBBPeriods.Count - 1 Then
                         Exit While
                     End If
                 End If
+                counter = counter + 1
             End While
         Catch exc As Exception
             StockAppLogger.LogError("DailyBBCalculation Error Occurred in calculating daily Bollinger Band = ", exc, "BollingerBands")
@@ -255,7 +257,7 @@ Public Class BollingerBands
 
         StockAppLogger.Log("InsertDailyBBtoDB Start", "BollingerBands")
         Try
-            insertStatement = "INSERT INTO DAILYBOLLINGERBANDS (TRADEDDATE, STOCKNAME, PERIOD, CLOSINGPRICE, SMA, UPPERBAND, LOWERBAND, BANDWIDTH"
+            insertStatement = "INSERT INTO DAILYBOLLINGERBANDS (TRADEDDATE, STOCKNAME, PERIOD, CLOSINGPRICE, SMA, UPPERBAND, LOWERBAND, BANDWIDTH) "
             insertValues = "VALUES ('" & MADate & "', '" & MAStock & "', ', " & period & ", " & lastTradedPrice & ", " & simpleMA & ", " & BBUper & ", " & BBLower & ", " & PeriodBandwidth & ");"
 
             sqlStatement = insertStatement & insertValues

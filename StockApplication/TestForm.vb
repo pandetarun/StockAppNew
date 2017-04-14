@@ -1,5 +1,6 @@
 ﻿Imports FirebirdSql.Data.FirebirdClient
 Imports System.Windows.Forms.DataVisualization.Charting
+Imports System.Collections.Generic
 
 
 Public Class TestForm
@@ -49,9 +50,44 @@ Public Class TestForm
 
     End Sub
 
+    Private Sub populateSMAValues()
+        Dim ds1 As FbDataReader = Nothing
+        Dim tmpMAPeriods, tmpEMAPeriods As List(Of String)
+        Dim configuredSMAPeriods, configuredEMAPeriods As String
+        Dim counter As Integer = 0
+
+
+        tmpMAPeriods = Nothing
+        tmpEMAPeriods = Nothing
+
+        If ComboBox1.SelectedItem IsNot Nothing Then
+            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " INTRADAYSMAPERIOD, INTRADAYEMAPERIOD", "stockname = '" & ComboBox1.SelectedItem.ToString() & "'")
+            If ds1.Read() Then
+                configuredSMAPeriods = ds1.GetValue(ds1.GetOrdinal("INTRADAYSMAPERIOD"))
+                configuredEMAPeriods = ds1.GetValue(ds1.GetOrdinal("INTRADAYEMAPERIOD"))
+                tmpMAPeriods = New List(Of String)(configuredSMAPeriods.Split(","))
+                tmpEMAPeriods = New List(Of String)(configuredEMAPeriods.Split(","))
+            End If
+
+            If tmpMAPeriods IsNot Nothing Then
+                For counter = 0 To tmpMAPeriods.Count - 1
+                    SMA.Items.Add(tmpMAPeriods.Item(counter))
+                Next
+            End If
+
+            If tmpEMAPeriods IsNot Nothing Then
+                For counter = 0 To tmpEMAPeriods.Count - 1
+                    EMA.Items.Add(tmpEMAPeriods.Item(counter))
+                Next
+            End If
+
+        End If
+
+    End Sub
+
     Private Sub TestForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ComboBox1.Select()
-
+        populateSMAValues()
         Dim ds As FbDataReader = Nothing
         Chart1.ChartAreas.Clear()
         Chart1.Series.Clear()
@@ -69,6 +105,7 @@ Public Class TestForm
     End Sub
 
     Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
+        populateSMAValues()
         DrawGraph()
     End Sub
 
@@ -121,7 +158,7 @@ Public Class TestForm
         'Chart1.Series.Add(SMAData)
         'Chart1.Series(0).IsXValueIndexed = True
         'Chart1.Series(1).IsXValueIndexed = True
-        If Not CheckBox1.Checked Then
+        If SMA.SelectedIndex < 0 Then
             whereClause = "TRADEDDATE = '" & DateTimePicker1.Value.Date & "' and companycode = '" & ComboBox1.SelectedItem.ToString() & "'"
             orderClause = "lastupdatetime"
             ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
@@ -131,7 +168,7 @@ Public Class TestForm
             ' Close the reader and the connection
             ds.Close()
 
-        ElseIf CheckBox1.Checked Then
+        ElseIf SMA.SelectedIndex >= 0 Then
             Dim SMAData As Series = New Series("SMA")
             SMAData.ChartType = SeriesChartType.Line
             SMAData.ChartArea = "AREA"
@@ -139,12 +176,13 @@ Public Class TestForm
             Chart1.Series.Add(SMAData)
             'Chart1.Series(0).IsXValueIndexed = True
 
-            MAwhereclause = "SHD.TRADEDDATE ='" & DateTimePicker1.Value.Date & "' and SHD.companycode='" & ComboBox1.SelectedItem.ToString() & "' and IMA.stock_name='" & ComboBox1.SelectedItem.ToString() & "' and SHD.companycode = IMA.STOCK_NAME And shd.lastupdatetime = ima.lastupdatetime"
+            'MAwhereclause = "SHD.TRADEDDATE ='" & DateTimePicker1.Value.Date & "' and SHD.companycode='" & ComboBox1.SelectedItem.ToString() & "' and IMA.stock_name='" & ComboBox1.SelectedItem.ToString() & "' and SHD.companycode = IMA.STOCK_NAME And shd.lastupdatetime = ima.lastupdatetime"
+            MAwhereclause = "SHD.TRADEDDATE ='" & DateTimePicker1.Value.Date & "' and SHD.companycode='" & ComboBox1.SelectedItem.ToString() & "' and SHD.companycode = IMA.STOCKNAME And shd.lastupdatetime = ima.lastupdatetime And ima.period = " & SMA.SelectedItem.ToString
             MAOrderby = "SHD.lastupdatetime"
-            MAds = DBFunctions.getDataFromTable("INTRADAYMOVINGAVERAGES IMA, STOCKHOURLYDATA SHD", " SHD.tradeddate, SHD.lastupdatetime lastupdatetime, SHD.LASTCLOSINGPRICE closingprice, IMA.lastupdatetime, IMA.TENMA tenma ", MAwhereclause, MAOrderby)
+            MAds = DBFunctions.getDataFromTable("INTRADAYSNEMOVINGAVERAGES IMA, STOCKHOURLYDATA SHD", " SHD.tradeddate, SHD.lastupdatetime lastupdatetime, SHD.LASTCLOSINGPRICE closingprice, IMA.lastupdatetime, IMA.SMA SMA ", MAwhereclause, MAOrderby)
             While MAds.Read()
                 Chart1.Series("Price").Points.AddXY(MAds("lastupdatetime"), MAds("closingprice"))
-                Chart1.Series("SMA").Points.AddXY(MAds("lastupdatetime"), MAds("tenma"))
+                Chart1.Series("SMA").Points.AddXY(MAds("lastupdatetime"), MAds("SMA"))
             End While
             MAds.Close()
         End If
@@ -152,6 +190,10 @@ Public Class TestForm
     End Sub
 
     Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox1.CheckedChanged
+        DrawGraph()
+    End Sub
+
+    Private Sub ComboBox2_SelectedIndexChanged(sender As Object, e As EventArgs) Handles SMA.SelectedIndexChanged
         DrawGraph()
     End Sub
 End Class

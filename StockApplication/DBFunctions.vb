@@ -103,7 +103,7 @@ Public Class DBFunctions
         Dim conn As New FbConnection
         Dim command As New FbCommand
         Dim ds As FbDataReader = Nothing
-        Dim sql As String
+        Dim sql As String = ""
         Dim resultList As List(Of String)
 
         StockAppLogger.Log("getDataFromTable Start", "DBFunctions")

@@ -4,8 +4,8 @@ Imports System.IO
 Public Class StockAppLogger
 
 
-    Shared logFile As String = My.Settings.ApplicationFileLocation & "\log.txt"
-    Shared errorLogFile As String = My.Settings.ApplicationFileLocation & "\Errorlog.txt"
+    Shared logFile As String = My.Settings.ApplicationFileLocation & "\Log\log.txt"
+    Shared errorLogFile As String = My.Settings.ApplicationFileLocation & "\Log\Errorlog.txt"
     Shared className As String
 
     Public Shared Function LogInfo(logMessage As String, Optional className As String = "") As Boolean
