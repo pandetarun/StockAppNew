@@ -17,7 +17,7 @@ Public Class TechnicalIndicatorConnectorService
     Public Async Sub ProcessDailyTechnicalIndicators() Implements IConnectorService.ProcessDailyTechnicalIndicators
         WriteToFile("TechnicalIndicatorConnectorService Call received" & DateTime.Now.TimeOfDay.ToString)
         Await Task.Delay(50)
-        CalculteIntraDayTechnicalIndicators()
+        CalculteDailyTechnicalIndicators()
         WriteToFile("TechnicalIndicatorConnectorService call finished" & DateTime.Now.TimeOfDay.ToString)
     End Sub
 
@@ -32,44 +32,32 @@ Public Class TechnicalIndicatorConnectorService
     Private Sub CalculteIntraDayTechnicalIndicators()
 
         Try
-            'IntraDay moving average starts
-            Me.WriteToFile("IntraDayMovingAverage entry started" & DateTime.Now.TimeOfDay.ToString)
-            Dim tmpMovingAverageCalculation As MovingAverage = New MovingAverage()
-            tmpMovingAverageCalculation.CalculateAndStoreIntraDayMA()
-            Me.WriteToFile("IntraDayMovingAverage entry End" & DateTime.Now.TimeOfDay.ToString)
-            'IntraDay bollinger band starts
-            Me.WriteToFile("IntraDay Bollinger Band entry started" & DateTime.Now.TimeOfDay.ToString)
-            Dim tmpBBCalculation As BollingerBands = New BollingerBands()
-            tmpBBCalculation.CalculateAndStoreIntradayBollingerBands()
-            Me.WriteToFile("IntraDay Bollinger Band entry End" & DateTime.Now.TimeOfDay.ToString)
-            'IntraDay MACD starts
-            Me.WriteToFile("IntraDay MACD entry started" & DateTime.Now.TimeOfDay.ToString)
-            Dim tmpMACDCalculation As MACD = New MACD()
-            tmpMACDCalculation.CalculateAndStoreIntraDayMACD()
-            Me.WriteToFile("IntraDay MACD entry End" & DateTime.Now.TimeOfDay.ToString)
+            Me.WriteToFile("IntraDay calculation started" & DateTime.Now.TimeOfDay.ToString)
+            Dim tmpCalculateIntradayIndicators As CalculateTechnicalIndicators = New CalculateTechnicalIndicators()
+            tmpCalculateIntradayIndicators.CalculateIntradayIndicators()
+            Me.WriteToFile("IntraDay calculation End" & DateTime.Now.TimeOfDay.ToString)
         Catch ex As Exception
-            WriteToFile("StockAppDataDownload Service Error in getting stock data " + ex.Message + ex.StackTrace)
-            'Stop the Windows Service.
-            Using serviceController As New System.ServiceProcess.ServiceController("StockAppDataDownload")
-                serviceController.[Stop]()
-            End Using
+            WriteToFile("TechnicalIndicatorConnectorService Error in calculating intraday data " + ex.Message + ex.StackTrace)
+            ''Stop the Windows Service.
+            'Using serviceController As New System.ServiceProcess.ServiceController("StockAppDataDownload")
+            '    serviceController.[Stop]()
+            'End Using
         End Try
     End Sub
 
     Public Sub CalculteDailyTechnicalIndicators()
 
         Try
-            'Daily moving average starts
-            Me.WriteToFile("DailyMovingAverage entry started" & DateTime.Now.TimeOfDay.ToString)
-            Dim tmpMovingAverageCalculation As MovingAverage = New MovingAverage()
-            tmpMovingAverageCalculation.CalculateAndStoreDayMA()
-            Me.WriteToFile("DailyMovingAverage entry End" & DateTime.Now.TimeOfDay.ToString)
+            Me.WriteToFile("Daily calculation started" & DateTime.Now.TimeOfDay.ToString)
+            Dim tmpCalculateIntradayIndicators As CalculateTechnicalIndicators = New CalculateTechnicalIndicators()
+            tmpCalculateIntradayIndicators.CalculateIntradayIndicators()
+            Me.WriteToFile("Daily calculation End" & DateTime.Now.TimeOfDay.ToString)
         Catch ex As Exception
-            WriteToFile("StockAppDataDownload Service Error in getting stock data " + ex.Message + ex.StackTrace)
-            'Stop the Windows Service.
-            Using serviceController As New System.ServiceProcess.ServiceController("StockAppDataDownload")
-                serviceController.[Stop]()
-            End Using
+            WriteToFile("TechnicalIndicatorConnectorService Error in calculating daily data " + ex.Message + ex.StackTrace)
+            ''Stop the Windows Service.
+            'Using serviceController As New System.ServiceProcess.ServiceController("StockAppDataDownload")
+            '    serviceController.[Stop]()
+            'End Using
         End Try
     End Sub
 

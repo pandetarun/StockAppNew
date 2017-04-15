@@ -57,9 +57,9 @@ Public Class StockAppHourlyService
                         Using cf As New ChannelFactory(Of IConnectorService)(New WebHttpBinding(), "http://localhost:6060")
                             cf.Endpoint.Behaviors.Add(New WebHttpBehavior())
                             Dim channel As IConnectorService = cf.CreateChannel()
-                            Me.WriteToFile("StockAppDataDownload Service calling connector Service Up " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+                            Me.WriteToFile("StockAppDataDownload Service calling connector Service for intraday indicator calculation " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
                             channel.ProcessIntraDayTechnicalIndicators()
-                            Me.WriteToFile("StockAppDataDownload Service called connector Service Up  " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+                            Me.WriteToFile("StockAppDataDownload Service called connector Service for intraday indicator calculation  " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
                         End Using
                     End If
                     'Daily stock collection data for daily table will happen at 5PM every day 
@@ -73,9 +73,9 @@ Public Class StockAppHourlyService
                         Using cf As New ChannelFactory(Of IConnectorService)(New WebHttpBinding(), "http://localhost:6060")
                             cf.Endpoint.Behaviors.Add(New WebHttpBehavior())
                             Dim channel As IConnectorService = cf.CreateChannel()
-                            Me.WriteToFile("StockAppDataDownload Service calling connector Service Up " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+                            Me.WriteToFile("StockAppDataDownload Service calling connector Service for daily indicator calculation " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
                             channel.ProcessDailyTechnicalIndicators()
-                            Me.WriteToFile("StockAppDataDownload Service called connector Service Up  " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+                            Me.WriteToFile("StockAppDataDownload Service called connector Service for daily indicator calculation  " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
                         End Using
                     End If
                 ElseIf Weekday(Today) = 1 And (DateTime.Now.TimeOfDay > weekendStartTimeToGetNSEData.TimeOfDay And DateTime.Now.TimeOfDay < weekendEndTimeToGetNSEData.TimeOfDay) Then

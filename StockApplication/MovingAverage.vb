@@ -193,7 +193,7 @@ Public Class MovingAverage
         Return True
     End Function
 
-    Private Function IntraDaySNEMACalculation(tmpStockCode As String) As Boolean
+    Public Function IntraDaySNEMACalculation(tmpStockCode As String) As Boolean
 
         Dim ds As FbDataReader = Nothing
         Dim ds1 As FbDataReader = Nothing
@@ -576,7 +576,7 @@ Public Class MovingAverage
         Return True
     End Function
 
-    Private Function DailySNEMACalculation(tmpStockCode As String) As Boolean
+    Public Function DailySNEMACalculation(tmpStockCode As String) As Boolean
 
         Dim ds As FbDataReader = Nothing
         Dim ds1 As FbDataReader = Nothing

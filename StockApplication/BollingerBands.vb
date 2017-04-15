@@ -37,7 +37,7 @@ Public Class BollingerBands
         Return True
     End Function
 
-    Private Function IntraDayBBCalculation(tmpStockCode As String) As Boolean
+    Public Function IntraDayBBCalculation(tmpStockCode As String) As Boolean
 
         Dim ds As FbDataReader = Nothing
         Dim ds1 As FbDataReader = Nothing
@@ -173,7 +173,7 @@ Public Class BollingerBands
         Return True
     End Function
 
-    Private Function DailyBBCalculation(tmpStockCode As String) As Boolean
+    Public Function DailyBBCalculation(tmpStockCode As String) As Boolean
 
         Dim ds As FbDataReader = Nothing
         Dim ds1 As FbDataReader = Nothing

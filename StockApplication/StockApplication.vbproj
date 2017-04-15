@@ -92,7 +92,7 @@
     <Compile Include="Helper.vb" />
     <Compile Include="HourlyStockQuote.vb" />
     <Compile Include="MACD.vb" />
-    <Compile Include="MainModule.vb" />
+    <Compile Include="CalculateIntradayIndicators.vb" />
     <Compile Include="MovingAverage.vb" />
     <Compile Include="My Project\Settings.Designer.vb">
       <AutoGen>True</AutoGen>

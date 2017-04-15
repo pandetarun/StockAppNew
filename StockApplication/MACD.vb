@@ -46,7 +46,7 @@ Public Class MACD
         Return True
     End Function
 
-    Private Function IntraDayMACDCalculation(tmpStockCode As String) As Boolean
+    Public Function IntraDayMACDCalculation(tmpStockCode As String) As Boolean
 
         Dim ds As FbDataReader = Nothing
         Dim ds1 As FbDataReader = Nothing
