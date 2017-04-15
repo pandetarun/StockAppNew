@@ -12,15 +12,7 @@ Public Class StockAppHourlyService
 
     Protected Overrides Sub OnStart(ByVal args() As String)
         Me.WriteToFile("StockAppDataDownload Service started at " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
-        Using cf As New ChannelFactory(Of IConnectorService)(New WebHttpBinding(), "http://localhost:6060")
-            cf.Endpoint.Behaviors.Add(New WebHttpBehavior())
-            Dim channel As IConnectorService = cf.CreateChannel()
-            Me.WriteToFile("StockAppDataDownload Service calling connector Service Up " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
-            channel.DoWork()
-            Me.WriteToFile("StockAppDataDownload Service called connector Service Up  " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
-        End Using
-
-        'Me.ScheduleService()
+        Me.ScheduleService()
     End Sub
 
     Protected Overrides Sub OnStop()
@@ -61,21 +53,14 @@ Public Class StockAppHourlyService
                         Dim tmpHourlyStockQuote As HourlyStockQuote = New HourlyStockQuote()
                         tmpHourlyStockQuote.GetAndStoreHourlyData()
                         Me.WriteToFile("hourlyStockdata entry End " & DateTime.Now.TimeOfDay.ToString)
-                        'IntraDay moving average starts
-                        Me.WriteToFile("IntraDayMovingAverage entry started" & DateTime.Now.TimeOfDay.ToString)
-                        Dim tmpMovingAverageCalculation As MovingAverage = New MovingAverage()
-                        tmpMovingAverageCalculation.CalculateAndStoreIntraDayMA()
-                        Me.WriteToFile("IntraDayMovingAverage entry End" & DateTime.Now.TimeOfDay.ToString)
-                        'IntraDay bollinger band starts
-                        Me.WriteToFile("IntraDay Bollinger Band entry started" & DateTime.Now.TimeOfDay.ToString)
-                        Dim tmpBBCalculation As BollingerBands = New BollingerBands()
-                        tmpBBCalculation.CalculateAndStoreIntradayBollingerBands()
-                        Me.WriteToFile("IntraDay Bollinger Band entry End" & DateTime.Now.TimeOfDay.ToString)
-                        'IntraDay MACD starts
-                        Me.WriteToFile("IntraDay MACD entry started" & DateTime.Now.TimeOfDay.ToString)
-                        Dim tmpMACDCalculation As MACD = New MACD()
-                        tmpMACDCalculation.CalculateAndStoreIntraDayMACD()
-                        Me.WriteToFile("IntraDay MACD entry End" & DateTime.Now.TimeOfDay.ToString)
+                        'IntraDay techinal indicator service call starts
+                        Using cf As New ChannelFactory(Of IConnectorService)(New WebHttpBinding(), "http://localhost:6060")
+                            cf.Endpoint.Behaviors.Add(New WebHttpBehavior())
+                            Dim channel As IConnectorService = cf.CreateChannel()
+                            Me.WriteToFile("StockAppDataDownload Service calling connector Service Up " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+                            channel.ProcessIntraDayTechnicalIndicators()
+                            Me.WriteToFile("StockAppDataDownload Service called connector Service Up  " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+                        End Using
                     End If
                     'Daily stock collection data for daily table will happen at 5PM every day 
                     If DateTime.Now.TimeOfDay >= weekdayTimeToGetDailyStockDataStart.TimeOfDay And DateTime.Now.TimeOfDay < weekdayTimeToGetDailyStockDataEnd.TimeOfDay Then
@@ -84,11 +69,14 @@ Public Class StockAppHourlyService
                         Dim tmpDailyStockQuote As DailyStockQuote = New DailyStockQuote()
                         tmpDailyStockQuote.getDailyStockDetailsAndStore()
                         Me.WriteToFile("DailyStockDetails entry End " & DateTime.Now.TimeOfDay.ToString)
-                        'Daily moving average starts
-                        Me.WriteToFile("DailyMovingAverage entry started" & DateTime.Now.TimeOfDay.ToString)
-                        Dim tmpMovingAverageCalculation As MovingAverage = New MovingAverage()
-                        tmpMovingAverageCalculation.CalculateAndStoreDayMA()
-                        Me.WriteToFile("DailyMovingAverage entry End" & DateTime.Now.TimeOfDay.ToString)
+                        'Daily techinal indicator service call starts
+                        Using cf As New ChannelFactory(Of IConnectorService)(New WebHttpBinding(), "http://localhost:6060")
+                            cf.Endpoint.Behaviors.Add(New WebHttpBehavior())
+                            Dim channel As IConnectorService = cf.CreateChannel()
+                            Me.WriteToFile("StockAppDataDownload Service calling connector Service Up " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+                            channel.ProcessDailyTechnicalIndicators()
+                            Me.WriteToFile("StockAppDataDownload Service called connector Service Up  " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+                        End Using
                     End If
                 ElseIf Weekday(Today) = 1 And (DateTime.Now.TimeOfDay > weekendStartTimeToGetNSEData.TimeOfDay And DateTime.Now.TimeOfDay < weekendEndTimeToGetNSEData.TimeOfDay) Then
                     'NSE List will get updated every Sunday

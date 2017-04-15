@@ -4,7 +4,13 @@
 <ServiceContract()>
 Public Interface IConnectorService
 
+    '<OperationContract()>
+    'Sub DoWork()
+
     <OperationContract()>
-    Sub DoWork()
+    Sub ProcessIntraDayTechnicalIndicators()
+
+    <OperationContract()>
+    Sub ProcessDailyTechnicalIndicators()
 
 End Interface

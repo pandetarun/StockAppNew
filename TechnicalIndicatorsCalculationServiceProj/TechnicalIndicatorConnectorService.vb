@@ -7,10 +7,18 @@ Imports StockApplication
 Public Class TechnicalIndicatorConnectorService
     Implements IConnectorService
 
-    Public Async Sub DoWork() Implements IConnectorService.DoWork
-        WriteToFile("Connector Call received")
-        Await Task.Delay(20000)
-        WriteToFile("Connector call finished")
+    Public Async Sub ProcessIntraDayTechnicalIndicators() Implements IConnectorService.ProcessIntraDayTechnicalIndicators
+        WriteToFile("TechnicalIndicatorConnectorService Call received" & DateTime.Now.TimeOfDay.ToString)
+        Await Task.Delay(50)
+        CalculteIntraDayTechnicalIndicators()
+        WriteToFile("TechnicalIndicatorConnectorService call finished" & DateTime.Now.TimeOfDay.ToString)
+    End Sub
+
+    Public Async Sub ProcessDailyTechnicalIndicators() Implements IConnectorService.ProcessDailyTechnicalIndicators
+        WriteToFile("TechnicalIndicatorConnectorService Call received" & DateTime.Now.TimeOfDay.ToString)
+        Await Task.Delay(50)
+        CalculteIntraDayTechnicalIndicators()
+        WriteToFile("TechnicalIndicatorConnectorService call finished" & DateTime.Now.TimeOfDay.ToString)
     End Sub
 
     Private Sub WriteToFile(text As String)
@@ -21,7 +29,7 @@ Public Class TechnicalIndicatorConnectorService
         End Using
     End Sub
 
-    Public Sub CalculteIntraDayTechnicalIndicators()
+    Private Sub CalculteIntraDayTechnicalIndicators()
 
         Try
             'IntraDay moving average starts
