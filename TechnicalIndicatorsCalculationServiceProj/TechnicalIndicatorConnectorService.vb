@@ -7,9 +7,10 @@ Imports StockApplication
 Public Class TechnicalIndicatorConnectorService
     Implements IConnectorService
 
-    Public Sub DoWork() Implements IConnectorService.DoWork
-        WriteToFile("Connector Called")
-
+    Public Async Sub DoWork() Implements IConnectorService.DoWork
+        WriteToFile("Connector Call received")
+        Await Task.Delay(20000)
+        WriteToFile("Connector call finished")
     End Sub
 
     Private Sub WriteToFile(text As String)

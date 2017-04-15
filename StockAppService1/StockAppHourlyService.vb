@@ -15,9 +15,9 @@ Public Class StockAppHourlyService
         Using cf As New ChannelFactory(Of IConnectorService)(New WebHttpBinding(), "http://localhost:6060")
             cf.Endpoint.Behaviors.Add(New WebHttpBehavior())
             Dim channel As IConnectorService = cf.CreateChannel()
-            Me.WriteToFile("StockAppDataDownload Service calling connector Service " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+            Me.WriteToFile("StockAppDataDownload Service calling connector Service Up " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
             channel.DoWork()
-            Me.WriteToFile("StockAppDataDownload Service called connector Service " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+            Me.WriteToFile("StockAppDataDownload Service called connector Service Up  " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
         End Using
 
         'Me.ScheduleService()
