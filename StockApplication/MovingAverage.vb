@@ -226,6 +226,7 @@ Public Class MovingAverage
                 tmpMAPeriods = New List(Of String)(configuredSMAPeriods.Split(","))
                 tmpEMAPeriods = New List(Of String)(configuredEMAPeriods.Split(","))
             End If
+            ds1.Close()
             While ds.Read()
                 counter = counter + 1
                 If counter = 1 Then
@@ -247,6 +248,7 @@ Public Class MovingAverage
                     End If
                 End If
             End While
+            ds.Close()
             If counter = 1 Then
                 simpleMA = tmpSimpleMA
                 If InsertIntraDaySNEMAtoDB(counter) Then
@@ -385,7 +387,7 @@ Public Class MovingAverage
         sqlStatement = insertStatement & insertValues
 
         DBFunctions.ExecuteSQLStmt(sqlStatement)
-
+        DBFunctions.CloseSQLConnection()
         StockAppLogger.Log("InsertIntraDaySNEMAtoDB End", "MovingAverage")
         Return True
     End Function
@@ -609,6 +611,7 @@ Public Class MovingAverage
                 tmpMAPeriods = New List(Of String)(configuredSMAPeriods.Split(","))
                 tmpEMAPeriods = New List(Of String)(configuredEMAPeriods.Split(","))
             End If
+            ds1.Close()
             While ds.Read()
                 counter = counter + 1
                 If counter = 1 Then
@@ -629,6 +632,7 @@ Public Class MovingAverage
                     End If
                 End If
             End While
+            ds.Close()
             If counter = 1 Then
                 simpleMA = tmpSimpleMA
                 If InsertIntraDaySNEMAtoDB(counter) Then

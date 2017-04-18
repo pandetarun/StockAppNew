@@ -53,6 +53,7 @@ Public Class CalculateTechnicalIndicators
                     End Try
                 End If
             End While
+            ds.Close()
             DBFunctions.CloseSQLConnection()
         Catch exc As Exception
             StockAppLogger.LogError("CalculateIntradayIndicators Error Occurred in calculating intraday indicator = ", exc, "CalculateTechnicalIndicators")
@@ -99,6 +100,7 @@ Public Class CalculateTechnicalIndicators
                     End Try
                 End If
             End While
+            ds.Close()
             DBFunctions.CloseSQLConnection()
         Catch exc As Exception
             StockAppLogger.LogError("CalculateDailyIndicators Error Occurred in calculating daily indicator = ", exc, "CalculateTechnicalIndicators")

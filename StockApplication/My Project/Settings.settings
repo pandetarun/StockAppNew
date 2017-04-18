@@ -8,9 +8,6 @@
     <Setting Name="NSEIndicesURL" Type="System.String" Scope="User">
       <Value Profile="(Default)">https://www.nseindia.com/homepage/Indices1.json</Value>
     </Setting>
-    <Setting Name="logLevel" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Info</Value>
-    </Setting>
     <Setting Name="DataSource" Type="System.String" Scope="User">
       <Value Profile="(Default)">localhost</Value>
     </Setting>
@@ -25,6 +22,9 @@
     </Setting>
     <Setting Name="DataBase" Type="System.String" Scope="User">
       <Value Profile="(Default)">\DB\STOCKAPPDB.fdb</Value>
+    </Setting>
+    <Setting Name="logLevel" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Debug</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -80,18 +80,6 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Info")>  _
-        Public Property logLevel() As String
-            Get
-                Return CType(Me("logLevel"),String)
-            End Get
-            Set
-                Me("logLevel") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("localhost")>  _
         Public Property DataSource() As String
             Get
@@ -148,6 +136,18 @@ Namespace My
             End Get
             Set
                 Me("DataBase") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Debug")>  _
+        Public Property logLevel() As String
+            Get
+                Return CType(Me("logLevel"),String)
+            End Get
+            Set
+                Me("logLevel") = value
             End Set
         End Property
     End Class

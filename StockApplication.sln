@@ -9,6 +9,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "StockAppService1", "StockAp
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "TechnicalIndicatorsCalculationServiceProj", "TechnicalIndicatorsCalculationServiceProj\TechnicalIndicatorsCalculationServiceProj.vbproj", "{270C45DD-9476-406F-BDC8-1166432AEA1E}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "GenerateIndicationsService", "GenerateIndicationsService\GenerateIndicationsService.vbproj", "{D293601C-ACE0-4CB4-B80C-287A1582472F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{270C45DD-9476-406F-BDC8-1166432AEA1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{270C45DD-9476-406F-BDC8-1166432AEA1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{270C45DD-9476-406F-BDC8-1166432AEA1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D293601C-ACE0-4CB4-B80C-287A1582472F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D293601C-ACE0-4CB4-B80C-287A1582472F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D293601C-ACE0-4CB4-B80C-287A1582472F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D293601C-ACE0-4CB4-B80C-287A1582472F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

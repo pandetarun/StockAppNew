@@ -89,11 +89,13 @@
     <Compile Include="DailyStockQuote.vb" />
     <Compile Include="DataLayer.vb" />
     <Compile Include="DBFunctions.vb" />
+    <Compile Include="GenerateIntraDayIndications.vb" />
     <Compile Include="Helper.vb" />
     <Compile Include="HourlyStockQuote.vb" />
     <Compile Include="MACD.vb" />
-    <Compile Include="CalculateIntradayIndicators.vb" />
+    <Compile Include="CalculateTechnicalIndicators.vb" />
     <Compile Include="MovingAverage.vb" />
+    <Compile Include="MovingAverageIndication.vb" />
     <Compile Include="My Project\Settings.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

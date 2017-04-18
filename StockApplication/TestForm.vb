@@ -177,7 +177,7 @@ Public Class TestForm
             'Chart1.Series(0).IsXValueIndexed = True
 
             'MAwhereclause = "SHD.TRADEDDATE ='" & DateTimePicker1.Value.Date & "' and SHD.companycode='" & ComboBox1.SelectedItem.ToString() & "' and IMA.stock_name='" & ComboBox1.SelectedItem.ToString() & "' and SHD.companycode = IMA.STOCK_NAME And shd.lastupdatetime = ima.lastupdatetime"
-            MAwhereclause = "SHD.TRADEDDATE ='" & DateTimePicker1.Value.Date & "' and SHD.companycode='" & ComboBox1.SelectedItem.ToString() & "' and SHD.companycode = IMA.STOCKNAME And shd.lastupdatetime = ima.lastupdatetime And ima.period = " & SMA.SelectedItem.ToString
+            MAwhereclause = "SHD.TRADEDDATE ='" & DateTimePicker1.Value.Date & "' and IMA.TRADEDDATE = '" & DateTimePicker1.Value.Date & "' and SHD.companycode='" & ComboBox1.SelectedItem.ToString() & "' and SHD.companycode = IMA.STOCKNAME And shd.lastupdatetime = ima.lastupdatetime And ima.period = " & SMA.SelectedItem.ToString
             MAOrderby = "SHD.lastupdatetime"
             MAds = DBFunctions.getDataFromTable("INTRADAYSNEMOVINGAVERAGES IMA, STOCKHOURLYDATA SHD", " SHD.tradeddate, SHD.lastupdatetime lastupdatetime, SHD.LASTCLOSINGPRICE closingprice, IMA.lastupdatetime, IMA.SMA SMA ", MAwhereclause, MAOrderby)
             While MAds.Read()

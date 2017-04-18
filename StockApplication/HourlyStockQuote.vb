@@ -110,6 +110,7 @@ Public Class HourlyStockQuote
             End If
 
         End While
+        ds.Close()
         DBFunctions.CloseSQLConnection()
 
         StockAppLogger.Log("GetAndStoreHourlyData End", "HourlyStockQuote")
