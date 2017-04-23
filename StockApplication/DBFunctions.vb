@@ -17,9 +17,10 @@ Public Class DBFunctions
     Public Shared UserID As String = My.Settings.UserID
 
     Public Shared Function OpenSQLConnection() As Boolean
-        StockAppLogger.Log("OpenSQLConnection Start", "DBFunctions")
+
         Try
             If myConnection.State = ConnectionState.Closed Then
+                StockAppLogger.Log("OpenSQLConnection Start", "DBFunctions")
                 Dim cs As New FbConnectionStringBuilder()
                 cs.DataSource = DataSource
                 cs.Password = Password
@@ -35,8 +36,8 @@ Public Class DBFunctions
                 If cs IsNot Nothing Then cs = Nothing
                 myConnection.Open()
                 myDataSet.Reset()
+                StockAppLogger.Log("OpenSQLConnection End", "DBFunctions")
             End If
-            StockAppLogger.Log("OpenSQLConnection End", "DBFunctions")
             Return True
         Catch ex As Exception
             StockAppLogger.LogError("OpenSQLConnection Error Occurred in opening the connection ", ex, "DBFunctions")
@@ -44,7 +45,7 @@ Public Class DBFunctions
         End Try
     End Function
 
-    Public Function CreateDatabase() As Boolean
+    Public Shared Function CreateDatabase() As Boolean
         StockAppLogger.Log("CreateDatabase Start", "DBFunctions")
         Try
             Dim cs = New FbConnectionStringBuilder()
@@ -54,6 +55,7 @@ Public Class DBFunctions
                 cs.UserID = UserID
                 cs.Port = 3050
             End If
+
             cs.Pooling = False
             cs.Database = Database
             cs.Charset = "UNICODE_FSS"
@@ -98,13 +100,40 @@ Public Class DBFunctions
         End If
     End Function
 
+    Public Shared Function ExecuteSQLStmtandReturnResult(ByVal sSQL As String, Optional ByVal Disconnect As Boolean = False) As FbDataReader
+        StockAppLogger.Log("ExecuteSQLStmt Start", "DBFunctions")
+        Dim conn As New FbConnection
+        Dim command As New FbCommand
+        Dim ds As FbDataReader = Nothing
+        Dim sql As String = ""
+        'Dim resultList As List(Of String)
+
+        StockAppLogger.Log("getDataFromTable Start", "DBFunctions")
+        If OpenSQLConnection() = True Then
+            Try
+                'excecuted the SQL command 
+
+                command.Connection = myConnection
+                command.CommandText = sSQL
+                ds = command.ExecuteReader
+                'resultList = New List(Of String)
+                StockAppLogger.Log("getDataFromTable End", "DBFunctions")
+                Return ds
+            Catch ex As Exception
+                StockAppLogger.LogError("getDataFromTable Error in getting data for query " & sql, ex, "DBFunctions")
+                Return Nothing
+            End Try
+        End If
+        Return Nothing
+    End Function
+
     Public Shared Function getDataFromTable(ByVal tableName As String, Optional ByVal columnNames As String = "", Optional ByVal whereClause As String = "", Optional ByVal orderClause As String = "", Optional ByVal Disconnect As Boolean = False) As FbDataReader
 
         Dim conn As New FbConnection
         Dim command As New FbCommand
         Dim ds As FbDataReader = Nothing
         Dim sql As String = ""
-        Dim resultList As List(Of String)
+        'Dim resultList As List(Of String)
 
         StockAppLogger.Log("getDataFromTable Start", "DBFunctions")
         If OpenSQLConnection() = True Then
@@ -124,7 +153,7 @@ Public Class DBFunctions
                 command.Connection = myConnection
                 command.CommandText = sql
                 ds = command.ExecuteReader
-                resultList = New List(Of String)
+                'resultList = New List(Of String)
                 StockAppLogger.Log("getDataFromTable End", "DBFunctions")
                 Return ds
             Catch ex As Exception

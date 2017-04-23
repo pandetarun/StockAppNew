@@ -40,7 +40,7 @@ Public Class MovingAverage
                     End If
                 End If
             End While
-            DBFunctions.CloseSQLConnection()
+            'DBFunctions.CloseSQLConnection()
         Catch exc As Exception
             StockAppLogger.LogError("Error Occurred in getting stocklist from DB = ", exc, "MovingAverage")
             Return False
@@ -387,7 +387,7 @@ Public Class MovingAverage
         sqlStatement = insertStatement & insertValues
 
         DBFunctions.ExecuteSQLStmt(sqlStatement)
-        DBFunctions.CloseSQLConnection()
+        ' DBFunctions.CloseSQLConnection()
         StockAppLogger.Log("InsertIntraDaySNEMAtoDB End", "MovingAverage")
         Return True
     End Function

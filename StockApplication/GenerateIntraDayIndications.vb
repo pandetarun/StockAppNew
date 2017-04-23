@@ -52,7 +52,7 @@ Public Class GenerateIndications
                     End Try
                 End If
             End While
-            DBFunctions.CloseSQLConnection()
+            'DBFunctions.CloseSQLConnection()
         Catch exc As Exception
             StockAppLogger.LogError("CalculateIntradayIndicators Error Occurred in calculating intraday indicator = ", exc, "CalculateTechnicalIndicators")
             'Return False

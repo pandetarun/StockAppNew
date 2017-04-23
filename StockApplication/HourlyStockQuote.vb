@@ -91,7 +91,6 @@ Public Class HourlyStockQuote
                 rawHourlyStockQuote = Helper.GetDataFromUrl(My.Settings.TimelyStockQuote & tmpStockCode)
                 If rawHourlyStockQuote IsNot Nothing Then
                     tmpHourlyStockQuote = CreateObjectFromRawStockData(rawHourlyStockQuote)
-
                     If tmpHourlyStockQuote Is Nothing Then
                         StockAppLogger.Log("GetAndStoreHourlyData Error Occurred in creating hourlystockdata for stock= " & tmpStockCode)
                     Else
@@ -111,8 +110,7 @@ Public Class HourlyStockQuote
 
         End While
         ds.Close()
-        DBFunctions.CloseSQLConnection()
-
+        'DBFunctions.CloseSQLConnection()
         StockAppLogger.Log("GetAndStoreHourlyData End", "HourlyStockQuote")
         Return True
     End Function

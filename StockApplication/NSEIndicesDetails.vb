@@ -72,11 +72,12 @@ Public Class NSEIndicesDetails
             rawIndicesData = Helper.GetDataFromUrl(NSEIndicesURL)
             If rawIndicesData IsNot Nothing Then
                 tmpRawIndicesData = rawIndicesData
-                tmpNSEIndicesDetails.updateDate = Today
+                'tmpNSEIndicesDetails.updateDate = Today
                 indexOfVar = tmpRawIndicesData.IndexOf("time")
                 tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 6)
                 tmpString = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
                 tmpNSEIndicesDetails.updateTime = tmpString.Substring(tmpString.Length - 8)
+                tmpNSEIndicesDetails.updateDate = Date.Parse(tmpString.Substring(1, tmpString.Length - 10))
                 indexOfVar = tmpRawIndicesData.IndexOf("indexName")
                 tmpRawIndicesData = tmpRawIndicesData.Substring(indexOfVar + 12)
                 tmpNSEIndicesDetails.symbol = tmpRawIndicesData.Substring(0, tmpRawIndicesData.IndexOf(""","))
@@ -157,7 +158,7 @@ Public Class NSEIndicesDetails
         Catch exc As Exception
             StockAppLogger.LogError("StoreOrUpdateIndicesDetail Error Occurred in storing NSEDetails object = ", exc, "NSEIndicesDetails")
         End Try
-        DBFunctions.CloseSQLConnection()
+        'DBFunctions.CloseSQLConnection()
         StockAppLogger.Log("StoreOrUpdateIndicesDetail End", "NSEIndicesDetails")
     End Sub
 End Class

@@ -26,6 +26,7 @@ Retry:
                 StockAppLogger.LogInfo("Retrying fetch for URL = " & urlToGet, "Helper")
                 GoTo Retry
             End If
+            StockAppLogger.LogInfo("Error Retry failed in getting data from URL = " & urlToGet, "Helper")
             Return Nothing
         End Try
         StockAppLogger.Log("GetDataFromUrl End", "Helper")

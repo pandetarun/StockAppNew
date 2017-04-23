@@ -37,7 +37,7 @@ Public Class MACD
                     End If
                 End If
             End While
-            DBFunctions.CloseSQLConnection()
+            'DBFunctions.CloseSQLConnection()
         Catch exc As Exception
             StockAppLogger.LogError("GetStockListAndCalculateIntraDayMACD Error Occurred in getting stocklist from DB = ", exc, "MovingAverage")
             Return False
@@ -70,6 +70,7 @@ Public Class MACD
                 configuredMACDPeriods = ds1.GetValue(ds1.GetOrdinal("MACD"))
                 tmpMACDPeriods = New List(Of String)(configuredMACDPeriods.Split(","))
             End If
+            ds1.Close()
             If tmpMACDPeriods IsNot Nothing Then
                 whereClause = "TRADEDDATE='" & Today & "' and STOCKNAME = '" & tmpStockCode & "' and period = " & tmpMACDPeriods.Item(0)
                 ds = DBFunctions.getDataFromTable("INTRADAYSNEMOVINGAVERAGES", " EMA ", whereClause, orderClause)
@@ -91,7 +92,7 @@ Public Class MACD
                 ds.Close()
                 If fastEMA <> 0 And slowEMA <> 0 Then
                     MACD = fastEMA - slowEMA
-                    'insert MACD
+                    InsertIntraDayMACDtoDB()
                 End If
 
             End If
@@ -103,7 +104,7 @@ Public Class MACD
         Return True
     End Function
 
-    Private Function InsertIntraDayMACDtoDB(ByVal period As Integer) As Boolean
+    Private Function InsertIntraDayMACDtoDB() As Boolean
 
         Dim insertStatement As String
         Dim insertValues As String

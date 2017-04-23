@@ -1,6 +1,14 @@
 ﻿Imports FirebirdSql.Data.FirebirdClient
+Imports FirebirdSql.Data.Isql
 Imports System.Windows.Forms.DataVisualization.Charting
 Imports System.Collections.Generic
+
+Imports System.IO.StreamReader
+Imports System.Globalization
+Imports System.Data
+Imports System.IO
+Imports System.Windows.Forms
+
 
 
 Public Class TestForm
@@ -10,9 +18,9 @@ Public Class TestForm
         'tmpNSEindices = New NSEindices()
         'tmpNSEindices.getIndicesListAndStore()
 
-        'Dim tmpNSEIndicesDetails As NSEIndicesDetails
-        'tmpNSEIndicesDetails = New NSEIndicesDetails()
-        'tmpNSEIndicesDetails.getIndicesDetailsAndStore()
+        Dim tmpNSEIndicesDetails As NSEIndicesDetails
+        tmpNSEIndicesDetails = New NSEIndicesDetails()
+        tmpNSEIndicesDetails.getIndicesDetailsAndStore()
 
         'DataLayer testing
         'Dim myDataLayer As DataLayer = New DataLayer()
@@ -34,9 +42,44 @@ Public Class TestForm
         'tmpMovingAverageCalculation = New MovingAverage()
         'tmpMovingAverageCalculation.CalculateAndStoreDayMA()
 
-        Dim tmpMovingAverageCalculation As BollingerBands
-        tmpMovingAverageCalculation = New BollingerBands()
-        tmpMovingAverageCalculation.CalculateAndStoreIntradayBollingerBands()
+        'Dim tmpMovingAverageCalculation As BollingerBands
+        'tmpMovingAverageCalculation = New BollingerBands()
+        'tmpMovingAverageCalculation.CalculateAndStoreIntradayBollingerBands()
+
+        'DBFunctions.CreateDatabase()
+
+        'Dim conn As New FbConnection
+        'Dim command As New FbBatchExecution
+        'Dim ds As FbDataReader = Nothing
+
+        'If DBFunctions.OpenSQLConnection() = True Then
+        '    Try
+        '        Dim script As String
+        '        script = "INSERT INTO TESTTABLE (NAME, SALARY) VALUES  ('Tarun',20 );"
+        '        script = script & "INSERT INTO TESTTABLE (NAME, SALARY) VALUES  ('Sangita',23 );"
+        '        script = script & "INSERT INTO TESTTABLE (NAME, SALARY) VALUES  ('Sony',12 );"
+        '        script = script & "INSERT INTO TESTTABLE (NAME, SALARY) VALUES  ('Neha',34 );"
+        '        script = script & "INSERT INTO TESTTABLE (NAME, SALARY) VALUES  ('Roli',3 );"
+        '        Dim fbs As FbScript = New FbScript(script)
+        '        fbs.Parse()
+        '        command = New FbBatchExecution(DBFunctions.myConnection)
+
+
+        '        command.AppendSqlStatements(fbs)
+
+
+        '        command.Execute(True)
+
+        '        DBFunctions.CloseSQLConnection()
+
+        '        StockAppLogger.Log("getDataFromTable End", "DBFunctions")
+
+        '    Catch ex As Exception
+        '        StockAppLogger.LogError("getDataFromTable Error in getting data for query ", ex, "DBFunctions")
+
+        '    End Try
+        'End If
+
 
     End Sub
 
@@ -101,7 +144,7 @@ Public Class TestForm
             Loop
         End If
         ds.Close()
-        DBFunctions.CloseSQLConnection()
+        'DBFunctions.CloseSQLConnection()
     End Sub
 
     Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
@@ -186,7 +229,7 @@ Public Class TestForm
             End While
             MAds.Close()
         End If
-        DBFunctions.CloseSQLConnection()
+        'DBFunctions.CloseSQLConnection()
     End Sub
 
     Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox1.CheckedChanged

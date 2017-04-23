@@ -164,7 +164,7 @@ Public Class DailyStockQuote
                 DBFunctions.ExecuteSQLStmt(insertStatement & insertValues)
             Next
 
-            DBFunctions.CloseSQLConnection()
+            'DBFunctions.CloseSQLConnection()
         Catch ex As Exception
             StockAppLogger.LogError("StoreDailyStockDetail Error in storing daily record", ex, "DailyStockQuote")
         End Try

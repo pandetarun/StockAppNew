@@ -28,7 +28,7 @@ Public Class BollingerBands
                     End If
                 End If
             End While
-            DBFunctions.CloseSQLConnection()
+            'DBFunctions.CloseSQLConnection()
         Catch exc As Exception
             StockAppLogger.LogError(" CalculateAndStoreIntradayBollingerBandsError Occurred in getting stocklist from DB = ", exc, "BollingerBands")
             Return False
@@ -52,10 +52,10 @@ Public Class BollingerBands
         Dim tmpPeriodData As List(Of Double)
         Dim totalRecords As Integer = 0
 
-        StockAppLogger.Log("IntraDayBBCalculation Start", "BollingerBands")
+        StockAppLogger.LogInfo("IntraDayBBCalculation Start", "BollingerBands")
         tmpBBPeriods = Nothing
         lastTradedPrice = 0
-        counter = 0
+        counter = 1
         totalTradedPrice = 0
         simpleMA = 0
         BBUper = 0
@@ -81,7 +81,7 @@ Public Class BollingerBands
                 While ds.Read()
 
                     If counter <= tmpBBPeriods.Item(tmpBBPeriods.Count() - 1) Then
-                        If counter = 0 Then
+                        If counter = 1 Then
                             MATime = ds.GetValue(ds.GetOrdinal("lastupdatetime"))
                             closingPrice = ds.GetValue(ds.GetOrdinal("lastClosingPrice"))
                             lastTradedPrice = closingPrice
@@ -95,7 +95,7 @@ Public Class BollingerBands
                             'BBUper = 0
                             tmpPeriodData = New List(Of Double)
                             simpleMA = totalTradedPrice / counter
-                            For counter1 As Integer = 0 To counter
+                            For counter1 As Integer = 0 To counter - 1
                                 tmpPeriodData.Add(PeriodData.Item(counter1) - simpleMA)
                                 tmpPeriodData.Item(counter1) = tmpPeriodData.Item(counter1) * tmpPeriodData.Item(counter1)
                                 perioddeviation = perioddeviation + tmpPeriodData.Item(counter1)
@@ -117,12 +117,11 @@ Public Class BollingerBands
                 End While
             End If
             ds.Close()
-            DBFunctions.CloseSQLConnection()
         Catch exc As Exception
             StockAppLogger.LogError("IntraDayBBCalculation Error Occurred in calculating intraday Bollinger Band = ", exc, "BollingerBands")
             Return False
         End Try
-        StockAppLogger.Log("IntraDayBBCalculation End", "BollingerBands")
+        StockAppLogger.LogInfo("IntraDayBBCalculation End", "BollingerBands")
         Return True
     End Function
 
@@ -167,7 +166,7 @@ Public Class BollingerBands
                     End If
                 End If
             End While
-            DBFunctions.CloseSQLConnection()
+            'DBFunctions.CloseSQLConnection()
         Catch exc As Exception
             StockAppLogger.LogError("CalculateAndStoredailyBollingerBands Error Occurred in getting stocklist from DB = ", exc, "BollingerBands")
             Return False
@@ -212,7 +211,6 @@ Public Class BollingerBands
                 tmpBBPeriods = New List(Of String)(configuredBBPeriods.Split(","))
             End If
             While ds.Read()
-
                 If counter = 0 Then
                     closingPrice = ds.GetValue(ds.GetOrdinal("last_traded_price"))
                     lastTradedPrice = closingPrice
