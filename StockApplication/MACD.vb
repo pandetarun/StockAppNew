@@ -31,7 +31,7 @@ Public Class MACD
                 If Not tmpStockList.Contains(tmpStockCode) Then
                     tmpStockList.Add(tmpStockCode)
                     If IntraDayMACDCalculation(tmpStockCode) Then
-                        StockAppLogger.Log("GetStockListAndCalculateIntraDayMACD IntraDaySNEMACalculation successfull for Stock = " & tmpStockCode & " at time = " & MATime, "MovingAverage")
+                        StockAppLogger.LogInfo("GetStockListAndCalculateIntraDayMACD IntraDaySNEMACalculation successfull for Stock = " & tmpStockCode & " at time = " & MATime, "MovingAverage")
                     Else
                         StockAppLogger.LogInfo("GetStockListAndCalculateIntraDayMACD IntraDaySNEMACalculation failed for Stock = " & tmpStockCode & " at time = " & MATime, "MovingAverage")
                     End If

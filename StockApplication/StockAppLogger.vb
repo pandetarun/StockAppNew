@@ -6,13 +6,14 @@ Public Class StockAppLogger
 
     Shared logFile As String = My.Settings.ApplicationFileLocation & "\Log\log.txt"
     Shared errorLogFile As String = My.Settings.ApplicationFileLocation & "\Log\Errorlog.txt"
+    Shared infoLogFile As String = My.Settings.ApplicationFileLocation & "\Log\Infolog.txt"
     Shared className As String
 
     Public Shared Function LogInfo(logMessage As String, Optional className As String = "") As Boolean
         Try
             If My.Settings.logLevel = "Info" Or My.Settings.logLevel = "Debug" Then
                 Dim tmpWriter As StreamWriter
-                tmpWriter = File.AppendText(logFile)
+                tmpWriter = File.AppendText(infoLogFile)
                 'tmpWriter.Write(vbCrLf + "Log Entry : ")
                 tmpWriter.Write("{0} {1}", DateTime.Now.ToLongTimeString(), DateTime.Now.ToLongDateString())
                 tmpWriter.Write(" Info " & className & "  : ")
@@ -62,7 +63,7 @@ Public Class StockAppLogger
                 tmpWriter.Close()
             End If
         Catch ex As Exception
-            WriteToFile("Log throws error" & DateTime.Now.TimeOfDay.ToString)
+            WriteToFile("Log throws error on date =" & Today & " and time = " & DateTime.Now.TimeOfDay.ToString)
             Return False
         End Try
         Return True

@@ -22,7 +22,7 @@ Public Class CalculateTechnicalIndicators
                     Try
                         'Moving Average calculation
                         If tmpMovingAverageCalculation.IntraDaySNEMACalculation(tmpStockCode) Then
-                            StockAppLogger.Log("CalculateIntradayIndicators intraday moving average successfull for Stock = " & tmpStockCode, "CalculateTechnicalIndicators")
+                            StockAppLogger.LogInfo("CalculateIntradayIndicators intraday moving average successfull for Stock = " & tmpStockCode, "CalculateTechnicalIndicators")
                         Else
                             StockAppLogger.LogInfo("CalculateIntradayIndicators intraday moving average failed for Stock = " & tmpStockCode, "CalculateTechnicalIndicators")
                         End If
@@ -44,7 +44,7 @@ Public Class CalculateTechnicalIndicators
                     Try
                         'Intra day MACD calculation
                         If tmpMACDCalculation.IntraDayMACDCalculation(tmpStockCode) Then
-                            StockAppLogger.Log("CalculateIntradayIndicators MACD successfull for Stock = " & tmpStockCode, "CalculateTechnicalIndicators")
+                            StockAppLogger.LogInfo("CalculateIntradayIndicators MACD successfull for Stock = " & tmpStockCode, "CalculateTechnicalIndicators")
                         Else
                             StockAppLogger.LogInfo("CalculateIntradayIndicators MACD failed for Stock = " & tmpStockCode, "CalculateTechnicalIndicators")
                         End If

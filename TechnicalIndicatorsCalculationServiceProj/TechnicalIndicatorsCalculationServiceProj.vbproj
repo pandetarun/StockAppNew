@@ -129,6 +129,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GenerateIndicationsService\GenerateIndicationsService.vbproj">
+      <Project>{d293601c-ace0-4cb4-b80c-287a1582472f}</Project>
+      <Name>GenerateIndicationsService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\StockApplication\StockApplication.vbproj">
       <Project>{329e97b8-5d8c-484d-93ae-ea6aff4b8ffc}</Project>
       <Name>StockApplication</Name>

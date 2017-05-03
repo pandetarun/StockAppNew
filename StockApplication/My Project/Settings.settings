@@ -24,7 +24,7 @@
       <Value Profile="(Default)">\DB\STOCKAPPDB.fdb</Value>
     </Setting>
     <Setting Name="logLevel" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Debug</Value>
+      <Value Profile="(Default)">Info</Value>
     </Setting>
   </Settings>
 </SettingsFile>

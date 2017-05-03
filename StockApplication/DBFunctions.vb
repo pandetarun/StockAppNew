@@ -49,12 +49,12 @@ Public Class DBFunctions
         StockAppLogger.Log("CreateDatabase Start", "DBFunctions")
         Try
             Dim cs = New FbConnectionStringBuilder()
-            If Not ServerType = FbServerType.Default Then
-                cs.DataSource = DataSource
+            'If Not ServerType = FbServerType.Default Then
+            cs.DataSource = DataSource
                 cs.Password = Password
                 cs.UserID = UserID
                 cs.Port = 3050
-            End If
+            'End If
 
             cs.Pooling = False
             cs.Database = Database

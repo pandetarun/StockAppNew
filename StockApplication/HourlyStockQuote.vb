@@ -92,7 +92,7 @@ Public Class HourlyStockQuote
                 If rawHourlyStockQuote IsNot Nothing Then
                     tmpHourlyStockQuote = CreateObjectFromRawStockData(rawHourlyStockQuote)
                     If tmpHourlyStockQuote Is Nothing Then
-                        StockAppLogger.Log("GetAndStoreHourlyData Error Occurred in creating hourlystockdata for stock= " & tmpStockCode)
+                        StockAppLogger.LogInfo("GetAndStoreHourlyData Error Occurred in creating hourlystockdata for stock= " & tmpStockCode)
                     Else
                         Try
                             StockAppLogger.Log("GetAndStoreHourlyData stock = " & tmpHourlyStockQuote.CompanyCode & " insert statement = " & tmpHourlyStockQuote.insertStatement)

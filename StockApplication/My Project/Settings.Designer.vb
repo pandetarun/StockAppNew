@@ -141,7 +141,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Debug")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Info")>  _
         Public Property logLevel() As String
             Get
                 Return CType(Me("logLevel"),String)

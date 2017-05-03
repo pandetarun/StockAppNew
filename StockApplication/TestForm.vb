@@ -18,9 +18,9 @@ Public Class TestForm
         'tmpNSEindices = New NSEindices()
         'tmpNSEindices.getIndicesListAndStore()
 
-        Dim tmpNSEIndicesDetails As NSEIndicesDetails
-        tmpNSEIndicesDetails = New NSEIndicesDetails()
-        tmpNSEIndicesDetails.getIndicesDetailsAndStore()
+        'Dim tmpNSEIndicesDetails As NSEIndicesDetails
+        'tmpNSEIndicesDetails = New NSEIndicesDetails()
+        'tmpNSEIndicesDetails.getIndicesDetailsAndStore()
 
         'DataLayer testing
         'Dim myDataLayer As DataLayer = New DataLayer()
@@ -46,7 +46,7 @@ Public Class TestForm
         'tmpMovingAverageCalculation = New BollingerBands()
         'tmpMovingAverageCalculation.CalculateAndStoreIntradayBollingerBands()
 
-        'DBFunctions.CreateDatabase()
+        DBFunctions.CreateDatabase()
 
         'Dim conn As New FbConnection
         'Dim command As New FbBatchExecution
@@ -129,21 +129,21 @@ Public Class TestForm
     End Sub
 
     Private Sub TestForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ComboBox1.Select()
-        populateSMAValues()
-        Dim ds As FbDataReader = Nothing
-        Chart1.ChartAreas.Clear()
-        Chart1.Series.Clear()
-        'whereClause = "TRADEDDATE = '30-Mar-2017' and companycode = 'IDEA'"
+        'ComboBox1.Select()
+        'populateSMAValues()
+        'Dim ds As FbDataReader = Nothing
+        'Chart1.ChartAreas.Clear()
+        'Chart1.Series.Clear()
+        ''whereClause = "TRADEDDATE = '30-Mar-2017' and companycode = 'IDEA'"
 
-        ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING", " distinct STOCK_NAME")
+        'ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING", " distinct STOCK_NAME")
 
-        If ds.HasRows Then
-            Do While ds.Read()
-                ComboBox1.Items.Add(ds("STOCK_NAME"))
-            Loop
-        End If
-        ds.Close()
+        'If ds.HasRows Then
+        '    Do While ds.Read()
+        '        ComboBox1.Items.Add(ds("STOCK_NAME"))
+        '    Loop
+        'End If
+        'ds.Close()
         'DBFunctions.CloseSQLConnection()
     End Sub
 

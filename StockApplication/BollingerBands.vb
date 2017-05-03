@@ -52,7 +52,7 @@ Public Class BollingerBands
         Dim tmpPeriodData As List(Of Double)
         Dim totalRecords As Integer = 0
 
-        StockAppLogger.LogInfo("IntraDayBBCalculation Start", "BollingerBands")
+        StockAppLogger.Log("IntraDayBBCalculation Start", "BollingerBands")
         tmpBBPeriods = Nothing
         lastTradedPrice = 0
         counter = 1
@@ -121,7 +121,7 @@ Public Class BollingerBands
             StockAppLogger.LogError("IntraDayBBCalculation Error Occurred in calculating intraday Bollinger Band = ", exc, "BollingerBands")
             Return False
         End Try
-        StockAppLogger.LogInfo("IntraDayBBCalculation End", "BollingerBands")
+        StockAppLogger.Log("IntraDayBBCalculation End", "BollingerBands")
         Return True
     End Function
 

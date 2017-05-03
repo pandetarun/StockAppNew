@@ -2,6 +2,10 @@
 Imports System.Threading
 Imports System.Configuration
 Imports StockApplication
+Imports GenerateIndicationsService
+Imports System.ServiceModel
+Imports System.ServiceModel.Web
+Imports System.ServiceModel.Description
 
 ' NOTE: You can use the "Rename" command on the context menu to change the class name "ConnectorService" in both code and config file together.
 Public Class TechnicalIndicatorConnectorService
@@ -36,6 +40,7 @@ Public Class TechnicalIndicatorConnectorService
             Dim tmpCalculateIntradayIndicators As CalculateTechnicalIndicators = New CalculateTechnicalIndicators()
             tmpCalculateIntradayIndicators.CalculateIntradayIndicators()
             Me.WriteToFile("IntraDay calculation End" & DateTime.Now.TimeOfDay.ToString)
+            callIndicationService()
         Catch ex As Exception
             WriteToFile("TechnicalIndicatorConnectorService Error in calculating intraday data " + ex.Message + ex.StackTrace)
             ''Stop the Windows Service.
@@ -61,4 +66,14 @@ Public Class TechnicalIndicatorConnectorService
         End Try
     End Sub
 
+    Private Sub callIndicationService()
+        'IntraDay techinal indicator service call starts
+        Using cf As New ChannelFactory(Of IGenerateTechnicalIndicator)(New WebHttpBinding(), "http://localhost:6080")
+            cf.Endpoint.Behaviors.Add(New WebHttpBehavior())
+            Dim channel As IGenerateTechnicalIndicator = cf.CreateChannel()
+            Me.WriteToFile("TechnicalIndicatorConnectorService Service calling connector Service for intraday indicator indication " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+            channel.GenerateIndication()
+            Me.WriteToFile("TechnicalIndicatorConnectorService Service called connector Service for intraday indicator indication  " + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"))
+        End Using
+    End Sub
 End Class

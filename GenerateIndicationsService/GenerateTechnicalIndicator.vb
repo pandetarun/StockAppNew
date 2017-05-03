@@ -16,7 +16,18 @@ Public Class GenerateTechnicalIndicator
 
 
     Private Sub GenerateMovingAverageIndiction()
-
+        Try
+            Me.WriteToFile("GenerateMovingAverageIndiction Moving Average indication calculation started" & DateTime.Now.TimeOfDay.ToString)
+            Dim tmpGenerateIntradayIndicators As GenerateIndications = New GenerateIndications()
+            tmpGenerateIntradayIndicators.GenerateIntraDayIndications()
+            Me.WriteToFile("GenerateMovingAverageIndiction Moving Average indication calculation End" & DateTime.Now.TimeOfDay.ToString)
+        Catch ex As Exception
+            WriteToFile("GenerateMovingAverageIndiction Error in calculating intraday data " + ex.Message + ex.StackTrace)
+            ''Stop the Windows Service.
+            'Using serviceController As New System.ServiceProcess.ServiceController("StockAppDataDownload")
+            '    serviceController.[Stop]()
+            'End Using
+        End Try
     End Sub
 
     Private Sub GenerateBollingerBandIndiction()

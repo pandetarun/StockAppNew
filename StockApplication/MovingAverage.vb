@@ -34,7 +34,7 @@ Public Class MovingAverage
                 If Not tmpStockList.Contains(tmpStockCode) Then
                     tmpStockList.Add(tmpStockCode)
                     If IntraDaySNEMACalculation(tmpStockCode) Then
-                        StockAppLogger.Log("GetStockListAndCalculateIntraDayMA IntraDaySNEMACalculation successfull for Stock = " & tmpStockCode & " at time = " & MATime, "MovingAverage")
+                        StockAppLogger.LogInfo("GetStockListAndCalculateIntraDayMA IntraDaySNEMACalculation successfull for Stock = " & tmpStockCode & " at time = " & MATime, "MovingAverage")
                     Else
                         StockAppLogger.LogInfo("GetStockListAndCalculateIntraDayMA IntraDaySNEMACalculation failed for Stock = " & tmpStockCode & " at time = " & MATime, "MovingAverage")
                     End If
