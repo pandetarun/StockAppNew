@@ -76,7 +76,7 @@ Public Class MovingAverageIndication
         If ds.Read() Then
             uptrendtimer = Integer.Parse(ds.GetValue(ds.GetOrdinal("UPTRENDINDICATIONTIMER")))
             'ds.Read()
-            uptrend = Double.Parse(ds.GetValue(ds.GetOrdinal("STRONGUPTREND")))
+            uptrend = ds.GetValue(ds.GetOrdinal("STRONGUPTREND")
         End If
         ds.Close()
 
