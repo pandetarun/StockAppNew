@@ -18,7 +18,7 @@ Public Class MovingAverageIndication
         Dim indicaton As Boolean = False
         Try
             'Get Preferred SMA for indication
-            ds = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " PREFINTRADAYSMAPERIODS ", " stockname='" & tmpStockCode & "'")
+            ds = DBFunctions.getDataFromTableExt("STOCKWISEPERIODS", "DI", " PREFINTRADAYSMAPERIODS ", " stockname='" & tmpStockCode & "'")
             If ds IsNot Nothing And ds.Read() Then
                 configuredPreferredSMAPeriods = ds.GetValue(ds.GetOrdinal("PREFINTRADAYSMAPERIODS"))
                 tmpPreferredSMAPeriods = New List(Of String)(configuredPreferredSMAPeriods.Split(","))
@@ -27,7 +27,7 @@ Public Class MovingAverageIndication
             'Get Lower SMA
             whereClause = "TRADEDDATE='" & Today & "' and STOCKNAME = '" & tmpStockCode & "' and period = " & tmpPreferredSMAPeriods.Item(0)
             orderClause = "lastupdatetime desc"
-            ds = DBFunctions.getDataFromTable("INTRADAYSNEMOVINGAVERAGES", " SMA, LASTUPDATETIME ", whereClause, orderClause)
+            ds = DBFunctions.getDataFromTableExt("INTRADAYSNEMOVINGAVERAGES", "DI", " SMA, LASTUPDATETIME ", whereClause, orderClause)
             If ds.Read() Then
                 lastupdatetime = ds.GetValue(ds.GetOrdinal("LASTUPDATETIME"))
                 lastLowerSMA = Double.Parse(ds.GetValue(ds.GetOrdinal("SMA")))
@@ -39,7 +39,7 @@ Public Class MovingAverageIndication
             'Get Highr SMA
             whereClause = "TRADEDDATE='" & Today & "' and STOCKNAME = '" & tmpStockCode & "' and period = " & tmpPreferredSMAPeriods.Item(1)
             orderClause = "lastupdatetime desc"
-            ds = DBFunctions.getDataFromTable("INTRADAYSNEMOVINGAVERAGES", " SMA ", whereClause, orderClause)
+            ds = DBFunctions.getDataFromTableExt("INTRADAYSNEMOVINGAVERAGES", "DI", " SMA ", whereClause, orderClause)
             If ds.Read() Then
                 lastHigherSMA = Double.Parse(ds.GetValue(ds.GetOrdinal("SMA")))
                 ds.Read()
@@ -72,11 +72,11 @@ Public Class MovingAverageIndication
         'Get previously stored indication
         whereClause = "INDICATIONDATE='" & Today & "' and STOCKNAME = '" & stockName & "'"
         orderClause = "INDICTATIONTIME desc"
-        ds = DBFunctions.getDataFromTable("INTRADAYSMAINDICATION", " UPTRENDINDICATIONTIMER, STRONGUPTREND ", whereClause, orderClause)
+        ds = DBFunctions.getDataFromTableExt("INTRADAYSMAINDICATION", "DI", " UPTRENDINDICATIONTIMER, STRONGUPTREND ", whereClause, orderClause)
         If ds.Read() Then
             uptrendtimer = Integer.Parse(ds.GetValue(ds.GetOrdinal("UPTRENDINDICATIONTIMER")))
             'ds.Read()
-            uptrend = ds.GetValue(ds.GetOrdinal("STRONGUPTREND")
+            uptrend = ds.GetValue(ds.GetOrdinal("STRONGUPTREND"))
         End If
         ds.Close()
 
@@ -87,7 +87,7 @@ Public Class MovingAverageIndication
             '    DBFunctions.ExecuteSQLStmt("update INTRADAYSMAINDICATION set UPTRENDINDICATIONTIMER=0, INDICATIONDATE='" & Today & "', INDICTATIONTIME='" & lastupdatetime & "' where STOCKNAME ='" & stockName & "' and INDICATIONDATE='" & Today & "'")
             'Else
             ssql = "INSERT INTO INTRADAYSMAINDICATION (STOCKNAME, INDICATIONDATE, INDICTATIONTIME, UPTRENDINDICATIONTIMER) VALUES('" & stockName & "','" & Today & "','" & lastupdatetime & "', 0);"
-            DBFunctions.ExecuteSQLStmt(ssql)
+            DBFunctions.ExecuteSQLStmtExt(ssql, "DI")
             'End If
         End If
 
@@ -97,13 +97,13 @@ Public Class MovingAverageIndication
             If uptrend & uptrendtimer >= 3 Then
                 Return True
             Else
-                DBFunctions.ExecuteSQLStmt("update INTRADAYSMAINDICATION set UPTRENDINDICATIONTIMER=" & (uptrendtimer + 1) & ", INDICTATIONTIME='" & lastupdatetime & "' where STOCKNAME ='" & stockName & "' and INDICATIONDATE='" & Today & "'")
+                DBFunctions.ExecuteSQLStmtExt("update INTRADAYSMAINDICATION set UPTRENDINDICATIONTIMER=" & (uptrendtimer + 1) & ", INDICTATIONTIME='" & lastupdatetime & "' where STOCKNAME ='" & stockName & "' and INDICATIONDATE='" & Today & "'", "DI")
             End If
         ElseIf previousLowerSMA - previousHigherSMA > 0 And ((previousLowerSMA - previousHigherSMA) > (lastLowerSMA - lastHigherSMA)) Then
             'uptrend getting weaker
             'store the info
             If uptrend Or uptrendtimer >= 0 Then
-                DBFunctions.ExecuteSQLStmt("update INTRADAYSMAINDICATION set STRONGUPTREND = 'false', UPTRENDINDICATIONTIMER= - 1, INDICTATIONTIME='" & lastupdatetime & "' where STOCKNAME ='" & stockName & "' and INDICATIONDATE='" & Today & "'")
+                DBFunctions.ExecuteSQLStmtExt("update INTRADAYSMAINDICATION set STRONGUPTREND = 'false', UPTRENDINDICATIONTIMER= - 1, INDICTATIONTIME='" & lastupdatetime & "' where STOCKNAME ='" & stockName & "' and INDICATIONDATE='" & Today & "'", "DI")
             End If
             Return False
         End If
@@ -116,7 +116,7 @@ Public Class MovingAverageIndication
             'No indication
             'check if already any indication store and if yes then mark that indication false
             If uptrend Or uptrendtimer >= 0 Then
-                DBFunctions.ExecuteSQLStmt("update INTRADAYSMAINDICATION set STRONGUPTREND = 'false', UPTRENDINDICATIONTIMER= - 1, INDICTATIONTIME='" & lastupdatetime & "' where STOCKNAME ='" & stockName & "' and INDICATIONDATE='" & Today & "'")
+                DBFunctions.ExecuteSQLStmtExt("update INTRADAYSMAINDICATION set STRONGUPTREND = 'false', UPTRENDINDICATIONTIMER= - 1, INDICTATIONTIME='" & lastupdatetime & "' where STOCKNAME ='" & stockName & "' and INDICATIONDATE='" & Today & "'", "DI")
             End If
             Return False
         End If

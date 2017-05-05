@@ -82,7 +82,7 @@ Public Class HourlyStockQuote
         Dim tmpHourlyStockQuote As HourlyStockQuote
 
         StockAppLogger.Log("GetAndStoreHourlyData Start", "HourlyStockQuote")
-        ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING")
+        ds = DBFunctions.getDataFromTableExt("NSE_INDICES_TO_STOCK_MAPPING", "DC")
         While ds.Read()
             tmpStockCode = ds.GetValue(ds.GetOrdinal("STOCK_NAME"))
             tmpStockCode = tmpStockCode.Replace("&", "%26")
@@ -96,7 +96,7 @@ Public Class HourlyStockQuote
                     Else
                         Try
                             StockAppLogger.Log("GetAndStoreHourlyData stock = " & tmpHourlyStockQuote.CompanyCode & " insert statement = " & tmpHourlyStockQuote.insertStatement)
-                            DBFunctions.ExecuteSQLStmt(tmpHourlyStockQuote.insertStatement)
+                            DBFunctions.ExecuteSQLStmtExt(tmpHourlyStockQuote.insertStatement, "DC")
                         Catch exc As Exception
                             StockAppLogger.LogError("Error Occurred in inserting hourlystockdata = ", exc)
                         End Try
@@ -110,7 +110,7 @@ Public Class HourlyStockQuote
 
         End While
         ds.Close()
-        'DBFunctions.CloseSQLConnection()
+        DBFunctions.CloseSQLConnectionExt("DC")
         StockAppLogger.Log("GetAndStoreHourlyData End", "HourlyStockQuote")
         Return True
     End Function

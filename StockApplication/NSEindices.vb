@@ -70,12 +70,13 @@ Public Class NSEindices
                 insertValues = insertValues + tmpNSEIndices.priceChange.ToString("R") + ","
                 insertValues = insertValues + tmpNSEIndices.percentageChange.ToString("R") + ","
                 insertValues = insertValues + "'" + tmpNSEIndices.priceDate + "');"
-                myDataLayer.ExecuteSQLStmt(insertStatement + insertValues)
+                DBFunctions.ExecuteSQLStmtExt(insertStatement + insertValues, "DC")
+                'myDataLayer.ExecuteSQLStmt(insertStatement + insertValues)
             Catch exc As Exception
                 StockAppLogger.LogError("storeIndicesDatainDB Error Occurred in inserting IndicesList for index = " & tmpNSEIndices.indexName, exc)
             End Try
         Next
-        myDataLayer.CloseSQLConnection()
+        DBFunctions.CloseSQLConnectionExt("DC")
         StockAppLogger.Log("storeIndicesDatainDB End")
         Return True
     End Function

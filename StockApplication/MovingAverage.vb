@@ -28,7 +28,7 @@ Public Class MovingAverage
 
         StockAppLogger.Log("GetStockListAndCalculateIntraDayMA Start", "MovingAverage")
         Try
-            ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING")
+            ds = DBFunctions.getDataFromTableExt("NSE_INDICES_TO_STOCK_MAPPING", "CI")
             While ds.Read()
                 tmpStockCode = ds.GetValue(ds.GetOrdinal("STOCK_NAME"))
                 If Not tmpStockList.Contains(tmpStockCode) Then
@@ -40,7 +40,7 @@ Public Class MovingAverage
                     End If
                 End If
             End While
-            'DBFunctions.CloseSQLConnection()
+            'DBFunctions.CloseSQLConnectionExt("CI")
         Catch exc As Exception
             StockAppLogger.LogError("Error Occurred in getting stocklist from DB = ", exc, "MovingAverage")
             Return False
@@ -217,9 +217,9 @@ Public Class MovingAverage
             whereClause = "LASTUPDATEDATE='" & Today & "' and companycode = '" & tmpStockCode & "'"
             orderClause = "lastupdatetime desc"
             MADate = Today
-            ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
+            ds = DBFunctions.getDataFromTableExt("STOCKHOURLYDATA", "CI", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
             'Get period details for the stock
-            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " INTRADAYSMAPERIOD, INTRADAYEMAPERIOD", "stockname = '" & tmpStockCode & "'")
+            ds1 = DBFunctions.getDataFromTableExt("STOCKWISEPERIODS", "CI", " INTRADAYSMAPERIOD, INTRADAYEMAPERIOD", "stockname = '" & tmpStockCode & "'")
             If ds1.Read() Then
                 configuredSMAPeriods = ds1.GetValue(ds1.GetOrdinal("INTRADAYSMAPERIOD"))
                 configuredEMAPeriods = ds1.GetValue(ds1.GetOrdinal("INTRADAYEMAPERIOD"))
@@ -386,7 +386,7 @@ Public Class MovingAverage
         insertValues = insertValues & ");"
         sqlStatement = insertStatement & insertValues
 
-        DBFunctions.ExecuteSQLStmt(sqlStatement)
+        DBFunctions.ExecuteSQLStmtExt(sqlStatement, "CI")
         ' DBFunctions.CloseSQLConnection()
         StockAppLogger.Log("InsertIntraDaySNEMAtoDB End", "MovingAverage")
         Return True
@@ -399,7 +399,7 @@ Public Class MovingAverage
 
         StockAppLogger.Log("GetStockList Start", "MovingAverage")
         Try
-            ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING")
+            ds = DBFunctions.getDataFromTableExt("NSE_INDICES_TO_STOCK_MAPPING", "CI")
             While ds.Read()
                 tmpStockCode = ds.GetValue(ds.GetOrdinal("STOCK_NAME"))
                 If Not tmpStockList.Contains(tmpStockCode) Then
@@ -411,7 +411,7 @@ Public Class MovingAverage
                     End If
                 End If
             End While
-            DBFunctions.CloseSQLConnection()
+            'DBFunctions.CloseSQLConnectionExt("CI")
         Catch exc As Exception
             StockAppLogger.LogError("Error Occurred in getting stocklist from DB = ", exc, "MovingAverage")
             Return False
@@ -602,9 +602,9 @@ Public Class MovingAverage
             whereClause = "STOCKNAME = '" & tmpStockCode & "' and TRADEDDATE > '" & Today.AddDays(-200) & "'"
             orderClause = "TRADEDDATE desc"
             MADate = Today
-            ds = DBFunctions.getDataFromTable("DAILYSTOCKDATA", " last_traded_price", whereClause, orderClause)
+            ds = DBFunctions.getDataFromTableExt("DAILYSTOCKDATA", "CI", " last_traded_price", whereClause, orderClause)
             'Get period details for the stock
-            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " DAILYSMAPERIOD, DAILYEMAPERIOD", "stockname = '" & tmpStockCode & "'")
+            ds1 = DBFunctions.getDataFromTableExt("STOCKWISEPERIODS", "CI", " DAILYSMAPERIOD, DAILYEMAPERIOD", "stockname = '" & tmpStockCode & "'")
             If ds1.Read() Then
                 configuredSMAPeriods = ds1.GetValue(ds1.GetOrdinal("DAILYSMAPERIOD"))
                 configuredEMAPeriods = ds1.GetValue(ds1.GetOrdinal("DAILYEMAPERIOD"))
@@ -657,7 +657,7 @@ Public Class MovingAverage
         laststoredEMA = 0
         whereClause = "STOCKNAME = '" & tmpStockCode & "' and PERIOD = " & counter
         orderClause = "TRADEDDATE desc"
-        ds = DBFunctions.getDataFromTable("DAILYSNEMOVINGAVERAGES", " * ", whereClause, orderClause)
+        ds = DBFunctions.getDataFromTableExt("DAILYSNEMOVINGAVERAGES", "CI", " * ", whereClause, orderClause)
         If ds.Read() Then
             laststoredEMA = Double.Parse(ds.GetValue(ds.GetOrdinal("EMA")))
         End If
@@ -780,7 +780,7 @@ Public Class MovingAverage
         insertValues = insertValues & ");"
         sqlStatement = insertStatement & insertValues
 
-        DBFunctions.ExecuteSQLStmt(sqlStatement)
+        DBFunctions.ExecuteSQLStmtExt(sqlStatement, "CI")
 
         StockAppLogger.Log("InsertDailySNEMAtoDB End", "MovingAverage")
         Return True

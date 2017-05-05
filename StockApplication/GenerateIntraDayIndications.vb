@@ -13,7 +13,7 @@ Public Class GenerateIndications
         StockAppLogger.Log("GenerateIntraDayIndications Start", "GenerateIndications")
         Try
             'adasd
-            ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING")
+            ds = DBFunctions.getDataFromTableExt("NSE_INDICES_TO_STOCK_MAPPING", "DI")
             While ds.Read()
                 tmpStockCode = ds.GetValue(ds.GetOrdinal("STOCK_NAME"))
                 If Not tmpStockList.Contains(tmpStockCode) Then
@@ -52,7 +52,7 @@ Public Class GenerateIndications
                     'End Try
                 End If
             End While
-            'DBFunctions.CloseSQLConnection()
+            DBFunctions.CloseSQLConnectionExt("DI")
         Catch exc As Exception
             StockAppLogger.LogError("GenerateIntraDayIndications Error Occurred in generating intraday indicator = ", exc, "GenerateIndications")
             'Return False

@@ -153,12 +153,12 @@ Public Class NSEIndicesDetails
                 insertValues = insertValues & tmpNSEIndicesDetails.monthlyPercentageChange & ","
                 insertValues = insertValues & "'" & tmpNSEIndicesDetails.updateDate & "',"
                 insertValues = insertValues & "'" & tmpNSEIndicesDetails.updateTime & "');"
-                DBFunctions.ExecuteSQLStmt(insertStatement & insertValues)
+                DBFunctions.ExecuteSQLStmtExt(insertStatement & insertValues, "DC")
             Next
         Catch exc As Exception
             StockAppLogger.LogError("StoreOrUpdateIndicesDetail Error Occurred in storing NSEDetails object = ", exc, "NSEIndicesDetails")
         End Try
-        'DBFunctions.CloseSQLConnection()
+        DBFunctions.CloseSQLConnectionExt("DC")
         StockAppLogger.Log("StoreOrUpdateIndicesDetail End", "NSEIndicesDetails")
     End Sub
 End Class

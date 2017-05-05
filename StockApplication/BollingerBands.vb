@@ -16,7 +16,7 @@ Public Class BollingerBands
 
         StockAppLogger.Log("CalculateAndStoreIntradayBollingerBands Start", "BollingerBands")
         Try
-            ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING")
+            ds = DBFunctions.getDataFromTableExt("NSE_INDICES_TO_STOCK_MAPPING", "CI")
             While ds.Read()
                 tmpStockCode = ds.GetValue(ds.GetOrdinal("STOCK_NAME"))
                 If Not tmpStockList.Contains(tmpStockCode) Then
@@ -28,7 +28,7 @@ Public Class BollingerBands
                     End If
                 End If
             End While
-            'DBFunctions.CloseSQLConnection()
+            'DBFunctions.CloseSQLConnectionExt("CI")
         Catch exc As Exception
             StockAppLogger.LogError(" CalculateAndStoreIntradayBollingerBandsError Occurred in getting stocklist from DB = ", exc, "BollingerBands")
             Return False
@@ -65,13 +65,13 @@ Public Class BollingerBands
             whereClause = "LASTUPDATEDATE='" & Today & "' and companycode = '" & tmpStockCode & "'"
             orderClause = "lastupdatetime desc"
             MADate = Today
-            ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " count(lastClosingPrice) totalRows", whereClause)
+            ds = DBFunctions.getDataFromTableExt("STOCKHOURLYDATA", "CI", " count(lastClosingPrice) totalRows", whereClause)
             If ds.Read() Then
                 totalRecords = ds.GetValue(ds.GetOrdinal("totalRows"))
             End If
             ds.Close()
-            ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
-            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " INTRADAYBBPERIOD", "stockname = '" & tmpStockCode & "'")
+            ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", "CI", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
+            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", "CI", " INTRADAYBBPERIOD", "stockname = '" & tmpStockCode & "'")
             If ds1.Read() Then
                 configuredBBPeriods = ds1.GetValue(ds1.GetOrdinal("INTRADAYBBPERIOD"))
                 tmpBBPeriods = New List(Of String)(configuredBBPeriods.Split(","))
@@ -138,7 +138,7 @@ Public Class BollingerBands
             insertValues = "VALUES ('" & MADate & "', '" & MAStock & "', '" & MATime & "', " & period & ", " & lastTradedPrice & ", " & simpleMA & ", " & BBUper & ", " & BBLower & ", " & PeriodBandwidth & ");"
 
             sqlStatement = insertStatement & insertValues
-            DBFunctions.ExecuteSQLStmt(sqlStatement)
+            'DBFunctions.ExecuteSQLStmtExt(sqlStatement, "CI")
         Catch exc As Exception
             StockAppLogger.LogError("InsertIntraDayBBtoDB Error Occurred in storing intraday bollinger band = ", exc, "BollingerBands")
             Return False
@@ -154,19 +154,19 @@ Public Class BollingerBands
 
         StockAppLogger.Log("CalculateAndStoredailyBollingerBands Start", "BollingerBands")
         Try
-            ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING")
+            ds = DBFunctions.getDataFromTableExt("NSE_INDICES_TO_STOCK_MAPPING", "CI")
             While ds.Read()
                 tmpStockCode = ds.GetValue(ds.GetOrdinal("STOCK_NAME"))
                 If Not tmpStockList.Contains(tmpStockCode) Then
                     tmpStockList.Add(tmpStockCode)
-                    If IntraDayBBCalculation(tmpStockCode) Then
+                    If DailyBBCalculation(tmpStockCode) Then
                         StockAppLogger.LogInfo("CalculateAndStoredailyBollingerBands BollingerBands stored for Stock = " & tmpStockCode & " at time = " & MATime, "BollingerBands")
                     Else
                         StockAppLogger.LogInfo("CalculateAndStoredailyBollingerBands BollingerBands failed for Stock = " & tmpStockCode & " at time = " & MATime, "BollingerBands")
                     End If
                 End If
             End While
-            'DBFunctions.CloseSQLConnection()
+            DBFunctions.CloseSQLConnectionExt("CI")
         Catch exc As Exception
             StockAppLogger.LogError("CalculateAndStoredailyBollingerBands Error Occurred in getting stocklist from DB = ", exc, "BollingerBands")
             Return False
@@ -204,12 +204,13 @@ Public Class BollingerBands
             whereClause = "TRADEDDATE='" & Today & "' and STOCKNAME = '" & tmpStockCode & "'"
             orderClause = "TRADEDDATE desc"
             MADate = Today
-            ds = DBFunctions.getDataFromTable("DAILYSTOCKDATA", " last_traded_price", whereClause, orderClause)
-            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " DAILYBBPERIOD", "stockname = '" & tmpStockCode & "'")
+            ds = DBFunctions.getDataFromTableExt("DAILYSTOCKDATA", "CI", " last_traded_price", whereClause, orderClause)
+            ds1 = DBFunctions.getDataFromTableExt("STOCKWISEPERIODS", "CI", " DAILYBBPERIOD", "stockname = '" & tmpStockCode & "'")
             If ds1.Read() Then
                 configuredBBPeriods = ds1.GetValue(ds1.GetOrdinal("DAILYBBPERIOD"))
                 tmpBBPeriods = New List(Of String)(configuredBBPeriods.Split(","))
             End If
+            ds1.Close()
             While ds.Read()
                 If counter = 0 Then
                     closingPrice = ds.GetValue(ds.GetOrdinal("last_traded_price"))
@@ -241,6 +242,7 @@ Public Class BollingerBands
                 End If
                 counter = counter + 1
             End While
+            ds.Close()
         Catch exc As Exception
             StockAppLogger.LogError("DailyBBCalculation Error Occurred in calculating daily Bollinger Band = ", exc, "BollingerBands")
             Return False
@@ -262,7 +264,7 @@ Public Class BollingerBands
             insertValues = "VALUES ('" & MADate & "', '" & MAStock & "', ', " & period & ", " & lastTradedPrice & ", " & simpleMA & ", " & BBUper & ", " & BBLower & ", " & PeriodBandwidth & ");"
 
             sqlStatement = insertStatement & insertValues
-            DBFunctions.ExecuteSQLStmt(sqlStatement)
+            DBFunctions.ExecuteSQLStmtExt(sqlStatement, "CI")
         Catch exc As Exception
             StockAppLogger.LogError("InsertDailyBBtoDB Error Occurred in storing intraday bollinger band = ", exc, "BollingerBands")
             Return False

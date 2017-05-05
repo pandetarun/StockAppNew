@@ -25,7 +25,7 @@ Public Class MACD
 
         StockAppLogger.Log("GetStockListAndCalculateIntraDayMACD Start", "MovingAverage")
         Try
-            ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING")
+            ds = DBFunctions.getDataFromTableExt("NSE_INDICES_TO_STOCK_MAPPING", "CI")
             While ds.Read()
                 tmpStockCode = ds.GetValue(ds.GetOrdinal("STOCK_NAME"))
                 If Not tmpStockList.Contains(tmpStockCode) Then
@@ -37,7 +37,7 @@ Public Class MACD
                     End If
                 End If
             End While
-            'DBFunctions.CloseSQLConnection()
+            'DBFunctions.CloseSQLConnectionExt("CI")
         Catch exc As Exception
             StockAppLogger.LogError("GetStockListAndCalculateIntraDayMACD Error Occurred in getting stocklist from DB = ", exc, "MovingAverage")
             Return False
@@ -65,7 +65,7 @@ Public Class MACD
             orderClause = "lastupdatetime desc"
             MADate = Today
             'Get period details for the stock
-            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " MACD", "stockname = '" & tmpStockCode & "'")
+            ds1 = DBFunctions.getDataFromTableExt("STOCKWISEPERIODS", "CI", " MACD", "stockname = '" & tmpStockCode & "'")
             If ds1.Read() Then
                 configuredMACDPeriods = ds1.GetValue(ds1.GetOrdinal("MACD"))
                 tmpMACDPeriods = New List(Of String)(configuredMACDPeriods.Split(","))
@@ -73,19 +73,19 @@ Public Class MACD
             ds1.Close()
             If tmpMACDPeriods IsNot Nothing Then
                 whereClause = "TRADEDDATE='" & Today & "' and STOCKNAME = '" & tmpStockCode & "' and period = " & tmpMACDPeriods.Item(0)
-                ds = DBFunctions.getDataFromTable("INTRADAYSNEMOVINGAVERAGES", " EMA ", whereClause, orderClause)
+                ds = DBFunctions.getDataFromTableExt("INTRADAYSNEMOVINGAVERAGES", "CI", " EMA ", whereClause, orderClause)
                 If ds.Read() Then
                     signalLine = ds.GetValue(ds.GetOrdinal("EMA"))
                 End If
                 ds.Close()
                 whereClause = "TRADEDDATE='" & Today & "' and STOCKNAME = '" & tmpStockCode & "' and period = " & tmpMACDPeriods.Item(1)
-                ds = DBFunctions.getDataFromTable("INTRADAYSNEMOVINGAVERAGES", " EMA ", whereClause, orderClause)
+                ds = DBFunctions.getDataFromTableExt("INTRADAYSNEMOVINGAVERAGES", "CI", " EMA ", whereClause, orderClause)
                 If ds.Read() Then
                     fastEMA = ds.GetValue(ds.GetOrdinal("EMA"))
                 End If
                 ds.Close()
                 whereClause = "TRADEDDATE='" & Today & "' and STOCKNAME = '" & tmpStockCode & "' and period = " & tmpMACDPeriods.Item(2)
-                ds = DBFunctions.getDataFromTable("INTRADAYSNEMOVINGAVERAGES", " EMA ", whereClause, orderClause)
+                ds = DBFunctions.getDataFromTableExt("INTRADAYSNEMOVINGAVERAGES", "CI", " EMA ", whereClause, orderClause)
                 If ds.Read() Then
                     slowEMA = ds.GetValue(ds.GetOrdinal("EMA"))
                 End If
@@ -119,7 +119,7 @@ Public Class MACD
         insertValues = insertValues & ");"
         sqlStatement = insertStatement & insertValues
 
-        DBFunctions.ExecuteSQLStmt(sqlStatement)
+        DBFunctions.ExecuteSQLStmtExt(sqlStatement, "CI")
 
         StockAppLogger.Log("InsertIntraDayMACDtoDB End", "MACD")
         Return True

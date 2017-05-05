@@ -161,10 +161,10 @@ Public Class DailyStockQuote
                 insertValues = insertValues & tmpDailyStockDetails.yearlyPercentageChange & ","
                 insertValues = insertValues & tmpDailyStockDetails.monthlyPercentageChange & ","
                 insertValues = insertValues & "'" & tmpDailyStockDetails.updateDate & "');"
-                DBFunctions.ExecuteSQLStmt(insertStatement & insertValues)
+                DBFunctions.ExecuteSQLStmtExt(insertStatement & insertValues, "DC")
             Next
 
-            'DBFunctions.CloseSQLConnection()
+            DBFunctions.CloseSQLConnectionExt("DC")
         Catch ex As Exception
             StockAppLogger.LogError("StoreDailyStockDetail Error in storing daily record", ex, "DailyStockQuote")
         End Try

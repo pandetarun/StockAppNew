@@ -46,9 +46,9 @@ Public Class NSEIndexStockMapping
         updateOrInsert = "update Or insert into NSE_INDICES_TO_STOCK_MAPPING (INDEX_NAME, STOCK_NAME) values("
         For Each tmpNSEIndexStockMapping In objNSEIndexStockMapping
             updateOrInsertValues = "'" & tmpNSEIndexStockMapping.indexName & "', '" & tmpNSEIndexStockMapping.stockName & "') matching(INDEX_NAME, STOCK_NAME);"
-            DBFunctions.ExecuteSQLStmt(updateOrInsert & updateOrInsertValues)
+            DBFunctions.ExecuteSQLStmtExt(updateOrInsert & updateOrInsertValues, "DC")
         Next
-        'DBFunctions.CloseSQLConnection()
+        DBFunctions.CloseSQLConnectionExt("DC")
         StockAppLogger.Log("storeIndicesToStockMapping End")
         Return True
     End Function

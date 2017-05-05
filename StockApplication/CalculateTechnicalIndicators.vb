@@ -14,7 +14,7 @@ Public Class CalculateTechnicalIndicators
 
         StockAppLogger.Log("CalculateIntradayIndicators Start", "CalculateTechnicalIndicators")
         Try
-            ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING")
+            ds = DBFunctions.getDataFromTableExt("NSE_INDICES_TO_STOCK_MAPPING", "CI")
             While ds.Read()
                 tmpStockCode = ds.GetValue(ds.GetOrdinal("STOCK_NAME"))
                 If Not tmpStockList.Contains(tmpStockCode) Then
@@ -54,7 +54,7 @@ Public Class CalculateTechnicalIndicators
                 End If
             End While
             ds.Close()
-            'DBFunctions.CloseSQLConnection()
+            DBFunctions.CloseSQLConnectionExt("CI")
         Catch exc As Exception
             StockAppLogger.LogError("CalculateIntradayIndicators Error Occurred in calculating intraday indicator = ", exc, "CalculateTechnicalIndicators")
             'Return False
@@ -72,7 +72,7 @@ Public Class CalculateTechnicalIndicators
 
         StockAppLogger.Log("CalculateDailyIndicators Start", "CalculateTechnicalIndicators")
         Try
-            ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING")
+            ds = DBFunctions.getDataFromTableExt("NSE_INDICES_TO_STOCK_MAPPING", "CI")
             While ds.Read()
                 tmpStockCode = ds.GetValue(ds.GetOrdinal("STOCK_NAME"))
                 If Not tmpStockList.Contains(tmpStockCode) Then
@@ -101,7 +101,7 @@ Public Class CalculateTechnicalIndicators
                 End If
             End While
             ds.Close()
-            'DBFunctions.CloseSQLConnection()
+            DBFunctions.CloseSQLConnectionExt("CI")
         Catch exc As Exception
             StockAppLogger.LogError("CalculateDailyIndicators Error Occurred in calculating daily indicator = ", exc, "CalculateTechnicalIndicators")
             'Return False
