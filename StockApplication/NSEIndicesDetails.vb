@@ -65,7 +65,7 @@ Public Class NSEIndicesDetails
         Dim tmpRawIndicesData As String
         Dim indexOfVar As Integer
         Dim tmpString As String
-        Dim dailyTimeEnd As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 9, 20, 0, 0) '#4:00:00 PM#
+        Dim dailyTimeEnd As DateTime = New DateTime(Now.Year, Now.Month, Now.Day, 9, 6, 0, 0) '#4:00:00 PM#
 
         StockAppLogger.Log("getNSEIndicesDetails Start", "NSEIndicesDetails")
         Try

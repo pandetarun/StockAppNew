@@ -285,91 +285,91 @@ Public Class MovingAverage
         Return True
     End Function
 
-    Private Function InsertIntraDayMAtoDB() As Boolean
+    'Private Function InsertIntraDayMAtoDB() As Boolean
 
-        Dim insertStatement As String
-        Dim insertValues As String
-        Dim sqlStatement As String
-        Dim fireQuery As Boolean = False
+    '    Dim insertStatement As String
+    '    Dim insertValues As String
+    '    Dim sqlStatement As String
+    '    Dim fireQuery As Boolean = False
 
-        StockAppLogger.Log("InsertIntraDayMAtoDB Start", "MovingAverage")
-        insertStatement = "INSERT INTO INTRADAYMOVINGAVERAGES (TRADEDDATE, LASTUPDATETIME, STOCK_NAME"
-        insertValues = "VALUES ('" & MADate & "','" & MATime & "', '" & MAStock & "'"
-        If lastTradedPrice <> 0 Then
-            insertStatement = insertStatement & ", LASTTRADEDPRICE"
-            insertValues = insertValues & ", " & lastTradedPrice
-        End If
-        If threeSampleSMA <> 0 Then
-            insertStatement = insertStatement & ", THREEMA"
-            insertValues = insertValues & ", " & threeSampleSMA
-            fireQuery = True
-        End If
-        If fiveSampleSMA <> 0 Then
-            insertStatement = insertStatement & ", FIVEMA"
-            insertValues = insertValues & ", " & fiveSampleSMA
-            fireQuery = True
-        End If
-        If tenSampleSMA <> 0 Then
-            insertStatement = insertStatement & ", TENMA"
-            insertValues = insertValues & ", " & tenSampleSMA
-            fireQuery = True
-        End If
-        If fourteenSampleSMA <> 0 Then
-            insertStatement = insertStatement & ", FOURTEENMA"
-            insertValues = insertValues & ", " & fourteenSampleSMA
-            fireQuery = True
-        End If
-        If twentySampleSMA <> 0 Then
-            insertStatement = insertStatement & ", TWENTYMA"
-            insertValues = insertValues & ", " & twentySampleSMA
-            fireQuery = True
-        End If
-        If FiftySampleSMA <> 0 Then
-            insertStatement = insertStatement & ", FIFTYMA "
-            insertValues = insertValues & ", " & FiftySampleSMA
-            fireQuery = True
-        End If
-        If threeSampleEMA <> 0 Then
-            insertStatement = insertStatement & ", THREEEMA"
-            insertValues = insertValues & ", " & threeSampleEMA
-            fireQuery = True
-        End If
-        If fiveSampleEMA <> 0 Then
-            insertStatement = insertStatement & ", FIVEEMA"
-            insertValues = insertValues & ", " & fiveSampleEMA
-            fireQuery = True
-        End If
-        If tenSampleEMA <> 0 Then
-            insertStatement = insertStatement & ", TENEMA"
-            insertValues = insertValues & ", " & tenSampleEMA
-            fireQuery = True
-        End If
-        If fourteenSampleEMA <> 0 Then
-            insertStatement = insertStatement & ", FOURTEENEMA"
-            insertValues = insertValues & ", " & fourteenSampleEMA
-            fireQuery = True
-        End If
-        If twentySampleEMA <> 0 Then
-            insertStatement = insertStatement & ", TWENTYEMA"
-            insertValues = insertValues & ", " & twentySampleEMA
-            fireQuery = True
-        End If
-        If FiftySampleEMA <> 0 Then
-            insertStatement = insertStatement & ", FIFTYEMA "
-            insertValues = insertValues & ", " & FiftySampleEMA & " "
-            fireQuery = True
-        End If
-        insertStatement = insertStatement & ") "
-        insertValues = insertValues & ");"
-        sqlStatement = insertStatement & insertValues
-        If fireQuery Then
-            DBFunctions.ExecuteSQLStmt(sqlStatement)
-        Else
-            StockAppLogger.Log("InsertIntraDayMAtoDB Insert Query not fired for stock = " & MAStock & " at time = " & MATime, "MovingAverage")
-        End If
-        StockAppLogger.Log("InsertIntraDayMAtoDB End", "MovingAverage")
-        Return True
-    End Function
+    '    StockAppLogger.Log("InsertIntraDayMAtoDB Start", "MovingAverage")
+    '    insertStatement = "INSERT INTO INTRADAYMOVINGAVERAGES (TRADEDDATE, LASTUPDATETIME, STOCK_NAME"
+    '    insertValues = "VALUES ('" & MADate & "','" & MATime & "', '" & MAStock & "'"
+    '    If lastTradedPrice <> 0 Then
+    '        insertStatement = insertStatement & ", LASTTRADEDPRICE"
+    '        insertValues = insertValues & ", " & lastTradedPrice
+    '    End If
+    '    If threeSampleSMA <> 0 Then
+    '        insertStatement = insertStatement & ", THREEMA"
+    '        insertValues = insertValues & ", " & threeSampleSMA
+    '        fireQuery = True
+    '    End If
+    '    If fiveSampleSMA <> 0 Then
+    '        insertStatement = insertStatement & ", FIVEMA"
+    '        insertValues = insertValues & ", " & fiveSampleSMA
+    '        fireQuery = True
+    '    End If
+    '    If tenSampleSMA <> 0 Then
+    '        insertStatement = insertStatement & ", TENMA"
+    '        insertValues = insertValues & ", " & tenSampleSMA
+    '        fireQuery = True
+    '    End If
+    '    If fourteenSampleSMA <> 0 Then
+    '        insertStatement = insertStatement & ", FOURTEENMA"
+    '        insertValues = insertValues & ", " & fourteenSampleSMA
+    '        fireQuery = True
+    '    End If
+    '    If twentySampleSMA <> 0 Then
+    '        insertStatement = insertStatement & ", TWENTYMA"
+    '        insertValues = insertValues & ", " & twentySampleSMA
+    '        fireQuery = True
+    '    End If
+    '    If FiftySampleSMA <> 0 Then
+    '        insertStatement = insertStatement & ", FIFTYMA "
+    '        insertValues = insertValues & ", " & FiftySampleSMA
+    '        fireQuery = True
+    '    End If
+    '    If threeSampleEMA <> 0 Then
+    '        insertStatement = insertStatement & ", THREEEMA"
+    '        insertValues = insertValues & ", " & threeSampleEMA
+    '        fireQuery = True
+    '    End If
+    '    If fiveSampleEMA <> 0 Then
+    '        insertStatement = insertStatement & ", FIVEEMA"
+    '        insertValues = insertValues & ", " & fiveSampleEMA
+    '        fireQuery = True
+    '    End If
+    '    If tenSampleEMA <> 0 Then
+    '        insertStatement = insertStatement & ", TENEMA"
+    '        insertValues = insertValues & ", " & tenSampleEMA
+    '        fireQuery = True
+    '    End If
+    '    If fourteenSampleEMA <> 0 Then
+    '        insertStatement = insertStatement & ", FOURTEENEMA"
+    '        insertValues = insertValues & ", " & fourteenSampleEMA
+    '        fireQuery = True
+    '    End If
+    '    If twentySampleEMA <> 0 Then
+    '        insertStatement = insertStatement & ", TWENTYEMA"
+    '        insertValues = insertValues & ", " & twentySampleEMA
+    '        fireQuery = True
+    '    End If
+    '    If FiftySampleEMA <> 0 Then
+    '        insertStatement = insertStatement & ", FIFTYEMA "
+    '        insertValues = insertValues & ", " & FiftySampleEMA & " "
+    '        fireQuery = True
+    '    End If
+    '    insertStatement = insertStatement & ") "
+    '    insertValues = insertValues & ");"
+    '    sqlStatement = insertStatement & insertValues
+    '    If fireQuery Then
+    '        DBFunctions.ExecuteSQLStmt(sqlStatement)
+    '    Else
+    '        StockAppLogger.Log("InsertIntraDayMAtoDB Insert Query not fired for stock = " & MAStock & " at time = " & MATime, "MovingAverage")
+    '    End If
+    '    StockAppLogger.Log("InsertIntraDayMAtoDB End", "MovingAverage")
+    '    Return True
+    'End Function
 
     Private Function InsertIntraDaySNEMAtoDB(ByVal period As Integer) As Boolean
 
@@ -669,102 +669,102 @@ Public Class MovingAverage
         Return True
     End Function
 
-    Private Function InsertDailyMAtoDB() As Boolean
+    'Private Function InsertDailyMAtoDB() As Boolean
 
-        Dim insertStatement As String
-        Dim insertValues As String
-        Dim sqlStatement As String
-        Dim fireQuery As Boolean = False
+    '    Dim insertStatement As String
+    '    Dim insertValues As String
+    '    Dim sqlStatement As String
+    '    Dim fireQuery As Boolean = False
 
-        StockAppLogger.Log("InsertDailyMAtoDB Start", "MovingAverage")
-        insertStatement = "INSERT INTO DAILYMOVINGAVERAGES (TRADEDDATE, STOCK_NAME"
-        insertValues = "VALUES ('" & MADate & "', '" & MAStock & "'"
-        If lastTradedPrice <> 0 Then
-            insertStatement = insertStatement & ", LASTTRADEDPRICE"
-            insertValues = insertValues & ", " & lastTradedPrice
-        End If
-        If threeSampleSMA <> 0 Then
-            insertStatement = insertStatement & ", THREEMA"
-            insertValues = insertValues & ", " & threeSampleSMA
-            fireQuery = True
-        End If
-        If fiveSampleSMA <> 0 Then
-            insertStatement = insertStatement & ", FIVEMA"
-            insertValues = insertValues & ", " & fiveSampleSMA
-            fireQuery = True
-        End If
-        If tenSampleSMA <> 0 Then
-            insertStatement = insertStatement & ", TENMA"
-            insertValues = insertValues & ", " & tenSampleSMA
-            fireQuery = True
-        End If
-        If fourteenSampleSMA <> 0 Then
-            insertStatement = insertStatement & ", FOURTEENMA"
-            insertValues = insertValues & ", " & fourteenSampleSMA
-            fireQuery = True
-        End If
-        If twentySampleSMA <> 0 Then
-            insertStatement = insertStatement & ", TWENTYMA"
-            insertValues = insertValues & ", " & twentySampleSMA
-            fireQuery = True
-        End If
-        If FiftySampleSMA <> 0 Then
-            insertStatement = insertStatement & ", FIFTYMA "
-            insertValues = insertValues & ", " & FiftySampleSMA
-            fireQuery = True
-        End If
-        If TwoHundredMA <> 0 Then
-            insertStatement = insertStatement & ", TwoHundredMA "
-            insertValues = insertValues & ", " & TwoHundredMA
-            fireQuery = True
-        End If
-        If threeSampleEMA <> 0 Then
-            insertStatement = insertStatement & ", THREEEMA"
-            insertValues = insertValues & ", " & threeSampleEMA
-            fireQuery = True
-        End If
-        If fiveSampleEMA <> 0 Then
-            insertStatement = insertStatement & ", FIVEEMA"
-            insertValues = insertValues & ", " & fiveSampleEMA
-            fireQuery = True
-        End If
-        If tenSampleEMA <> 0 Then
-            insertStatement = insertStatement & ", TENEMA"
-            insertValues = insertValues & ", " & tenSampleEMA
-            fireQuery = True
-        End If
-        If fourteenSampleEMA <> 0 Then
-            insertStatement = insertStatement & ", FOURTEENEMA"
-            insertValues = insertValues & ", " & fourteenSampleEMA
-            fireQuery = True
-        End If
-        If twentySampleEMA <> 0 Then
-            insertStatement = insertStatement & ", TWENTYEMA"
-            insertValues = insertValues & ", " & twentySampleEMA
-            fireQuery = True
-        End If
-        If FiftySampleEMA <> 0 Then
-            insertStatement = insertStatement & ", FIFTYEMA "
-            insertValues = insertValues & ", " & FiftySampleEMA
-            fireQuery = True
-        End If
-        If TwoHundredEMA <> 0 Then
-            insertStatement = insertStatement & ", TwoHundredEMA "
-            insertValues = insertValues & ", " & TwoHundredEMA
-            fireQuery = True
-        End If
-        insertStatement = insertStatement & ") "
-        insertValues = insertValues & ");"
+    '    StockAppLogger.Log("InsertDailyMAtoDB Start", "MovingAverage")
+    '    insertStatement = "INSERT INTO DAILYMOVINGAVERAGES (TRADEDDATE, STOCK_NAME"
+    '    insertValues = "VALUES ('" & MADate & "', '" & MAStock & "'"
+    '    If lastTradedPrice <> 0 Then
+    '        insertStatement = insertStatement & ", LASTTRADEDPRICE"
+    '        insertValues = insertValues & ", " & lastTradedPrice
+    '    End If
+    '    If threeSampleSMA <> 0 Then
+    '        insertStatement = insertStatement & ", THREEMA"
+    '        insertValues = insertValues & ", " & threeSampleSMA
+    '        fireQuery = True
+    '    End If
+    '    If fiveSampleSMA <> 0 Then
+    '        insertStatement = insertStatement & ", FIVEMA"
+    '        insertValues = insertValues & ", " & fiveSampleSMA
+    '        fireQuery = True
+    '    End If
+    '    If tenSampleSMA <> 0 Then
+    '        insertStatement = insertStatement & ", TENMA"
+    '        insertValues = insertValues & ", " & tenSampleSMA
+    '        fireQuery = True
+    '    End If
+    '    If fourteenSampleSMA <> 0 Then
+    '        insertStatement = insertStatement & ", FOURTEENMA"
+    '        insertValues = insertValues & ", " & fourteenSampleSMA
+    '        fireQuery = True
+    '    End If
+    '    If twentySampleSMA <> 0 Then
+    '        insertStatement = insertStatement & ", TWENTYMA"
+    '        insertValues = insertValues & ", " & twentySampleSMA
+    '        fireQuery = True
+    '    End If
+    '    If FiftySampleSMA <> 0 Then
+    '        insertStatement = insertStatement & ", FIFTYMA "
+    '        insertValues = insertValues & ", " & FiftySampleSMA
+    '        fireQuery = True
+    '    End If
+    '    If TwoHundredMA <> 0 Then
+    '        insertStatement = insertStatement & ", TwoHundredMA "
+    '        insertValues = insertValues & ", " & TwoHundredMA
+    '        fireQuery = True
+    '    End If
+    '    If threeSampleEMA <> 0 Then
+    '        insertStatement = insertStatement & ", THREEEMA"
+    '        insertValues = insertValues & ", " & threeSampleEMA
+    '        fireQuery = True
+    '    End If
+    '    If fiveSampleEMA <> 0 Then
+    '        insertStatement = insertStatement & ", FIVEEMA"
+    '        insertValues = insertValues & ", " & fiveSampleEMA
+    '        fireQuery = True
+    '    End If
+    '    If tenSampleEMA <> 0 Then
+    '        insertStatement = insertStatement & ", TENEMA"
+    '        insertValues = insertValues & ", " & tenSampleEMA
+    '        fireQuery = True
+    '    End If
+    '    If fourteenSampleEMA <> 0 Then
+    '        insertStatement = insertStatement & ", FOURTEENEMA"
+    '        insertValues = insertValues & ", " & fourteenSampleEMA
+    '        fireQuery = True
+    '    End If
+    '    If twentySampleEMA <> 0 Then
+    '        insertStatement = insertStatement & ", TWENTYEMA"
+    '        insertValues = insertValues & ", " & twentySampleEMA
+    '        fireQuery = True
+    '    End If
+    '    If FiftySampleEMA <> 0 Then
+    '        insertStatement = insertStatement & ", FIFTYEMA "
+    '        insertValues = insertValues & ", " & FiftySampleEMA
+    '        fireQuery = True
+    '    End If
+    '    If TwoHundredEMA <> 0 Then
+    '        insertStatement = insertStatement & ", TwoHundredEMA "
+    '        insertValues = insertValues & ", " & TwoHundredEMA
+    '        fireQuery = True
+    '    End If
+    '    insertStatement = insertStatement & ") "
+    '    insertValues = insertValues & ");"
 
-        sqlStatement = insertStatement & insertValues
-        If fireQuery Then
-            DBFunctions.ExecuteSQLStmt(sqlStatement)
-        Else
-            StockAppLogger.Log("InsertDailyMAtoDB Insert Query not fired for stock = " & MAStock & " at Date = " & MADate, "MovingAverage")
-        End If
-        StockAppLogger.Log("InsertDailyMAtoDB End", "MovingAverage")
-        Return True
-    End Function
+    '    sqlStatement = insertStatement & insertValues
+    '    If fireQuery Then
+    '        DBFunctions.ExecuteSQLStmt(sqlStatement)
+    '    Else
+    '        StockAppLogger.Log("InsertDailyMAtoDB Insert Query not fired for stock = " & MAStock & " at Date = " & MADate, "MovingAverage")
+    '    End If
+    '    StockAppLogger.Log("InsertDailyMAtoDB End", "MovingAverage")
+    '    Return True
+    'End Function
 
     Private Function InsertDailySNEMAtoDB(ByVal period As Integer) As Boolean
         Dim insertStatement As String

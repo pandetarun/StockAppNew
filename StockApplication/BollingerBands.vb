@@ -138,7 +138,7 @@ Public Class BollingerBands
             insertValues = "VALUES ('" & MADate & "', '" & MAStock & "', '" & MATime & "', " & period & ", " & lastTradedPrice & ", " & simpleMA & ", " & BBUper & ", " & BBLower & ", " & PeriodBandwidth & ");"
 
             sqlStatement = insertStatement & insertValues
-            'DBFunctions.ExecuteSQLStmtExt(sqlStatement, "CI")
+            DBFunctions.ExecuteSQLStmtExt(sqlStatement, "CI")
         Catch exc As Exception
             StockAppLogger.LogError("InsertIntraDayBBtoDB Error Occurred in storing intraday bollinger band = ", exc, "BollingerBands")
             Return False

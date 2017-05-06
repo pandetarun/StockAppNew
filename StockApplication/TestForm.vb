@@ -14,9 +14,9 @@ Imports System.Windows.Forms
 Public Class TestForm
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         'NSEIndices Testing
-        'Dim tmpNSEindices As NSEindices
-        'tmpNSEindices = New NSEindices()
-        'tmpNSEindices.getIndicesListAndStore()
+        Dim tmpNSEindices As NSEindices
+        tmpNSEindices = New NSEindices()
+        tmpNSEindices.getIndicesListAndStore()
 
         'Dim tmpNSEIndicesDetails As NSEIndicesDetails
         'tmpNSEIndicesDetails = New NSEIndicesDetails()
@@ -104,7 +104,7 @@ Public Class TestForm
         tmpEMAPeriods = Nothing
 
         If ComboBox1.SelectedItem IsNot Nothing Then
-            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", " INTRADAYSMAPERIOD, INTRADAYEMAPERIOD", "stockname = '" & ComboBox1.SelectedItem.ToString() & "'")
+            ds1 = DBFunctions.getDataFromTableExt("STOCKWISEPERIODS", "DC", " INTRADAYSMAPERIOD, INTRADAYEMAPERIOD", "stockname = '" & ComboBox1.SelectedItem.ToString() & "'")
             If ds1.Read() Then
                 configuredSMAPeriods = ds1.GetValue(ds1.GetOrdinal("INTRADAYSMAPERIOD"))
                 configuredEMAPeriods = ds1.GetValue(ds1.GetOrdinal("INTRADAYEMAPERIOD"))
@@ -136,7 +136,7 @@ Public Class TestForm
         Chart1.Series.Clear()
         'whereClause = "TRADEDDATE = '30-Mar-2017' and companycode = 'IDEA'"
 
-        ds = DBFunctions.getDataFromTable("NSE_INDICES_TO_STOCK_MAPPING", " distinct STOCK_NAME")
+        ds = DBFunctions.getDataFromTableExt("NSE_INDICES_TO_STOCK_MAPPING", "DC", " distinct STOCK_NAME")
 
         If ds.HasRows Then
             Do While ds.Read()
@@ -144,7 +144,7 @@ Public Class TestForm
             Loop
         End If
         ds.Close()
-        DBFunctions.CloseSQLConnection()
+        DBFunctions.CloseSQLConnectionExt("DC")
     End Sub
 
     Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged

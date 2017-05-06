@@ -150,6 +150,7 @@ Public Class DBFunctions
 
     Public Shared Function ExecuteSQLStmtExt(ByVal sSQL As String, ByVal transactionType As String, Optional ByVal Disconnect As Boolean = False) As Boolean
         StockAppLogger.Log("ExecuteSQLStmt Start", "DBFunctions")
+        Dim myCmd As FbCommand = Nothing
         'DC for Data Collect
         'CI for Calculate Indicators
         'DI for Define Indication
@@ -158,17 +159,20 @@ Public Class DBFunctions
             If OpenSQLConnection(myConnectionforDataCollection) = False Then
                 Return False
             End If
+            myCmd = New FbCommand(sSQL, myConnectionforDataCollection)
         ElseIf transactionType IsNot Nothing And transactionType = "CI" Then
             If OpenSQLConnection(myConnectionforCalculation) = False Then
                 Return False
             End If
+            myCmd = New FbCommand(sSQL, myConnectionforCalculation)
         ElseIf transactionType IsNot Nothing And transactionType = "DI" Then
             If OpenSQLConnection(myConnectionforIndication) = False Then
                 Return False
             End If
+            myCmd = New FbCommand(sSQL, myConnectionforIndication)
         End If
         'If OpenSQLConnection() = True Then
-        Dim myCmd As New FbCommand(sSQL, myConnection)
+
 
         Try
             myCmd.ExecuteNonQuery()
@@ -234,20 +238,21 @@ Public Class DBFunctions
             If OpenSQLConnection(myConnectionforDataCollection) = False Then
                 Return Nothing
             End If
+            command.Connection = myConnectionforDataCollection
         ElseIf transactionType IsNot Nothing And transactionType = "CI" Then
             If OpenSQLConnection(myConnectionforCalculation) = False Then
                 Return Nothing
             End If
+            command.Connection = myConnectionforCalculation
         ElseIf transactionType IsNot Nothing And transactionType = "DI" Then
             If OpenSQLConnection(myConnectionforIndication) = False Then
                 Return Nothing
             End If
+            command.Connection = myConnectionforIndication
         End If
         'If OpenSQLConnection() = True Then
         Try
             'excecuted the SQL command 
-
-            command.Connection = myConnection
             command.CommandText = sSQL
             ds = command.ExecuteReader
             'resultList = New List(Of String)
@@ -316,14 +321,17 @@ Public Class DBFunctions
             If OpenSQLConnection(myConnectionforDataCollection) = False Then
                 Return Nothing
             End If
+            command.Connection = myConnectionforDataCollection
         ElseIf transactionType IsNot Nothing And transactionType = "CI" Then
             If OpenSQLConnection(myConnectionforCalculation) = False Then
                 Return Nothing
             End If
+            command.Connection = myConnectionforCalculation
         ElseIf transactionType IsNot Nothing And transactionType = "DI" Then
             If OpenSQLConnection(myConnectionforIndication) = False Then
                 Return Nothing
             End If
+            command.Connection = myConnectionforIndication
         End If
         'If OpenSQLConnection() = True Then
         Try
@@ -339,7 +347,9 @@ Public Class DBFunctions
             If orderClause IsNot "" Then
                 sql = sql & " order by " & orderClause
             End If
-            command.Connection = myConnection
+
+
+
             command.CommandText = sql
             ds = command.ExecuteReader
             'resultList = New List(Of String)
