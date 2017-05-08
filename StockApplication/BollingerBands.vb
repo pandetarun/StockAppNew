@@ -70,8 +70,8 @@ Public Class BollingerBands
                 totalRecords = ds.GetValue(ds.GetOrdinal("totalRows"))
             End If
             ds.Close()
-            ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", "CI", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
-            ds1 = DBFunctions.getDataFromTable("STOCKWISEPERIODS", "CI", " INTRADAYBBPERIOD", "stockname = '" & tmpStockCode & "'")
+            ds = DBFunctions.getDataFromTableExt("STOCKHOURLYDATA", "CI", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
+            ds1 = DBFunctions.getDataFromTableExt("STOCKWISEPERIODS", "CI", " INTRADAYBBPERIOD", "stockname = '" & tmpStockCode & "'")
             If ds1.Read() Then
                 configuredBBPeriods = ds1.GetValue(ds1.GetOrdinal("INTRADAYBBPERIOD"))
                 tmpBBPeriods = New List(Of String)(configuredBBPeriods.Split(","))

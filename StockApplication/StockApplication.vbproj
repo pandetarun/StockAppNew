@@ -69,7 +69,7 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>StockApplication.TestForm</StartupObject>
+    <StartupObject>StockApplication.CheckDataFromDB</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -89,6 +89,12 @@
     <Compile Include="DailyStockQuote.vb" />
     <Compile Include="DataLayer.vb" />
     <Compile Include="DBFunctions.vb" />
+    <Compile Include="CheckDataFromDB.Designer.vb">
+      <DependentUpon>CheckDataFromDB.vb</DependentUpon>
+    </Compile>
+    <Compile Include="CheckDataFromDB.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GenerateIntraDayIndications.vb" />
     <Compile Include="Helper.vb" />
     <Compile Include="HourlyStockQuote.vb" />
@@ -154,6 +160,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CheckDataFromDB.resx">
+      <DependentUpon>CheckDataFromDB.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TestForm.resx">
       <DependentUpon>TestForm.vb</DependentUpon>
     </EmbeddedResource>

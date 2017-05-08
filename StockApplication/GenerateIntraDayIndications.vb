@@ -19,7 +19,7 @@ Public Class GenerateIndications
                 If Not tmpStockList.Contains(tmpStockCode) Then
                     tmpStockList.Add(tmpStockCode)
                     Try
-                        'Moving Average calculation
+                        'Moving Average indication calculation
                         If tmpMovingAverageCalculation.GetIndicationIntraDaySMA(tmpStockCode) Then
                             StockAppLogger.LogInfo("GenerateIntraDayIndications intraday moving average indication true for Stock = " & tmpStockCode, "GenerateIndications")
                         Else
