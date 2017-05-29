@@ -113,12 +113,14 @@ Public Class TestForm
             End If
 
             If tmpMAPeriods IsNot Nothing Then
+                SMA.Items.Add("Select")
                 For counter = 0 To tmpMAPeriods.Count - 1
                     SMA.Items.Add(tmpMAPeriods.Item(counter))
                 Next
             End If
 
             If tmpEMAPeriods IsNot Nothing Then
+                EMA.Items.Add("Select")
                 For counter = 0 To tmpEMAPeriods.Count - 1
                     EMA.Items.Add(tmpEMAPeriods.Item(counter))
                 Next
@@ -204,7 +206,7 @@ Public Class TestForm
         If SMA.SelectedIndex < 0 Then
             whereClause = "TRADEDDATE = '" & DateTimePicker1.Value.Date & "' and companycode = '" & ComboBox1.SelectedItem.ToString() & "'"
             orderClause = "lastupdatetime"
-            ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
+            ds = DBFunctions.getDataFromTableExt("STOCKHOURLYDATA", "DC", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
             While ds.Read()
                 Chart1.Series("Price").Points.AddXY(ds("lastupdatetime"), ds("lastClosingPrice"))
             End While
@@ -220,16 +222,16 @@ Public Class TestForm
             'Chart1.Series(0).IsXValueIndexed = True
 
             'MAwhereclause = "SHD.TRADEDDATE ='" & DateTimePicker1.Value.Date & "' and SHD.companycode='" & ComboBox1.SelectedItem.ToString() & "' and IMA.stock_name='" & ComboBox1.SelectedItem.ToString() & "' and SHD.companycode = IMA.STOCK_NAME And shd.lastupdatetime = ima.lastupdatetime"
-            MAwhereclause = "SHD.TRADEDDATE ='" & DateTimePicker1.Value.Date & "' and IMA.TRADEDDATE = '" & DateTimePicker1.Value.Date & "' and SHD.companycode='" & ComboBox1.SelectedItem.ToString() & "' and SHD.companycode = IMA.STOCKNAME And shd.lastupdatetime = ima.lastupdatetime And ima.period = " & SMA.SelectedItem.ToString
+            MAwhereclause = "SHD.TRADEDDATE ='" & DateTimePicker1.Value.Date & "' and SHD.companycode='" & ComboBox1.SelectedItem.ToString() & "'"
             MAOrderby = "SHD.lastupdatetime"
-            MAds = DBFunctions.getDataFromTable("INTRADAYSNEMOVINGAVERAGES IMA, STOCKHOURLYDATA SHD", " SHD.tradeddate, SHD.lastupdatetime lastupdatetime, SHD.LASTCLOSINGPRICE closingprice, IMA.lastupdatetime, IMA.SMA SMA ", MAwhereclause, MAOrderby)
+            MAds = DBFunctions.getDataFromTableExt("STOCKHOURLYDATA SHD left join INTRADAYSNEMOVINGAVERAGES IMA on shd.lastupdatetime = ima.lastupdatetime and IMA.TRADEDDATE = SHD.TRADEDDATE and SHD.companycode = IMA.STOCKNAME And ima.period = " & SMA.SelectedItem.ToString, "DC", " SHD.tradeddate, SHD.lastupdatetime lastupdatetime, SHD.LASTCLOSINGPRICE closingprice, IMA.SMA SMA ", MAwhereclause, MAOrderby)
             While MAds.Read()
                 Chart1.Series("Price").Points.AddXY(MAds("lastupdatetime"), MAds("closingprice"))
                 Chart1.Series("SMA").Points.AddXY(MAds("lastupdatetime"), MAds("SMA"))
             End While
             MAds.Close()
         End If
-        'DBFunctions.CloseSQLConnection()
+        DBFunctions.CloseSQLConnectionExt("DC")
     End Sub
 
     Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox1.CheckedChanged

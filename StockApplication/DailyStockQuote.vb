@@ -5,136 +5,57 @@ Imports System.IO
 Public Class DailyStockQuote
 
     Dim symbol As String
-    Dim openPrice As Double
-    Dim highPrice As Double
-    Dim lowPrice As Double
-    Dim lastTradedPrice As Double
-    Dim changeinPrice As Double
+    Dim lastPrice As Double
     Dim changeInPercentage As Double
     Dim volume As Double
-    Dim turnover As Double
+    Dim highPrice As Double
+    Dim lowPrice As Double
     Dim yearlyHighPrice As Double
     Dim yearlyLowPrice As Double
-    Dim yearlyPercentageChange As Double
-    Dim monthlyPercentageChange As Double
+
     Dim updateDate As Date
     Dim updateTime As String
-
-
-    Dim pathOfFileofURLs As String = My.Settings.ApplicationFileLocation & "\URLs.txt"
+    Dim pathOfFileofQuots As String = My.Settings.ApplicationFileLocation & "\Quotes.txt"
     Dim dailyStockDetailsList As List(Of DailyStockQuote) = New List(Of DailyStockQuote)
     Dim stockList As List(Of String) = New List(Of String)
 
     Public Function getDailyStockDetailsAndStore() As Boolean
-        Dim NSEindicesUrlsList As List(Of String)
-        StockAppLogger.Log("getDailyStockDetailsAndStore Start", "DailyStockQuote")
-        NSEindicesUrlsList = GetNSEUrlForAllIndices()
-        getAllStockDetails(NSEindicesUrlsList)
 
+        StockAppLogger.Log("getDailyStockDetailsAndStore Start", "DailyStockQuote")
+        Try
+            readQuotesFromFile()
+            StoreDailyStockDetail()
+            DBFunctions.CloseSQLConnectionExt("DC")
+        Catch ex As Exception
+            StockAppLogger.LogError("getDailyStockDetailsAndStore Error ", ex, "DailyStockQuote")
+            DBFunctions.CloseSQLConnectionExt("DC")
+            Return False
+        End Try
         StockAppLogger.Log("getDailyStockDetailsAndStore End", "DailyStockQuote")
         Return True
     End Function
 
-    Private Function GetNSEUrlForAllIndices() As List(Of String)
-        Dim NSEindicesUrlsList As List(Of String) = New List(Of String)
-        Dim reader = File.OpenText(pathOfFileofURLs)
+    Private Sub readQuotesFromFile()
+        Dim reader = File.OpenText(pathOfFileofQuots)
         Dim line As String = Nothing
-        StockAppLogger.Log("GetNSEUrlForAllIndices Start", "DailyStockQuote")
+        Dim lineArray As String()
+        Dim dailyStockQuotObj As DailyStockQuote
+        StockAppLogger.Log("readQuotesFromFile Start", "DailyStockQuote")
         While (reader.Peek() <> -1)
             line = reader.ReadLine()
-            NSEindicesUrlsList.Add(line)
+            lineArray = line.Split("\t")
+            dailyStockQuotObj = New DailyStockQuote()
+            dailyStockQuotObj.symbol = lineArray(0)
+            dailyStockQuotObj.lastPrice = lineArray(1)
+            dailyStockQuotObj.changeInPercentage = lineArray(2)
+            dailyStockQuotObj.volume = lineArray(3)
+            dailyStockQuotObj.highPrice = lineArray(4)
+            dailyStockQuotObj.lowPrice = lineArray(5)
+            dailyStockQuotObj.yearlyHighPrice = lineArray(6)
+            dailyStockQuotObj.yearlyLowPrice = lineArray(7)
+            dailyStockDetailsList.Add(dailyStockQuotObj)
         End While
-        StockAppLogger.Log("GetNSEUrlForAllIndices End", "DailyStockQuote")
-        Return NSEindicesUrlsList
-    End Function
-
-    Private Function getAllStockDetails(ByVal NSEindicesUrlsList As List(Of String)) As Boolean
-
-        StockAppLogger.Log("getAllStockDetails Start", "DailyStockQuote")
-        For Each NSEIndicesURL In NSEindicesUrlsList
-            getDailyStockDetails(NSEIndicesURL)
-        Next
-        StoreDailyStockDetail()
-        StockAppLogger.Log("getAllStockDetails End", "DailyStockQuote")
-        Return True
-    End Function
-
-    Private Sub getDailyStockDetails(ByVal NSEIndicesURL As String)
-        Dim rawIndicesData As String
-        Dim tmpDailyStockQuote As DailyStockQuote
-        Dim tmpRawStockDailyData As String
-        Dim indexOfVar As Integer
-        Dim tmpString As String
-        Dim lastUpdatedDate As Date
-        Dim lastupdatedTime As String
-        Dim tmpStockSymbol As String
-
-        StockAppLogger.Log("getDailyStockDetails Start", "DailyStockQuote")
-        Try
-            rawIndicesData = Helper.GetDataFromUrl(NSEIndicesURL)
-            tmpRawStockDailyData = rawIndicesData
-            lastUpdatedDate = Today
-            If rawIndicesData IsNot Nothing Then
-                indexOfVar = tmpRawStockDailyData.IndexOf("time")
-                tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
-                tmpString = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                lastupdatedTime = tmpString.Substring(tmpString.Length - 8)
-
-                While tmpRawStockDailyData.IndexOf("symbol") >= 1
-                    indexOfVar = tmpRawStockDailyData.IndexOf("symbol")
-                    tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 9)
-                    tmpStockSymbol = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                    If Not stockList.Contains(tmpStockSymbol) Then
-                        tmpDailyStockQuote = New DailyStockQuote()
-                        tmpDailyStockQuote.updateDate = lastUpdatedDate
-                        tmpDailyStockQuote.symbol = tmpStockSymbol
-                        indexOfVar = tmpRawStockDailyData.IndexOf("open")
-                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
-                        tmpDailyStockQuote.openPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                        indexOfVar = tmpRawStockDailyData.IndexOf("high")
-                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
-                        tmpDailyStockQuote.highPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                        indexOfVar = tmpRawStockDailyData.IndexOf("low")
-                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
-                        tmpDailyStockQuote.lowPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                        indexOfVar = tmpRawStockDailyData.IndexOf("ltP")
-                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
-                        tmpDailyStockQuote.lastTradedPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                        indexOfVar = tmpRawStockDailyData.IndexOf("ptsC")
-                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
-                        tmpDailyStockQuote.changeinPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                        indexOfVar = tmpRawStockDailyData.IndexOf("per")
-                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
-                        tmpDailyStockQuote.changeInPercentage = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                        indexOfVar = tmpRawStockDailyData.IndexOf("trdVol")
-                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 9)
-                        tmpDailyStockQuote.volume = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                        indexOfVar = tmpRawStockDailyData.IndexOf("ntP")
-                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
-                        tmpDailyStockQuote.turnover = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                        indexOfVar = tmpRawStockDailyData.IndexOf("wkhi")
-                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
-                        tmpDailyStockQuote.yearlyHighPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                        indexOfVar = tmpRawStockDailyData.IndexOf("wklo")
-                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 7)
-                        tmpDailyStockQuote.yearlyLowPrice = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                        indexOfVar = tmpRawStockDailyData.IndexOf("yPC")
-                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
-                        tmpDailyStockQuote.yearlyPercentageChange = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf(""","))
-                        indexOfVar = tmpRawStockDailyData.IndexOf("mPC")
-                        tmpRawStockDailyData = tmpRawStockDailyData.Substring(indexOfVar + 6)
-                        tmpDailyStockQuote.monthlyPercentageChange = tmpRawStockDailyData.Substring(0, tmpRawStockDailyData.IndexOf("""}"))
-                        stockList.Add(tmpDailyStockQuote.symbol)
-                        dailyStockDetailsList.Add(tmpDailyStockQuote)
-                    End If
-                End While
-            Else
-                StockAppLogger.LogInfo("getDailyStockDetails GetDataFromUrl did not get data for URL = " + NSEIndicesURL, "DailyStockQuote")
-            End If
-        Catch ex As Exception
-            StockAppLogger.LogError("getDailyStockDetails Error in creating daily record ", ex, "DailyStockQuote")
-        End Try
-        StockAppLogger.Log("getDailyStockDetails End", "DailyStockQuote")
+        StockAppLogger.Log("readQuotesFromFile End", "DailyStockQuote")
     End Sub
 
     Private Sub StoreDailyStockDetail()
@@ -164,7 +85,7 @@ Public Class DailyStockQuote
                 DBFunctions.ExecuteSQLStmtExt(insertStatement & insertValues, "DC")
             Next
 
-            DBFunctions.CloseSQLConnectionExt("DC")
+
         Catch ex As Exception
             StockAppLogger.LogError("StoreDailyStockDetail Error in storing daily record", ex, "DailyStockQuote")
         End Try

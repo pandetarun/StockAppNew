@@ -55,7 +55,7 @@ Public Class TechnicalIndicatorConnectorService
         Try
             Me.WriteToFile("Daily calculation started" & DateTime.Now.TimeOfDay.ToString)
             Dim tmpCalculateIntradayIndicators As CalculateTechnicalIndicators = New CalculateTechnicalIndicators()
-            tmpCalculateIntradayIndicators.CalculateIntradayIndicators()
+            tmpCalculateIntradayIndicators.CalculateDailyIndicators()
             Me.WriteToFile("Daily calculation End" & DateTime.Now.TimeOfDay.ToString)
         Catch ex As Exception
             WriteToFile("TechnicalIndicatorConnectorService Error in calculating daily data " + ex.Message + ex.StackTrace)

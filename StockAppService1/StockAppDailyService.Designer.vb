@@ -44,7 +44,7 @@ Partial Class StockAppHourlyService
         '
         'StockAppHourlyService
         '
-        Me.ServiceName = "StockService"
+        Me.ServiceName = "StockDailyService"
 
     End Sub
 

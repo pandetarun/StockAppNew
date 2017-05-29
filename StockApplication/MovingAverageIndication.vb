@@ -31,8 +31,9 @@ Public Class MovingAverageIndication
             If ds.Read() Then
                 lastupdatetime = ds.GetValue(ds.GetOrdinal("LASTUPDATETIME"))
                 lastLowerSMA = Double.Parse(ds.GetValue(ds.GetOrdinal("SMA")))
-                ds.Read()
-                previousLowerSMA = Double.Parse(ds.GetValue(ds.GetOrdinal("SMA")))
+                If (ds.Read()) Then
+                    previousLowerSMA = Double.Parse(ds.GetValue(ds.GetOrdinal("SMA")))
+                End If
             End If
             ds.Close()
 
@@ -42,8 +43,9 @@ Public Class MovingAverageIndication
             ds = DBFunctions.getDataFromTableExt("INTRADAYSNEMOVINGAVERAGES", "DI", " SMA ", whereClause, orderClause)
             If ds.Read() Then
                 lastHigherSMA = Double.Parse(ds.GetValue(ds.GetOrdinal("SMA")))
-                ds.Read()
-                previousHigherSMA = Double.Parse(ds.GetValue(ds.GetOrdinal("SMA")))
+                If ds.Read() Then
+                    previousHigherSMA = Double.Parse(ds.GetValue(ds.GetOrdinal("SMA")))
+                End If
             End If
             ds.Close()
 
@@ -76,7 +78,9 @@ Public Class MovingAverageIndication
         If ds.Read() Then
             uptrendtimer = Integer.Parse(ds.GetValue(ds.GetOrdinal("UPTRENDINDICATIONTIMER")))
             'ds.Read()
-            uptrend = ds.GetValue(ds.GetOrdinal("STRONGUPTREND"))
+            If ds.GetValue(ds.GetOrdinal("STRONGUPTREND")) IsNot Nothing Then
+                uptrend = ds.GetValue(ds.GetOrdinal("STRONGUPTREND"))
+            End If
         End If
         ds.Close()
 
@@ -94,7 +98,7 @@ Public Class MovingAverageIndication
         If previousLowerSMA - previousHigherSMA > 0 And ((previousLowerSMA - previousHigherSMA) < (lastLowerSMA - lastHigherSMA)) Then
             'uptrend getting stronger
             'store the info
-            If uptrend & uptrendtimer >= 3 Then
+            If uptrend And uptrendtimer >= 3 Then
                 Return True
             Else
                 DBFunctions.ExecuteSQLStmtExt("update INTRADAYSMAINDICATION set UPTRENDINDICATIONTIMER=" & (uptrendtimer + 1) & ", INDICTATIONTIME='" & lastupdatetime & "' where STOCKNAME ='" & stockName & "' and INDICATIONDATE='" & Today & "'", "DI")

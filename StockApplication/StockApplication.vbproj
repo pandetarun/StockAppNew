@@ -69,7 +69,7 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>StockApplication.CheckDataFromDB</StartupObject>
+    <StartupObject>StockApplication.TestForm</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -87,7 +87,6 @@
   <ItemGroup>
     <Compile Include="BollingerBands.vb" />
     <Compile Include="DailyStockQuote.vb" />
-    <Compile Include="DataLayer.vb" />
     <Compile Include="DBFunctions.vb" />
     <Compile Include="CheckDataFromDB.Designer.vb">
       <DependentUpon>CheckDataFromDB.vb</DependentUpon>
@@ -97,7 +96,6 @@
     </Compile>
     <Compile Include="GenerateIntraDayIndications.vb" />
     <Compile Include="Helper.vb" />
-    <Compile Include="HourlyStockQuote.vb" />
     <Compile Include="MACD.vb" />
     <Compile Include="CalculateTechnicalIndicators.vb" />
     <Compile Include="MovingAverage.vb" />

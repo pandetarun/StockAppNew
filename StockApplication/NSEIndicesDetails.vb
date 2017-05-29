@@ -26,9 +26,15 @@ Public Class NSEIndicesDetails
     Public Function getIndicesDetailsAndStore() As Boolean
         Dim NSEindicesUrlsList As List(Of String)
         StockAppLogger.Log("getIndicesDetailsAndStore Start", "NSEIndicesDetails")
-        NSEindicesUrlsList = GetNSEUrlForAllIndices()
-        getAllIndicesDetails(NSEindicesUrlsList)
-
+        Try
+            NSEindicesUrlsList = GetNSEUrlForAllIndices()
+            getAllIndicesDetails(NSEindicesUrlsList)
+            DBFunctions.CloseSQLConnectionExt("DC")
+        Catch ex As Exception
+            StockAppLogger.LogError("getIndicesDetailsAndStore Error ", ex, "NSEIndicesDetails")
+            DBFunctions.CloseSQLConnectionExt("DC")
+            Return False
+        End Try
         StockAppLogger.Log("getIndicesDetailsAndStore End", "NSEIndicesDetails")
         Return True
     End Function

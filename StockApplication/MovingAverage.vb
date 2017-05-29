@@ -49,149 +49,149 @@ Public Class MovingAverage
         Return True
     End Function
 
-    Private Function IntraDayMACalculation(tmpStockCode As String) As Boolean
+    'Private Function IntraDayMACalculation(tmpStockCode As String) As Boolean
 
-        Dim ds As FbDataReader = Nothing
-        Dim ds1 As FbDataReader = Nothing
-        Dim whereClause, whereClause1 As String
-        Dim orderClause, orderClause1 As String
-        Dim closingPrice As Double
-        Dim laststoredThreeEMA, laststoredFiveEMA, laststoredTenEMA, laststoredFourteenEMA, laststoredTwentyEMA, laststoredFiftyEMA As Double
-        Dim recordPresentInTable As Boolean
+    '    Dim ds As FbDataReader = Nothing
+    '    Dim ds1 As FbDataReader = Nothing
+    '    Dim whereClause, whereClause1 As String
+    '    Dim orderClause, orderClause1 As String
+    '    Dim closingPrice As Double
+    '    Dim laststoredThreeEMA, laststoredFiveEMA, laststoredTenEMA, laststoredFourteenEMA, laststoredTwentyEMA, laststoredFiftyEMA As Double
+    '    Dim recordPresentInTable As Boolean
 
-        StockAppLogger.Log("IntraDayMACalculation Start", "MovingAverage")
+    '    StockAppLogger.Log("IntraDayMACalculation Start", "MovingAverage")
 
-        lastTradedPrice = 0
-        counter = 0
-        simpleMA = 0
-        threeSampleSMA = 0
-        fiveSampleSMA = 0
-        tenSampleSMA = 0
-        fourteenSampleSMA = 0
-        twentySampleSMA = 0
-        FiftySampleSMA = 0
-        laststoredThreeEMA = 0
-        laststoredFiveEMA = 0
-        laststoredTenEMA = 0
-        laststoredFourteenEMA = 0
-        laststoredTwentyEMA = 0
-        laststoredFiftyEMA = 0
-        threeSampleEMA = 0
-        fiveSampleEMA = 0
-        tenSampleEMA = 0
-        fourteenSampleEMA = 0
-        twentySampleEMA = 0
-        FiftySampleEMA = 0
-        MAStock = tmpStockCode
+    '    lastTradedPrice = 0
+    '    counter = 0
+    '    simpleMA = 0
+    '    threeSampleSMA = 0
+    '    fiveSampleSMA = 0
+    '    tenSampleSMA = 0
+    '    fourteenSampleSMA = 0
+    '    twentySampleSMA = 0
+    '    FiftySampleSMA = 0
+    '    laststoredThreeEMA = 0
+    '    laststoredFiveEMA = 0
+    '    laststoredTenEMA = 0
+    '    laststoredFourteenEMA = 0
+    '    laststoredTwentyEMA = 0
+    '    laststoredFiftyEMA = 0
+    '    threeSampleEMA = 0
+    '    fiveSampleEMA = 0
+    '    tenSampleEMA = 0
+    '    fourteenSampleEMA = 0
+    '    twentySampleEMA = 0
+    '    FiftySampleEMA = 0
+    '    MAStock = tmpStockCode
 
-        Try
-            whereClause1 = "TRADEDDATE='" & Today & "' and STOCK_NAME = '" & tmpStockCode & "'"
-            orderClause1 = "LASTUPDATETIME desc"
-            whereClause = "LASTUPDATEDATE='" & Today & "' and companycode = '" & tmpStockCode & "'"
-            orderClause = "lastupdatetime desc"
+    '    Try
+    '        whereClause1 = "TRADEDDATE='" & Today & "' and STOCK_NAME = '" & tmpStockCode & "'"
+    '        orderClause1 = "LASTUPDATETIME desc"
+    '        whereClause = "LASTUPDATEDATE='" & Today & "' and companycode = '" & tmpStockCode & "'"
+    '        orderClause = "lastupdatetime desc"
 
-            MADate = Today
-            'orderClause1 = "lastupdatetime"
-            ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
-            ds1 = DBFunctions.getDataFromTable("INTRADAYMOVINGAVERAGES", " * ", whereClause1, orderClause1)
+    '        MADate = Today
+    '        'orderClause1 = "lastupdatetime"
+    '        ds = DBFunctions.getDataFromTable("STOCKHOURLYDATA", " lastClosingPrice, lastupdatetime", whereClause, orderClause)
+    '        ds1 = DBFunctions.getDataFromTable("INTRADAYMOVINGAVERAGES", " * ", whereClause1, orderClause1)
 
-            While ds1.Read()
-                recordPresentInTable = True
-                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("THREEEMA"))) Then
-                    laststoredThreeEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("THREEEMA")))
-                End If
-                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FIVEEMA"))) Then
-                    laststoredFiveEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIVEEMA")))
-                End If
+    '        While ds1.Read()
+    '            recordPresentInTable = True
+    '            If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("THREEEMA"))) Then
+    '                laststoredThreeEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("THREEEMA")))
+    '            End If
+    '            If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FIVEEMA"))) Then
+    '                laststoredFiveEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIVEEMA")))
+    '            End If
 
-                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TENEMA"))) Then
-                    laststoredTenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TENEMA")))
-                End If
-                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA"))) Then
-                    laststoredFourteenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")))
-                End If
-                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA"))) Then
-                    laststoredTwentyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")))
-                End If
-                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA"))) Then
-                    laststoredFiftyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")))
-                End If
-            End While
+    '            If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TENEMA"))) Then
+    '                laststoredTenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TENEMA")))
+    '            End If
+    '            If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA"))) Then
+    '                laststoredFourteenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")))
+    '            End If
+    '            If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA"))) Then
+    '                laststoredTwentyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")))
+    '            End If
+    '            If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA"))) Then
+    '                laststoredFiftyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")))
+    '            End If
+    '        End While
 
-            While ds.Read()
-                counter = counter + 1
-                If counter = 1 Then
-                    MATime = ds.GetValue(ds.GetOrdinal("lastupdatetime"))
-                    closingPrice = ds.GetValue(ds.GetOrdinal("lastClosingPrice"))
-                    lastTradedPrice = closingPrice
-                End If
-                simpleMA = simpleMA + Double.Parse(ds.GetValue(ds.GetOrdinal("lastClosingPrice")))
-                If counter = 3 Then
-                    threeSampleSMA = simpleMA / 3
-                    If recordPresentInTable And laststoredThreeEMA > 0 Then
-                        threeSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredThreeEMA) + laststoredThreeEMA
-                    Else
-                        threeSampleEMA = threeSampleSMA
-                    End If
-                ElseIf counter = 5 Then
-                    fiveSampleSMA = simpleMA / 5
-                    If recordPresentInTable And laststoredFiveEMA > 0 Then
-                        fiveSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFiveEMA) + laststoredFiveEMA
-                    Else
-                        fiveSampleEMA = fiveSampleSMA
-                    End If
-                ElseIf counter = 10 Then
-                    tenSampleSMA = simpleMA / 10
-                    If recordPresentInTable And laststoredTenEMA > 0 Then
-                        tenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredTenEMA) + laststoredTenEMA
-                    Else
-                        tenSampleEMA = tenSampleSMA
-                    End If
-                ElseIf counter = 14 Then
-                    fourteenSampleSMA = simpleMA / 14
-                    If recordPresentInTable And laststoredFourteenEMA > 0 Then
-                        fourteenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFourteenEMA) + laststoredFourteenEMA
-                    Else
-                        fourteenSampleEMA = fourteenSampleSMA
-                    End If
-                ElseIf counter = 20 Then
-                    twentySampleSMA = simpleMA / 20
-                    If recordPresentInTable And laststoredTwentyEMA > 0 Then
-                        twentySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredTwentyEMA) + laststoredTwentyEMA
-                    Else
-                        twentySampleEMA = twentySampleSMA
-                    End If
-                ElseIf counter = 50 Then
-                    FiftySampleSMA = simpleMA / 50
-                    If recordPresentInTable And laststoredFiftyEMA > 0 Then
-                        FiftySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFiftyEMA) + laststoredFiftyEMA
-                    Else
-                        FiftySampleEMA = FiftySampleSMA
-                    End If
-                    Exit While
-                End If
-            End While
-            If counter = 1 Then
-                threeSampleSMA = simpleMA
-                fiveSampleSMA = simpleMA
-                tenSampleSMA = simpleMA
-                fourteenSampleSMA = simpleMA
-                twentySampleSMA = simpleMA
-                FiftySampleSMA = simpleMA
-                threeSampleEMA = simpleMA
-                fiveSampleEMA = simpleMA
-                tenSampleEMA = simpleMA
-                fourteenSampleEMA = simpleMA
-                twentySampleEMA = simpleMA
-                FiftySampleEMA = simpleMA
-            End If
-        Catch exc As Exception
-            StockAppLogger.LogError("Error Occurred in calculating intraday moving average = ", exc, "MovingAverage")
-            Return False
-        End Try
-        StockAppLogger.Log("IntraDayMACalculation End", "MovingAverage")
-        Return True
-    End Function
+    '        While ds.Read()
+    '            counter = counter + 1
+    '            If counter = 1 Then
+    '                MATime = ds.GetValue(ds.GetOrdinal("lastupdatetime"))
+    '                closingPrice = ds.GetValue(ds.GetOrdinal("lastClosingPrice"))
+    '                lastTradedPrice = closingPrice
+    '            End If
+    '            simpleMA = simpleMA + Double.Parse(ds.GetValue(ds.GetOrdinal("lastClosingPrice")))
+    '            If counter = 3 Then
+    '                threeSampleSMA = simpleMA / 3
+    '                If recordPresentInTable And laststoredThreeEMA > 0 Then
+    '                    threeSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredThreeEMA) + laststoredThreeEMA
+    '                Else
+    '                    threeSampleEMA = threeSampleSMA
+    '                End If
+    '            ElseIf counter = 5 Then
+    '                fiveSampleSMA = simpleMA / 5
+    '                If recordPresentInTable And laststoredFiveEMA > 0 Then
+    '                    fiveSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFiveEMA) + laststoredFiveEMA
+    '                Else
+    '                    fiveSampleEMA = fiveSampleSMA
+    '                End If
+    '            ElseIf counter = 10 Then
+    '                tenSampleSMA = simpleMA / 10
+    '                If recordPresentInTable And laststoredTenEMA > 0 Then
+    '                    tenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredTenEMA) + laststoredTenEMA
+    '                Else
+    '                    tenSampleEMA = tenSampleSMA
+    '                End If
+    '            ElseIf counter = 14 Then
+    '                fourteenSampleSMA = simpleMA / 14
+    '                If recordPresentInTable And laststoredFourteenEMA > 0 Then
+    '                    fourteenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFourteenEMA) + laststoredFourteenEMA
+    '                Else
+    '                    fourteenSampleEMA = fourteenSampleSMA
+    '                End If
+    '            ElseIf counter = 20 Then
+    '                twentySampleSMA = simpleMA / 20
+    '                If recordPresentInTable And laststoredTwentyEMA > 0 Then
+    '                    twentySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredTwentyEMA) + laststoredTwentyEMA
+    '                Else
+    '                    twentySampleEMA = twentySampleSMA
+    '                End If
+    '            ElseIf counter = 50 Then
+    '                FiftySampleSMA = simpleMA / 50
+    '                If recordPresentInTable And laststoredFiftyEMA > 0 Then
+    '                    FiftySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFiftyEMA) + laststoredFiftyEMA
+    '                Else
+    '                    FiftySampleEMA = FiftySampleSMA
+    '                End If
+    '                Exit While
+    '            End If
+    '        End While
+    '        If counter = 1 Then
+    '            threeSampleSMA = simpleMA
+    '            fiveSampleSMA = simpleMA
+    '            tenSampleSMA = simpleMA
+    '            fourteenSampleSMA = simpleMA
+    '            twentySampleSMA = simpleMA
+    '            FiftySampleSMA = simpleMA
+    '            threeSampleEMA = simpleMA
+    '            fiveSampleEMA = simpleMA
+    '            tenSampleEMA = simpleMA
+    '            fourteenSampleEMA = simpleMA
+    '            twentySampleEMA = simpleMA
+    '            FiftySampleEMA = simpleMA
+    '        End If
+    '    Catch exc As Exception
+    '        StockAppLogger.LogError("Error Occurred in calculating intraday moving average = ", exc, "MovingAverage")
+    '        Return False
+    '    End Try
+    '    StockAppLogger.Log("IntraDayMACalculation End", "MovingAverage")
+    '    Return True
+    'End Function
 
     Public Function IntraDaySNEMACalculation(tmpStockCode As String) As Boolean
 
@@ -420,163 +420,163 @@ Public Class MovingAverage
         Return True
     End Function
 
-    Private Function DailyMACalculation(tmpStockCode As String) As Boolean
+    'Private Function DailyMACalculation(tmpStockCode As String) As Boolean
 
-        Dim ds As FbDataReader = Nothing
-        Dim ds1 As FbDataReader = Nothing
-        Dim whereClause, whereClause1 As String
-        Dim orderClause, orderClause1 As String
-        Dim closingPrice As Double
-        Dim laststoredThreeEMA, laststoredFiveEMA, laststoredTenEMA, laststoredFourteenEMA, laststoredTwentyEMA, laststoredFiftyEMA, laststoredTwoHundredEMA As Double
-        Dim recordPresentInTable As Boolean
+    '    Dim ds As FbDataReader = Nothing
+    '    Dim ds1 As FbDataReader = Nothing
+    '    Dim whereClause, whereClause1 As String
+    '    Dim orderClause, orderClause1 As String
+    '    Dim closingPrice As Double
+    '    Dim laststoredThreeEMA, laststoredFiveEMA, laststoredTenEMA, laststoredFourteenEMA, laststoredTwentyEMA, laststoredFiftyEMA, laststoredTwoHundredEMA As Double
+    '    Dim recordPresentInTable As Boolean
 
-        StockAppLogger.Log("DailyMACalculation Start", "MovingAverage")
-        laststoredThreeEMA = 0
-        laststoredFiveEMA = 0
-        laststoredTenEMA = 0
-        laststoredFourteenEMA = 0
-        laststoredTwentyEMA = 0
-        laststoredFiftyEMA = 0
-        laststoredTwoHundredEMA = 0
-        lastTradedPrice = 0
-        counter = 0
-        simpleMA = 0
-        threeSampleSMA = 0
-        fiveSampleSMA = 0
-        tenSampleSMA = 0
-        fourteenSampleSMA = 0
-        twentySampleSMA = 0
-        FiftySampleSMA = 0
-        TwoHundredMA = 0
-        threeSampleEMA = 0
-        fiveSampleEMA = 0
-        tenSampleEMA = 0
-        fourteenSampleEMA = 0
-        twentySampleEMA = 0
-        FiftySampleEMA = 0
-        TwoHundredEMA = 0
-        MAStock = tmpStockCode
+    '    StockAppLogger.Log("DailyMACalculation Start", "MovingAverage")
+    '    laststoredThreeEMA = 0
+    '    laststoredFiveEMA = 0
+    '    laststoredTenEMA = 0
+    '    laststoredFourteenEMA = 0
+    '    laststoredTwentyEMA = 0
+    '    laststoredFiftyEMA = 0
+    '    laststoredTwoHundredEMA = 0
+    '    lastTradedPrice = 0
+    '    counter = 0
+    '    simpleMA = 0
+    '    threeSampleSMA = 0
+    '    fiveSampleSMA = 0
+    '    tenSampleSMA = 0
+    '    fourteenSampleSMA = 0
+    '    twentySampleSMA = 0
+    '    FiftySampleSMA = 0
+    '    TwoHundredMA = 0
+    '    threeSampleEMA = 0
+    '    fiveSampleEMA = 0
+    '    tenSampleEMA = 0
+    '    fourteenSampleEMA = 0
+    '    twentySampleEMA = 0
+    '    FiftySampleEMA = 0
+    '    TwoHundredEMA = 0
+    '    MAStock = tmpStockCode
 
-        Try
-            whereClause1 = "STOCK_NAME = '" & tmpStockCode & "'"
-            orderClause1 = "TRADEDDATE desc"
-            whereClause = "STOCKNAME = '" & tmpStockCode & "' and TRADEDDATE > '" & Today.AddDays(-200) & "'"
-            orderClause = "TRADEDDATE desc"
+    '    Try
+    '        whereClause1 = "STOCK_NAME = '" & tmpStockCode & "'"
+    '        orderClause1 = "TRADEDDATE desc"
+    '        whereClause = "STOCKNAME = '" & tmpStockCode & "' and TRADEDDATE > '" & Today.AddDays(-200) & "'"
+    '        orderClause = "TRADEDDATE desc"
 
-            MADate = Today
-            'orderClause1 = "lastupdatetime"
-            ds = DBFunctions.getDataFromTable("DAILYSTOCKDATA", " LAST_TRADED_PRICE", whereClause, orderClause)
-            ds1 = DBFunctions.getDataFromTable("DAILYMOVINGAVERAGES", " * ", whereClause1, orderClause1)
-            While ds1.Read()
-                recordPresentInTable = True
-                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("THREEEMA"))) Then
-                    laststoredThreeEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("THREEEMA")))
-                End If
+    '        MADate = Today
+    '        'orderClause1 = "lastupdatetime"
+    '        ds = DBFunctions.getDataFromTable("DAILYSTOCKDATA", " LAST_TRADED_PRICE", whereClause, orderClause)
+    '        ds1 = DBFunctions.getDataFromTable("DAILYMOVINGAVERAGES", " * ", whereClause1, orderClause1)
+    '        While ds1.Read()
+    '            recordPresentInTable = True
+    '            If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("THREEEMA"))) Then
+    '                laststoredThreeEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("THREEEMA")))
+    '            End If
 
-                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FIVEEMA"))) Then
-                    laststoredFiveEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIVEEMA")))
-                End If
+    '            If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FIVEEMA"))) Then
+    '                laststoredFiveEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIVEEMA")))
+    '            End If
 
-                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TENEMA"))) Then
-                    laststoredTenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TENEMA")))
-                End If
-                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA"))) Then
-                    laststoredFourteenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")))
-                End If
-                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA"))) Then
-                    laststoredTwentyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")))
-                End If
-                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA"))) Then
-                    laststoredFiftyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")))
-                End If
-                If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TWOHUNDREDEMA"))) Then
-                    laststoredTwoHundredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWOHUNDREDEMA")))
-                End If
-            End While
-            While ds.Read()
-                counter = counter + 1
-                If counter = 1 Then
-                    'MATime = ds.GetValue(ds.GetOrdinal("lastupdatetime"))
-                    closingPrice = ds.GetValue(ds.GetOrdinal("LAST_TRADED_PRICE"))
-                    lastTradedPrice = closingPrice
-                End If
-                simpleMA = simpleMA + Double.Parse(ds.GetValue(ds.GetOrdinal("LAST_TRADED_PRICE")))
-                If counter = 3 Then
-                    threeSampleSMA = simpleMA / 3
-                    If recordPresentInTable And laststoredThreeEMA > 0 Then
-                        threeSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredThreeEMA) + laststoredThreeEMA
-                    Else
-                        threeSampleEMA = threeSampleSMA
-                    End If
-                ElseIf counter = 5 Then
-                    fiveSampleSMA = simpleMA / 5
-                    If recordPresentInTable And laststoredFiveEMA > 0 Then
-                        fiveSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFiveEMA) + laststoredFiveEMA
-                    Else
-                        fiveSampleEMA = fiveSampleSMA
-                    End If
-                ElseIf counter = 10 Then
-                    tenSampleSMA = simpleMA / 10
-                    If recordPresentInTable And laststoredTenEMA > 0 Then
-                        tenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredTenEMA) + laststoredTenEMA
-                    Else
-                        tenSampleEMA = tenSampleSMA
-                    End If
-                ElseIf counter = 14 Then
-                    fourteenSampleSMA = simpleMA / 14
-                    If recordPresentInTable And laststoredFourteenEMA > 0 Then
-                        fourteenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFourteenEMA) + laststoredFourteenEMA
-                    Else
-                        fourteenSampleEMA = fourteenSampleSMA
-                    End If
-                ElseIf counter = 20 Then
-                    twentySampleSMA = simpleMA / 20
-                    If recordPresentInTable And laststoredTwentyEMA > 0 Then
-                        twentySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredTwentyEMA) + laststoredTwentyEMA
-                    Else
-                        twentySampleEMA = twentySampleSMA
-                    End If
-                ElseIf counter = 50 Then
-                    FiftySampleSMA = simpleMA / 50
-                    If recordPresentInTable And laststoredFiftyEMA > 0 Then
-                        FiftySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFiftyEMA) + laststoredFiftyEMA
-                    Else
-                        FiftySampleEMA = FiftySampleSMA
-                    End If
-                ElseIf counter = 200 Then
-                    TwoHundredMA = simpleMA / 200
-                    If recordPresentInTable And laststoredTwoHundredEMA > 0 Then
-                        TwoHundredEMA = (2 / (counter + 1)) * (closingPrice - laststoredTwoHundredEMA) + laststoredTwoHundredEMA
-                    Else
-                        TwoHundredEMA = TwoHundredMA
-                    End If
-                    Exit While
-                End If
+    '            If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TENEMA"))) Then
+    '                laststoredTenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TENEMA")))
+    '            End If
+    '            If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA"))) Then
+    '                laststoredFourteenEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FOURTEENEMA")))
+    '            End If
+    '            If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA"))) Then
+    '                laststoredTwentyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWENTYEMA")))
+    '            End If
+    '            If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA"))) Then
+    '                laststoredFiftyEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("FIFTYEMA")))
+    '            End If
+    '            If Not IsDBNull(ds1.GetValue(ds1.GetOrdinal("TWOHUNDREDEMA"))) Then
+    '                laststoredTwoHundredEMA = Double.Parse(ds1.GetValue(ds1.GetOrdinal("TWOHUNDREDEMA")))
+    '            End If
+    '        End While
+    '        While ds.Read()
+    '            counter = counter + 1
+    '            If counter = 1 Then
+    '                'MATime = ds.GetValue(ds.GetOrdinal("lastupdatetime"))
+    '                closingPrice = ds.GetValue(ds.GetOrdinal("LAST_TRADED_PRICE"))
+    '                lastTradedPrice = closingPrice
+    '            End If
+    '            simpleMA = simpleMA + Double.Parse(ds.GetValue(ds.GetOrdinal("LAST_TRADED_PRICE")))
+    '            If counter = 3 Then
+    '                threeSampleSMA = simpleMA / 3
+    '                If recordPresentInTable And laststoredThreeEMA > 0 Then
+    '                    threeSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredThreeEMA) + laststoredThreeEMA
+    '                Else
+    '                    threeSampleEMA = threeSampleSMA
+    '                End If
+    '            ElseIf counter = 5 Then
+    '                fiveSampleSMA = simpleMA / 5
+    '                If recordPresentInTable And laststoredFiveEMA > 0 Then
+    '                    fiveSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFiveEMA) + laststoredFiveEMA
+    '                Else
+    '                    fiveSampleEMA = fiveSampleSMA
+    '                End If
+    '            ElseIf counter = 10 Then
+    '                tenSampleSMA = simpleMA / 10
+    '                If recordPresentInTable And laststoredTenEMA > 0 Then
+    '                    tenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredTenEMA) + laststoredTenEMA
+    '                Else
+    '                    tenSampleEMA = tenSampleSMA
+    '                End If
+    '            ElseIf counter = 14 Then
+    '                fourteenSampleSMA = simpleMA / 14
+    '                If recordPresentInTable And laststoredFourteenEMA > 0 Then
+    '                    fourteenSampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFourteenEMA) + laststoredFourteenEMA
+    '                Else
+    '                    fourteenSampleEMA = fourteenSampleSMA
+    '                End If
+    '            ElseIf counter = 20 Then
+    '                twentySampleSMA = simpleMA / 20
+    '                If recordPresentInTable And laststoredTwentyEMA > 0 Then
+    '                    twentySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredTwentyEMA) + laststoredTwentyEMA
+    '                Else
+    '                    twentySampleEMA = twentySampleSMA
+    '                End If
+    '            ElseIf counter = 50 Then
+    '                FiftySampleSMA = simpleMA / 50
+    '                If recordPresentInTable And laststoredFiftyEMA > 0 Then
+    '                    FiftySampleEMA = (2 / (counter + 1)) * (closingPrice - laststoredFiftyEMA) + laststoredFiftyEMA
+    '                Else
+    '                    FiftySampleEMA = FiftySampleSMA
+    '                End If
+    '            ElseIf counter = 200 Then
+    '                TwoHundredMA = simpleMA / 200
+    '                If recordPresentInTable And laststoredTwoHundredEMA > 0 Then
+    '                    TwoHundredEMA = (2 / (counter + 1)) * (closingPrice - laststoredTwoHundredEMA) + laststoredTwoHundredEMA
+    '                Else
+    '                    TwoHundredEMA = TwoHundredMA
+    '                End If
+    '                Exit While
+    '            End If
 
-            End While
-            If counter = 1 Then
-                threeSampleSMA = simpleMA
-                fiveSampleSMA = simpleMA
-                tenSampleSMA = simpleMA
-                fourteenSampleSMA = simpleMA
-                twentySampleSMA = simpleMA
-                FiftySampleSMA = simpleMA
-                TwoHundredMA = simpleMA
-                threeSampleEMA = simpleMA
-                fiveSampleEMA = simpleMA
-                tenSampleEMA = simpleMA
-                fourteenSampleEMA = simpleMA
-                twentySampleEMA = simpleMA
-                FiftySampleEMA = simpleMA
-                TwoHundredEMA = simpleMA
-            End If
-        Catch exc As Exception
-            StockAppLogger.LogError("Error Occurred in calculating daily MA data = ", exc, "MovingAverage")
-            Return False
-        End Try
-        StockAppLogger.Log("DailyMACalculation End", "MovingAverage")
-        Return True
-    End Function
+    '        End While
+    '        If counter = 1 Then
+    '            threeSampleSMA = simpleMA
+    '            fiveSampleSMA = simpleMA
+    '            tenSampleSMA = simpleMA
+    '            fourteenSampleSMA = simpleMA
+    '            twentySampleSMA = simpleMA
+    '            FiftySampleSMA = simpleMA
+    '            TwoHundredMA = simpleMA
+    '            threeSampleEMA = simpleMA
+    '            fiveSampleEMA = simpleMA
+    '            tenSampleEMA = simpleMA
+    '            fourteenSampleEMA = simpleMA
+    '            twentySampleEMA = simpleMA
+    '            FiftySampleEMA = simpleMA
+    '            TwoHundredEMA = simpleMA
+    '        End If
+    '    Catch exc As Exception
+    '        StockAppLogger.LogError("Error Occurred in calculating daily MA data = ", exc, "MovingAverage")
+    '        Return False
+    '    End Try
+    '    StockAppLogger.Log("DailyMACalculation End", "MovingAverage")
+    '    Return True
+    'End Function
 
     Public Function DailySNEMACalculation(tmpStockCode As String) As Boolean
 

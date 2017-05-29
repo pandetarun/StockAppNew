@@ -182,7 +182,7 @@ Public Class DBFunctions
             StockAppLogger.LogError("ExecuteSQLStmtError in executing statement" & sSQL, ex, "DBFunctions")
             Return False
         Finally
-            If Disconnect = True Then CloseSQLConnection()
+            If Disconnect = True Then CloseSQLConnectionExt(transactionType)
             If myCmd IsNot Nothing Then
                 myCmd.Dispose()
                 myCmd = Nothing

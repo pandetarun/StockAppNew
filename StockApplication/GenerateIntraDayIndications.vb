@@ -52,10 +52,15 @@ Public Class GenerateIndications
                     'End Try
                 End If
             End While
+            ds.Close()
             DBFunctions.CloseSQLConnectionExt("DI")
         Catch exc As Exception
             StockAppLogger.LogError("GenerateIntraDayIndications Error Occurred in generating intraday indicator = ", exc, "GenerateIndications")
             'Return False
+            If ds IsNot Nothing Then
+                ds.Close()
+            End If
+            DBFunctions.CloseSQLConnectionExt("DI")
         End Try
         StockAppLogger.Log("GenerateIntraDayIndications End", "GenerateIndications")
     End Sub

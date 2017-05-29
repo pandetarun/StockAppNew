@@ -6,9 +6,9 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{1AE8B3CA-EC21-4C78-8E4C-94056DF8CF98}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>StockAppService1.StockAppHourlyService</StartupObject>
-    <RootNamespace>StockAppService1</RootNamespace>
-    <AssemblyName>StockAppService1</AssemblyName>
+    <StartupObject>StockAppDailyService.StockAppDailyService</StartupObject>
+    <RootNamespace>StockAppDailyService</RootNamespace>
+    <AssemblyName>StockAppDailyService</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Console</MyType>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
@@ -36,7 +36,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>StockAppService1.xml</DocumentationFile>
+    <DocumentationFile>StockAppDailyService.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -46,7 +46,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>StockAppService1.xml</DocumentationFile>
+    <DocumentationFile>StockAppDailyService.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -99,11 +99,11 @@
     <Compile Include="ProjectInstaller.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="StockAppHourlyService.vb">
+    <Compile Include="StockAppDailyService.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="StockAppHourlyService.Designer.vb">
-      <DependentUpon>StockAppHourlyService.vb</DependentUpon>
+    <Compile Include="StockAppDailyService.Designer.vb">
+      <DependentUpon>StockAppDailyService.vb</DependentUpon>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Resources.Designer.vb">
@@ -127,11 +127,12 @@
     <EmbeddedResource Include="ProjectInstaller.resx">
       <DependentUpon>ProjectInstaller.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="StockAppHourlyService.resx">
-      <DependentUpon>StockAppHourlyService.vb</DependentUpon>
+    <EmbeddedResource Include="StockAppDailyService.resx">
+      <DependentUpon>StockAppDailyService.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
@@ -147,10 +148,6 @@
     <ProjectReference Include="..\StockApplication\StockApplication.vbproj">
       <Project>{329E97B8-5D8C-484D-93AE-EA6AFF4B8FFC}</Project>
       <Name>StockApplication</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TechnicalIndicatorsCalculationServiceProj\TechnicalIndicatorsCalculationServiceProj.vbproj">
-      <Project>{270c45dd-9476-406f-bdc8-1166432aea1e}</Project>
-      <Name>TechnicalIndicatorsCalculationServiceProj</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
